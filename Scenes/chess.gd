@@ -46,12 +46,13 @@ const PIECE_MOVE = preload("res://Assets/Piece_move.png")
 
 var board : Array
 var white : bool = true
-var state : bool = false
+var state : bool = false # False = select, True = Confirm
 var moves = []
 var selected_piece : Vector2
 
 var promotion_square = null
 
+# For Castling
 var white_king = false
 var black_king = false
 var white_rook_left = false
@@ -70,7 +71,7 @@ var unique_board_moves : Array = []
 var amount_of_same : Array = []
 
 func _ready():
-	board.append([4, 2, 3, 5, 6, 3, 2, 4])
+	board.append([4, 2, 3, 5, 6, 3, 2, 4]) # 0,0 == bottom left
 	board.append([1, 1, 1, 1, 1, 1, 1, 1])
 	board.append([0, 0, 0, 0, 0, 0, 0, 0])
 	board.append([0, 0, 0, 0, 0, 0, 0, 0])
@@ -84,6 +85,7 @@ func _ready():
 	var white_buttons = get_tree().get_nodes_in_group("white_pieces")
 	var black_buttons = get_tree().get_nodes_in_group("black_pieces")
 	
+	# Signals
 	for button in white_buttons:
 		button.pressed.connect(self._on_button_pressed.bind(button))
 		
@@ -94,7 +96,7 @@ func _input(event):
 	if event is InputEventMouseButton && event.pressed && promotion_square == null:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if is_mouse_out(): return
-			var var1 = snapped(get_global_mouse_position().x, 0) / CELL_WIDTH
+			var var1 = snapped(get_global_mouse_position().x, 0) / CELL_WIDTH # Find index on the board
 			var var2 = abs(snapped(get_global_mouse_position().y, 0)) / CELL_WIDTH
 			if !state && (white && board[var2][var1] > 0 || !white && board[var2][var1] < 0):
 				selected_piece = Vector2(var2, var1)
@@ -253,6 +255,7 @@ func get_rook_moves(piece_position : Vector2):
 		pos += i
 		while is_valid_position(pos):
 			if is_empty(pos): 
+				# Try move and check if moved, will king got checked?
 				board[pos.x][pos.y] = 4 if white else -4
 				board[piece_position.x][piece_position.y] = 0
 				if white && !is_in_check(white_king_pos) || !white && !is_in_check(black_king_pos): _moves.append(pos)
@@ -266,7 +269,7 @@ func get_rook_moves(piece_position : Vector2):
 				board[pos.x][pos.y] = t
 				board[piece_position.x][piece_position.y] = 4 if white else -4
 				break
-			else: break
+			else: break # Our pieces
 			
 			pos += i
 	
@@ -334,6 +337,7 @@ func get_king_moves(piece_position : Vector2):
 	var directions = [Vector2(0, 1), Vector2(0, -1), Vector2(1, 0), Vector2(-1, 0),
 	Vector2(1, 1), Vector2(1, -1), Vector2(-1, 1), Vector2(-1, -1)]
 	
+	# Remove old position
 	if white:
 		board[white_king_pos.x][white_king_pos.y] = 0
 	else:
@@ -460,7 +464,7 @@ func is_enemy(pos : Vector2):
 	
 func promote(_var : Vector2):
 	promotion_square = _var
-	white_pieces.visible = white
+	white_pieces.visible = white # Promotion selecting Banner
 	black_pieces.visible = !white
 
 func _on_button_pressed(button):
@@ -490,13 +494,16 @@ func is_in_check(king_pos: Vector2):
 		if is_valid_position(pos):
 			if white && board[pos.x][pos.y] == -6 || !white && board[pos.x][pos.y] == 6: return true
 			
+	# Bishop, Queen, Rook
 	for i in directions:
 		var pos = king_pos + i
 		while is_valid_position(pos):
 			if !is_empty(pos):
 				var piece = board[pos.x][pos.y]
+				# Rook, Queen
 				if (i.x == 0 || i.y == 0) && (white && piece in [-4, -5] || !white && piece in [4, 5]):
 					return true
+				# Bishop, Queen
 				elif (i.x != 0 && i.y != 0) && (white && piece in [-3, -5] || !white && piece in [3, 5]):
 					return true
 				break
@@ -515,6 +522,7 @@ func is_in_check(king_pos: Vector2):
 
 func is_stalemate():
 	if white:
+		# There is a piece that can still move
 		for i in BOARD_SIZE:
 			for j in BOARD_SIZE:
 				if board[i][j] > 0:
