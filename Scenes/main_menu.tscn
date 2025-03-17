@@ -1,0 +1,85 @@
+[gd_scene load_steps=7 format=3 uid="uid://bx2kcu7xx1205"]
+
+[ext_resource type="Texture2D" uid="uid://diac60rggirfg" path="res://Assets/Home page.png" id="1_28flt"]
+[ext_resource type="Script" uid="uid://dfg76ja6nb0cw" path="res://Scenes/main_menu.gd" id="1_48xlc"]
+[ext_resource type="FontFile" uid="uid://dgfsgagxg2j1f" path="res://Assets/Besley-Italic-VariableFont_wght.ttf" id="3_1ehe0"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ce3w2"]
+texture = ExtResource("1_28flt")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n45e2"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="GDScript" id="GDScript_1ehe0"]
+script/source = "extends Button
+"
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_48xlc")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_ce3w2")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+offset_left = 721.0
+offset_top = 277.0
+offset_right = 1028.0
+offset_bottom = 557.0
+
+[node name="NewRoomButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("3_1ehe0")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_n45e2")
+text = "New room"
+alignment = 0
+script = SubResource("GDScript_1ehe0")
+
+[node name="JoinRoomButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("3_1ehe0")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_n45e2")
+text = "Join room"
+alignment = 0
+script = SubResource("GDScript_1ehe0")
+
+[node name="CreditsButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("3_1ehe0")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_n45e2")
+text = "Credits"
+alignment = 0
+script = SubResource("GDScript_1ehe0")
+
+[node name="QuitButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("3_1ehe0")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_n45e2")
+text = "Quit"
+alignment = 0
+script = SubResource("GDScript_1ehe0")
+
+[connection signal="pressed" from="VBoxContainer/NewRoomButton" to="." method="_on_new_room_pressed"]
+[connection signal="pressed" from="VBoxContainer/JoinRoomButton" to="." method="_on_join_room_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/CreditsButton" to="." method="_on_credits_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

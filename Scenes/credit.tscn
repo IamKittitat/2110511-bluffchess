@@ -1,0 +1,41 @@
+[gd_scene load_steps=6 format=3 uid="uid://1birm5md0mv3"]
+
+[ext_resource type="Script" uid="uid://d1u3pra65k70v" path="res://Scenes/credit.gd" id="1_k1f8w"]
+[ext_resource type="Texture2D" uid="uid://d203sl16sadvh" path="res://Assets/Credit.png" id="2_37nl1"]
+[ext_resource type="FontFile" uid="uid://dgfsgagxg2j1f" path="res://Assets/Besley-Italic-VariableFont_wght.ttf" id="3_nto78"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_v4drr"]
+texture = ExtResource("2_37nl1")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qb0r7"]
+
+[node name="Credit" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_k1f8w")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_v4drr")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 84.0
+offset_top = 52.0
+offset_right = 213.0
+offset_bottom = 121.0
+theme_override_fonts/font = ExtResource("3_nto78")
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxEmpty_qb0r7")
+text = "< Back"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
