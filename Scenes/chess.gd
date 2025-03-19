@@ -223,6 +223,7 @@ func set_move(var2, var1):
 	delete_dots()
 	state = false
 	
+	# Can instantly switch to move another piece
 	if (selected_piece.x != var2 || selected_piece.y != var1) && (white && board[var2][var1] > 0 || !white && board[var2][var1] < 0):
 		selected_piece = Vector2(var2, var1)
 		show_options()
