@@ -2,8 +2,8 @@ extends Node
 
 # CONNECTION
 var lobby_peer
-var lobby_server = preload("res://Scenes/lobby_server.gd").new()
-var lobby_client = preload("res://Scenes/lobby_client.gd").new()
+var lobby_server = preload("res://Scenes/lobby/lobby_server.gd").new()
+var lobby_client = preload("res://Scenes/lobby/lobby_client.gd").new()
 
 # SCENE
 var credit_scene = load("res://Scenes/credit.tscn")

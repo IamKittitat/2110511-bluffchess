@@ -38,12 +38,12 @@ func join_room(room_code: String):
 
 @rpc("authority", "call_remote", "reliable")
 func room_created(code: String):
-	print("Room created! Share this code:", code)
+	print("Room created! Share this code: ", code)
 	start_game_host_server(GAME_PORT)
 
 @rpc("authority", "call_remote", "reliable")
 func join_room_success(host_ip: String, host_port: int):
-	print("Joining game at", host_ip, ":", host_port)
+	print("Joining game at ", host_ip, ":", host_port)
 	connect_to_game_host(host_ip, host_port)
 
 @rpc("authority", "call_remote", "reliable")
@@ -56,7 +56,7 @@ func start_game_host_server(port: int):
 	var err = peer.create_server(port)
 	if err == OK:
 		multiplayer.multiplayer_peer = peer
-		print("Game host server started on port", port)
+		print("Game host server started on port ", port)
 	else:
 		print("Failed to start game host server.")
 

@@ -15,7 +15,7 @@ const SERVER_PORT = 9000
 func start_lobby_server(peer: ENetMultiplayerPeer):
 	peer.create_server(SERVER_PORT)
 	multiplayer.multiplayer_peer = peer
-	print("Lobby server started on port 9000.")
+	print("Lobby server started on port " + str(SERVER_PORT))
 
 # Generate a random 4-letter room code
 func _generate_room_code() -> String:
@@ -52,10 +52,10 @@ func request_create_room(ip: String, port: int):
 		"is_other_connected": false
 	}
 
-	print("Room created by peer", peer_id, "with code:", room_code)
+	print("Room created by peer ", peer_id, "with code: ", room_code)
 	
 	# Send the code back to the host that requested it
-	#room_created.rpc_id(peer_id, room_code)
+	room_created.rpc_id(peer_id, room_code)
 
 @rpc("any_peer", "call_remote", "reliable")
 func request_join_room(code: String):
@@ -64,8 +64,8 @@ func request_join_room(code: String):
 	if rooms.has(code) and not rooms[code]["is_other_connected"]:
 		rooms[code]["is_other_connected"] = true
 		var room_info = rooms[code]
-		print("Player", peer_id, "joining room", code)
+		print("Player ", peer_id, " joining room ", code)
 		join_room_success.rpc_id(peer_id, room_info["host_ip"], room_info["host_port"])
 	else:
-		print("Player", peer_id, "failed to join room", code)
+		print("Player ", peer_id, " failed to join room ", code)
 		join_room_failed.rpc_id(peer_id)
