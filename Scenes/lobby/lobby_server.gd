@@ -6,7 +6,6 @@ extends Node
 #    "host_id": peer_id,
 #    "host_ip": host_ip,
 #    "host_port": port,
-#    "is_other_connected": false
 # }
 var rooms = {}
 
@@ -28,7 +27,6 @@ func request_to_create_room(ip: String, port: int):
 		"host_id": peer_id,
 		"host_ip": ip,
 		"host_port": port,
-		"is_other_connected": false
 	}
 
 	print("Room created by peer ", peer_id, "with code: ", room_code)
@@ -39,11 +37,11 @@ func request_to_create_room(ip: String, port: int):
 func request_to_join_room(code: String):
 	var peer_id = multiplayer.get_remote_sender_id()
 	
-	if rooms.has(code) and not rooms[code]["is_other_connected"]:
-		rooms[code]["is_other_connected"] = true
+	if rooms.has(code):
 		var room_info = rooms[code]
 		print("Player ", peer_id, " joining room ", code)
 		handle_joined_room.rpc_id(peer_id, true, room_info["host_ip"], room_info["host_port"])
+		rooms.erase(code)
 	else:
 		print("Player ", peer_id, " failed to join room ", code)
 		handle_joined_room.rpc_id(peer_id,false)
