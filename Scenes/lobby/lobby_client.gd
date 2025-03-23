@@ -22,7 +22,7 @@ func connect_to_lobby_server():
 
 ### RPC - For communicate with central server
 @rpc("any_peer", "call_remote", "reliable")
-func request_to_create_room(ip: String, port: int):
+func request_to_create_room(ip: String, port: int, game_info: Dictionary):
 	pass
 
 @rpc("any_peer", "call_remote", "reliable")
@@ -30,21 +30,28 @@ func request_to_join_room(code: String):
 	pass
 
 @rpc("authority", "call_remote", "reliable")
-func handle_room_created(code: String):
+func handle_room_created(code: String, game_info: Dictionary):
 	print("Room created! Share this code: ", code)
+	game_join.set_initial_game_info(game_info)
 	_start_game_host_server(GAME_PORT)
 
 @rpc("authority", "call_remote", "reliable")
-func handle_joined_room(is_success: bool, host_ip: String = "", host_port: int = 0):
+func handle_joined_room(is_success: bool, host_ip: String = "", host_port: int = 0, game_info: Dictionary = {}):
 	if(is_success):
 		print("Joining game at ", host_ip, ":", host_port)
+		game_join.set_initial_game_info(game_info)
 		_connect_to_game_host(host_ip, host_port)
 	else:
 		print("Failed to join room. Invalid code or room doesn't exist.")
 
 ### Function for main scene to call
-func create_room():
-	request_to_create_room.rpc_id(1, CLIENT_IP, GAME_PORT)
+func create_room(setting_phase: String, play_phase: String, play_as: String):
+	var game_info = {
+		"setting_phase": setting_phase,
+		"play_phase": play_phase,
+		"play_as": play_as
+	}
+	request_to_create_room.rpc_id(1, CLIENT_IP, GAME_PORT, game_info)
 
 func join_room(room_code: String):
 	request_to_join_room.rpc_id(1, room_code)

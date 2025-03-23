@@ -19,12 +19,12 @@ func _ready():
 		lobby_client.connect_to_lobby_server()
 
 func _on_new_room_pressed() -> void:
-	lobby_client.create_room()
+	lobby_client.create_room("1 min", "10 min", "random")
 	#get_tree().change_scene_to_packed(main)
 
 func _on_join_room_button_pressed() -> void:
 	# This room code must be in JOIN scene
-	lobby_client.join_room("YNtxLcnWKu")
+	lobby_client.join_room("2ruQF8dcOj")
 
 func _on_credits_button_pressed() -> void:
 	get_tree().change_scene_to_packed(credit_scene)
