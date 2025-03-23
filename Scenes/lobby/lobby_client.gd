@@ -1,12 +1,16 @@
 extends Node
 
+var game_join = preload("res://Scenes/game_peer/game_join.gd").new()
+
 const SERVER_IP = "127.0.0.1"
 const SERVER_PORT = 9000
 const CLIENT_IP = "127.0.0.1"
 const GAME_PORT = 9001
 
 ### Create central server connection
-func connect_to_lobby_server(peer: ENetMultiplayerPeer):
+func connect_to_lobby_server():
+	var 	peer = ENetMultiplayerPeer.new()
+	add_child(game_join)
 	var err = peer.create_client(SERVER_IP, SERVER_PORT)
 	if err == OK:
 		multiplayer.multiplayer_peer = peer
@@ -38,7 +42,6 @@ func handle_joined_room(is_success: bool, host_ip: String = "", host_port: int =
 	else:
 		print("Failed to join room. Invalid code or room doesn't exist.")
 
-
 ### Function for main scene to call
 func create_room():
 	request_to_create_room.rpc_id(1, CLIENT_IP, GAME_PORT)
@@ -68,6 +71,9 @@ func _connect_to_game_host(ip: String, port: int):
 	var err = peer.create_client(ip, port)
 	if err == OK:
 		multiplayer.multiplayer_peer = peer
+		# wait for connection before calling rpc
+		await get_tree().create_timer(1).timeout
+		game_join.on_game_peer_ready.rpc()
 		print("Connected to game host!")
 	else:
 		print("Failed to connect to game host.")

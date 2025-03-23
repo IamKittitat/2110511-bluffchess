@@ -12,7 +12,8 @@ var rooms = {}
 const SERVER_PORT = 9000
 
 ### Create Central Server connection
-func start_lobby_server(peer: ENetMultiplayerPeer):
+func start_lobby_server():
+	var peer = ENetMultiplayerPeer.new()
 	peer.create_server(SERVER_PORT)
 	multiplayer.multiplayer_peer = peer
 	print("Lobby server started on port " + str(SERVER_PORT))
@@ -40,8 +41,8 @@ func request_to_join_room(code: String):
 	if rooms.has(code):
 		var room_info = rooms[code]
 		print("Player ", peer_id, " joining room ", code)
-		handle_joined_room.rpc_id(peer_id, true, room_info["host_ip"], room_info["host_port"])
 		rooms.erase(code)
+		handle_joined_room.rpc_id(peer_id, true, room_info["host_ip"], room_info["host_port"])
 	else:
 		print("Player ", peer_id, " failed to join room ", code)
 		handle_joined_room.rpc_id(peer_id,false)
