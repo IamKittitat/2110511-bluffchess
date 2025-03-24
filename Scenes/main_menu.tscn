@@ -33,11 +33,12 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_ce3w2")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-layout_mode = 1
-offset_left = 721.0
-offset_top = 277.0
-offset_right = 1028.0
-offset_bottom = 557.0
+layout_mode = 0
+anchor_left = 0.587674
+anchor_top = 0.376543
+anchor_right = 0.854167
+anchor_bottom = 0.808642
+offset_top = -1.52588e-05
 
 [node name="NewRoomButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2

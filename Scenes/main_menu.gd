@@ -7,6 +7,7 @@ var lobby_client = preload("res://Scenes/lobby/lobby_client.gd").new()
 # SCENE
 var credit_scene = load("res://Scenes/credit.tscn")
 var main = load("res://Scenes/main.tscn")
+var set_up = load("res://Scenes/set_up_page.tscn")
 
 func _ready():
 	var args = OS.get_cmdline_args()
@@ -19,8 +20,8 @@ func _ready():
 		lobby_client.connect_to_lobby_server()
 
 func _on_new_room_pressed() -> void:
-	lobby_client.create_room("1 min", "10 min", "random")
-	#get_tree().change_scene_to_packed(main)
+	#lobby_client.create_room("1 min", "10 min", "random")
+	get_tree().change_scene_to_packed(set_up)
 
 func _on_join_room_button_pressed() -> void:
 	# This room code must be in JOIN scene

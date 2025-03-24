@@ -1,0 +1,39 @@
+[gd_scene load_steps=6 format=3 uid="uid://b4nopi5svnbjs"]
+
+[ext_resource type="PackedScene" uid="uid://bacq6ewojhxhd" path="res://Scenes/set_up_board.tscn" id="1_1msvh"]
+[ext_resource type="Texture2D" uid="uid://bmqgehrxdaios" path="res://Assets/background.png" id="1_t5b6i"]
+[ext_resource type="FontFile" uid="uid://dgfsgagxg2j1f" path="res://Assets/Besley-Italic-VariableFont_wght.ttf" id="2_21yao"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_31104"]
+texture = ExtResource("1_t5b6i")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t5b6i"]
+
+[node name="set_up_page" type="Node2D"]
+
+[node name="Panel" type="Panel" parent="."]
+offset_right = 1152.0
+offset_bottom = 648.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_31104")
+
+[node name="board" parent="." instance=ExtResource("1_1msvh")]
+position = Vector2(352, 320)
+scale = Vector2(0.652057, 0.651615)
+
+[node name="Button" type="Button" parent="."]
+anchors_preset = -1
+anchor_left = 0.0729167
+anchor_top = 0.0802469
+anchor_right = 0.184896
+anchor_bottom = 0.186728
+offset_left = 27.0
+offset_top = 18.0
+offset_right = 148.0
+offset_bottom = 79.0
+theme_override_fonts/font = ExtResource("2_21yao")
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxEmpty_t5b6i")
+text = "< Back"
+metadata/_edit_use_anchors_ = true
+
+[connection signal="pressed" from="Button" to="board" method="_on_button_pressed"]
