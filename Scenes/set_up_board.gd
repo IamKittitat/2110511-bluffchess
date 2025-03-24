@@ -22,21 +22,21 @@ const WHITE_QUEEN = preload("res://Piece/wqueen.png")
 @onready var dots: Node2D = $Dots
 
 #Variables
-var board : Array
+var board : Array = []
 var white : bool
 var state : bool
 var moves = []
 var selected_piece : Vector2
 
 func _ready():
-	board.append([-6 ,-5 ,-4 ,-3 ,-2 ,-1 ,-1 ,-1])
-	board.append([-6 ,-5 ,-4 ,-3 ,-2 ,-1 ,-1 ,-1])
-	board.append([-6 ,-5 ,-4 ,-3 ,-2 ,-1 ,-1 ,-1])
-	board.append([-6 ,-5 ,-4 ,-3 ,-2 ,-1 ,-1 ,-1])
-	board.append([-6 ,-5 ,-4 ,-3 ,-2 ,-1 ,-1 ,-1])
-	board.append([-6 ,-5 ,-4 ,-3 ,-2 ,-1 ,-1 ,-1])
-	board.append([-6 ,-5 ,-4 ,-3 ,-2 ,-1 ,-1 ,-1])
-	board.append([-6 ,-5 ,-4 ,-3 ,-2 ,-1 ,-1 ,-1])
+	board.append([4, 2, 3, 5, 6, 3, 2, 4])
+	board.append([1, 1, 1, 1, 1, 1, 1, 1])
+	board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	board.append([-4, -2, -3, -5, -6, -3, -2, -4])
+	board.append([-1 ,-1 ,-1 ,-1 ,-1 ,-1 ,-1 ,-1])
 	
 	display_board()
 	
@@ -66,3 +66,8 @@ func display_board():
 
 func _on_button_pressed() -> void:
 	get_tree().change_scene_to_file("res://Scenes/main_menu.tscn")
+
+
+func _on_button_2_pressed() -> void:
+	GlobalScript.chess_board_data = board
+	get_tree().change_scene_to_file("res://Scenes/main.tscn")

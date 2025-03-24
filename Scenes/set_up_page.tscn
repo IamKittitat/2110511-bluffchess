@@ -36,4 +36,14 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_t5b6i")
 text = "< Back"
 metadata/_edit_use_anchors_ = true
 
+[node name="Button2" type="Button" parent="."]
+offset_left = 817.0
+offset_top = 536.0
+offset_right = 991.0
+offset_bottom = 605.0
+theme_override_fonts/font = ExtResource("2_21yao")
+theme_override_font_sizes/font_size = 36
+text = "Ready"
+
 [connection signal="pressed" from="Button" to="board" method="_on_button_pressed"]
+[connection signal="pressed" from="Button2" to="board" method="_on_button_2_pressed"]

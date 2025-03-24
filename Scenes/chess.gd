@@ -71,14 +71,15 @@ var unique_board_moves : Array = []
 var amount_of_same : Array = []
 
 func _ready():
-	board.append([4, 2, 3, 5, 6, 3, 2, 4]) # 0,0 == bottom left
-	board.append([1, 1, 1, 1, 1, 1, 1, 1])
-	board.append([0, 0, 0, 0, 0, 0, 0, 0])
-	board.append([0, 0, 0, 0, 0, 0, 0, 0])
-	board.append([0, 0, 0, 0, 0, 0, 0, 0])
-	board.append([0, 0, 0, 0, 0, 0, 0, 0])
-	board.append([-1, -1, -1, -1, -1, -1, -1, -1])
-	board.append([-4, -2, -3, -5, -6, -3, -2, -4])
+	#board.append([4, 2, 3, 5, 6, 3, 2, 4]) # 0,0 == bottom left
+	#board.append([1, 1, 1, 1, 1, 1, 1, 1])
+	#board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	#board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	#board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	#board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	#board.append([-1, -1, -1, -1, -1, -1, -1, -1])
+	#board.append([-4, -2, -3, -5, -6, -3, -2, -4])
+	board = GlobalScript.chess_board_data
 	
 	display_board()
 	
