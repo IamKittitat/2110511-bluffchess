@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c57621skkb6ds"
-path="res://.godot/imported/Piece_move.png-2ebfc757e084f039d134a0736fbbc670.ctex"
+uid="uid://dlusf3487dr48"
+path="res://.godot/imported/black_king.png-74c77524f7b1b27bb808a14f5afa0b4c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Piece_move.png"
-dest_files=["res://.godot/imported/Piece_move.png-2ebfc757e084f039d134a0736fbbc670.ctex"]
+source_file="res://Assets/Piece/black_king.png"
+dest_files=["res://.godot/imported/black_king.png-74c77524f7b1b27bb808a14f5afa0b4c.ctex"]
 
 [params]
 
