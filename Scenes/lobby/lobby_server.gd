@@ -78,17 +78,19 @@ func handle_joined_room(is_success: bool, host_ip: String = "", host_port: int =
 	
 ### Private function
 func _generate_room_code() -> String:
-	const CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	var code = ""
-	
-	while code == "" or rooms.has(code):
-		for i in 10:
-			code += CHARS[randi() % CHARS.length()]
-		
-	return code
+	#const CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	#var code = ""
+	#
+	#while code == "" or rooms.has(code):
+		#for i in 10:
+			#code += CHARS[randi() % CHARS.length()]
+		#
+	#return code
+	return "abc"
 
 func _get_play_as(play_as: String) -> String:
-	const colors = ["black", "white"]
-	if(play_as == "random"):
-		return colors[randi() % colors.size()]
-	return play_as
+	#const colors = ["black", "white"]
+	#if(play_as == "random"):
+		#return colors[randi() % colors.size()]
+	#return play_as
+	return "white"
