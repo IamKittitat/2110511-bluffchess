@@ -75,9 +75,21 @@ var unique_board_moves : Array = []
 var amount_of_same : Array = []
 
 func _ready():
-	board = GlobalScript.chess_board_data
-	hidden_board = GlobalScript.hidden_board_data
 	play_white = GlobalScript.play_as == "white"
+	
+	if(!play_white):
+		for i in range(BOARD_SIZE - 1,-1, -1):
+			var tmp_row = GlobalScript.chess_board_data[i]
+			tmp_row.reverse()
+			board.append(tmp_row)
+			
+			tmp_row = GlobalScript.hidden_board_data[i]
+			tmp_row.reverse()
+			hidden_board.append(tmp_row)
+	else:
+		board = GlobalScript.chess_board_data
+		hidden_board = GlobalScript.hidden_board_data
+		
 	is_my_turn = play_white
 	for y in range(BOARD_SIZE):
 		for x in range(BOARD_SIZE):
@@ -105,6 +117,10 @@ func _input(event):
 			
 			var var1 = snapped(get_global_mouse_position().x, 0) / CELL_WIDTH # Find index on the board
 			var var2 = abs(snapped(get_global_mouse_position().y, 0)) / CELL_WIDTH
+			#if(!play_white):
+				#var2 = BOARD_SIZE - var2 - 1
+				#var1 = BOARD_SIZE - var1 - 1
+			
 			# Select pieces to move
 			if state == "CHOOSE" && (play_white && board[var2][var1] > 0 || !play_white && board[var2][var1] < 0):
 				selected_piece = Vector2(var2, var1)
@@ -123,6 +139,21 @@ func display_board():
 	for child in pieces.get_children():
 		child.queue_free()
 	
+	var tmp_board = []
+	var tmp_hidden_board = []
+	#if(!play_white):
+		#for i in range(BOARD_SIZE - 1,-1, -1):
+			#var tmp_row = board[i]
+			#tmp_row.reverse()
+			#tmp_board.append(tmp_row)
+			#
+			#tmp_row = hidden_board[i]
+			#tmp_row.reverse()
+			#tmp_hidden_board.append(tmp_row)
+	#else:
+	tmp_board = board
+	tmp_hidden_board = hidden_board
+		
 	for i in BOARD_SIZE:
 		for j in BOARD_SIZE:
 			var holder = TEXTURE_HOLDER.instantiate()
@@ -131,15 +162,15 @@ func display_board():
 			var texture_container = Node2D.new()
 			holder.add_child(texture_container)
 			
-			if(hidden_board[i][j] == 2):
+			if(tmp_hidden_board[i][j] == 2):
 				var hidden_sprite = Sprite2D.new()
-				hidden_sprite.texture = WHITE_HIDDEN if board[i][j] > 0 else BLACK_HIDDEN
+				hidden_sprite.texture = WHITE_HIDDEN if tmp_board[i][j] > 0 else BLACK_HIDDEN
 				hidden_sprite.scale = Vector2(16.0 / hidden_sprite.texture.get_width(), 16.0 / hidden_sprite.texture.get_height())
 				texture_container.add_child(hidden_sprite)
 				
-			if(board[i][j] > 0 && play_white):
+			if(tmp_board[i][j] > 0 && play_white):
 				var white_piece_sprite = Sprite2D.new()
-				match board[i][j]:
+				match tmp_board[i][j]:
 					6: white_piece_sprite.texture = WHITE_KING
 					5: white_piece_sprite.texture = WHITE_QUEEN
 					4: white_piece_sprite.texture = WHITE_ROOK
@@ -148,9 +179,9 @@ func display_board():
 					1: white_piece_sprite.texture = WHITE_PAWN
 				white_piece_sprite.scale = Vector2(12.0 / white_piece_sprite.texture.get_width(), 12.0 / white_piece_sprite.texture.get_height())
 				texture_container.add_child(white_piece_sprite)
-			elif(board[i][j] < 0 && !play_white):
+			elif(tmp_board[i][j] < 0 && !play_white):
 				var black_piece_sprite = Sprite2D.new()
-				match board[i][j]:
+				match tmp_board[i][j]:
 					-6: black_piece_sprite.texture = BLACK_KING
 					-5: black_piece_sprite.texture = BLACK_QUEEN
 					-4: black_piece_sprite.texture = BLACK_ROOK
@@ -174,6 +205,9 @@ func show_options():
 	
 func show_dots():
 	for i in moves:
+		#if(!play_white):
+			#i.x = BOARD_SIZE - i.x - 1
+			#i.y = BOARD_SIZE - i.y - 1
 		var holder = TEXTURE_HOLDER.instantiate()
 		dots.add_child(holder)
 		holder.texture = PIECE_MOVE		
@@ -184,13 +218,13 @@ func delete_dots():
 	for child in dots.get_children():
 		child.queue_free()
 
-func set_move(var2, var1):
+func set_move(row, col):
 	var peer_id = multiplayer.get_remote_sender_id()
 	var just_now = false
 	for i in moves:
-		if i.x == var2 && i.y == var1:
+		if i.x == row && i.y == col:
 			fifty_move_rule += 1
-			if is_enemy(Vector2(var2, var1)): fifty_move_rule = 0
+			if is_enemy(Vector2(row, col)): fifty_move_rule = 0
 			match board[selected_piece.x][selected_piece.y]:
 				1:
 					fifty_move_rule = 0
@@ -249,15 +283,15 @@ func set_move(var2, var1):
 					black_king_pos = i
 			#if !just_now: en_passant = null
 			
-			board[var2][var1] = board[selected_piece.x][selected_piece.y]
-			hidden_board[var2][var1] = hidden_board[selected_piece.x][selected_piece.y]
+			board[row][col] = board[selected_piece.x][selected_piece.y]
+			hidden_board[row][col] = hidden_board[selected_piece.x][selected_piece.y]
 			board[selected_piece.x][selected_piece.y] = 0
 			hidden_board[selected_piece.x][selected_piece.y] = 0
 			
 			is_my_turn = !is_my_turn 
 			threefold_position(board)
 			display_board()
-			handle_challenge.rpc_id(peer_id, board, hidden_board)
+			handle_challenge.rpc_id(peer_id, selected_piece, row, col)
 			break
 	delete_dots()
 	state = reset_state()
@@ -276,15 +310,23 @@ func set_move(var2, var1):
 	#elif insuficient_material(): print("DRAW")
 
 @rpc("any_peer", "call_remote", "reliable")
-func handle_challenge(new_board, new_hidden_board):
-	board = new_board
-	hidden_board = new_hidden_board
+func handle_challenge(selected_piece, row, col):
+	row = BOARD_SIZE - row - 1
+	col = BOARD_SIZE - col - 1
+	selected_piece.x = BOARD_SIZE - selected_piece.x - 1
+	selected_piece.y = BOARD_SIZE - selected_piece.y - 1
+	board[row][col] = board[selected_piece.x][selected_piece.y]
+	hidden_board[row][col] = hidden_board[selected_piece.x][selected_piece.y]
+	board[selected_piece.x][selected_piece.y] = 0
+	hidden_board[selected_piece.x][selected_piece.y] = 0
+			
 	is_my_turn = !is_my_turn
 	# CHOOSE, BLUFF, MOVE, CHALLENGE, SUCCESS, FAILED
 	display_board()
 	
 func get_moves(selected : Vector2):
-	print("GET MOVES")
+	print("GET MOVES FOR ", selected)
+	print(board)
 	var _moves = []
 	match abs(board[selected.x][selected.y]):
 		1: _moves = get_pawn_moves(selected)
@@ -293,6 +335,7 @@ func get_moves(selected : Vector2):
 		4: _moves = get_rook_moves(selected)
 		5: _moves = get_queen_moves(selected)
 		6: _moves = get_king_moves(selected)
+	print(_moves)
 	return _moves
 
 func get_rook_moves(piece_position : Vector2):
@@ -525,7 +568,6 @@ func _on_button_pressed(button):
 	display_board()
 
 func is_in_check(king_pos: Vector2):
-	print(king_pos)
 	var directions = [Vector2(0, 1), Vector2(0, -1), Vector2(1, 0), Vector2(-1, 0),
 	Vector2(1, 1), Vector2(1, -1), Vector2(-1, 1), Vector2(-1, -1)]
 	
@@ -626,3 +668,12 @@ func get_next_state(state):
 		"FAILED": next_state = "CHOOSE"
 	return next_state
 			
+
+#[4, 2, 3, 6, 5, 3, 2, 4], 
+#[1, 1, 1, 1, 1, 1, 1, 0], 
+#[0, 0, 0, 0, 0, 0, 0, 0], 
+#[0, 0, 0, 0, 0, 0, 0, 1], 
+#[0, 0, 0, 0, 0, 0, 0, 0], 
+#[0, 0, 0, 0, 0, 0, 0, 0], 
+#[-4, -2, -3, -6, -5, -3, -2, -4], 
+#[-1, -1, -1, -1, -1, -1, -1, -1]]

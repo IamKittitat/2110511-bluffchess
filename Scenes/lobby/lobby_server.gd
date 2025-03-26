@@ -89,8 +89,7 @@ func _generate_room_code() -> String:
 	return "abc"
 
 func _get_play_as(play_as: String) -> String:
-	#const colors = ["black", "white"]
-	#if(play_as == "random"):
-		#return colors[randi() % colors.size()]
-	#return play_as
-	return "white"
+	const colors = ["black", "white"]
+	if(play_as == "random"):
+		return colors[randi() % colors.size()]
+	return play_as
