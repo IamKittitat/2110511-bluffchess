@@ -52,7 +52,7 @@ var is_my_turn: bool
 var play_white : bool
 var state : String = "CHOOSE" # CHOOSE, BLUFF, MOVE, CHALLENGE, SUCCESS, FAILED
 var moves = []
-var selected_piece : Vector2
+var selected_piece : Vector2 # x = row, y = col
 
 var promotion_square = null
 
@@ -115,21 +115,18 @@ func _input(event):
 			if is_mouse_out(): return
 			if !is_my_turn: return
 			
-			var var1 = snapped(get_global_mouse_position().x, 0) / CELL_WIDTH # Find index on the board
-			var var2 = abs(snapped(get_global_mouse_position().y, 0)) / CELL_WIDTH
-			#if(!play_white):
-				#var2 = BOARD_SIZE - var2 - 1
-				#var1 = BOARD_SIZE - var1 - 1
+			var col = snapped(get_global_mouse_position().x, 0) / CELL_WIDTH # Find index on the board
+			var row = abs(snapped(get_global_mouse_position().y, 0)) / CELL_WIDTH
 			
 			# Select pieces to move
-			if state == "CHOOSE" && (play_white && board[var2][var1] > 0 || !play_white && board[var2][var1] < 0):
-				selected_piece = Vector2(var2, var1)
+			if state == "CHOOSE" && (play_white && board[row][col] > 0 || !play_white && board[row][col] < 0):
+				selected_piece = Vector2(row, col)
 				show_options()
 				state = get_next_state(state)
 			# Select pieces to disguise.
 			elif state == "BLUFF":
 				pass
-			elif state == "MOVE": set_move(var2, var1)
+			elif state == "MOVE": set_move(row, col)
 			
 func is_mouse_out():
 	if get_rect().has_point(to_local(get_global_mouse_position())): return false
@@ -139,21 +136,6 @@ func display_board():
 	for child in pieces.get_children():
 		child.queue_free()
 	
-	var tmp_board = []
-	var tmp_hidden_board = []
-	#if(!play_white):
-		#for i in range(BOARD_SIZE - 1,-1, -1):
-			#var tmp_row = board[i]
-			#tmp_row.reverse()
-			#tmp_board.append(tmp_row)
-			#
-			#tmp_row = hidden_board[i]
-			#tmp_row.reverse()
-			#tmp_hidden_board.append(tmp_row)
-	#else:
-	tmp_board = board
-	tmp_hidden_board = hidden_board
-		
 	for i in BOARD_SIZE:
 		for j in BOARD_SIZE:
 			var holder = TEXTURE_HOLDER.instantiate()
@@ -162,15 +144,15 @@ func display_board():
 			var texture_container = Node2D.new()
 			holder.add_child(texture_container)
 			
-			if(tmp_hidden_board[i][j] == 2):
+			if(hidden_board[i][j] == 2):
 				var hidden_sprite = Sprite2D.new()
-				hidden_sprite.texture = WHITE_HIDDEN if tmp_board[i][j] > 0 else BLACK_HIDDEN
+				hidden_sprite.texture = WHITE_HIDDEN if board[i][j] > 0 else BLACK_HIDDEN
 				hidden_sprite.scale = Vector2(16.0 / hidden_sprite.texture.get_width(), 16.0 / hidden_sprite.texture.get_height())
 				texture_container.add_child(hidden_sprite)
 				
-			if(tmp_board[i][j] > 0 && play_white):
+			if(board[i][j] > 0 && play_white):
 				var white_piece_sprite = Sprite2D.new()
-				match tmp_board[i][j]:
+				match board[i][j]:
 					6: white_piece_sprite.texture = WHITE_KING
 					5: white_piece_sprite.texture = WHITE_QUEEN
 					4: white_piece_sprite.texture = WHITE_ROOK
@@ -179,9 +161,9 @@ func display_board():
 					1: white_piece_sprite.texture = WHITE_PAWN
 				white_piece_sprite.scale = Vector2(12.0 / white_piece_sprite.texture.get_width(), 12.0 / white_piece_sprite.texture.get_height())
 				texture_container.add_child(white_piece_sprite)
-			elif(tmp_board[i][j] < 0 && !play_white):
+			elif(board[i][j] < 0 && !play_white):
 				var black_piece_sprite = Sprite2D.new()
-				match tmp_board[i][j]:
+				match board[i][j]:
 					-6: black_piece_sprite.texture = BLACK_KING
 					-5: black_piece_sprite.texture = BLACK_QUEEN
 					-4: black_piece_sprite.texture = BLACK_ROOK
@@ -283,15 +265,12 @@ func set_move(row, col):
 					black_king_pos = i
 			#if !just_now: en_passant = null
 			
-			board[row][col] = board[selected_piece.x][selected_piece.y]
-			hidden_board[row][col] = hidden_board[selected_piece.x][selected_piece.y]
-			board[selected_piece.x][selected_piece.y] = 0
-			hidden_board[selected_piece.x][selected_piece.y] = 0
+			_move(selected_piece, row, col)			
 			
 			is_my_turn = !is_my_turn 
 			threefold_position(board)
 			display_board()
-			handle_challenge.rpc_id(peer_id, selected_piece, row, col)
+			handle_opponent_move.rpc_id(peer_id, selected_piece, row, col)
 			break
 	delete_dots()
 	state = reset_state()
@@ -309,16 +288,19 @@ func set_move(row, col):
 	#if fifty_move_rule == 50: print("DRAW")
 	#elif insuficient_material(): print("DRAW")
 
-@rpc("any_peer", "call_remote", "reliable")
-func handle_challenge(selected_piece, row, col):
-	row = BOARD_SIZE - row - 1
-	col = BOARD_SIZE - col - 1
-	selected_piece.x = BOARD_SIZE - selected_piece.x - 1
-	selected_piece.y = BOARD_SIZE - selected_piece.y - 1
+func _move(selected_piece, row, col):
 	board[row][col] = board[selected_piece.x][selected_piece.y]
 	hidden_board[row][col] = hidden_board[selected_piece.x][selected_piece.y]
 	board[selected_piece.x][selected_piece.y] = 0
 	hidden_board[selected_piece.x][selected_piece.y] = 0
+
+@rpc("any_peer", "call_remote", "reliable")
+func handle_opponent_move(selected_piece, row, col):
+	row = BOARD_SIZE - row - 1
+	col = BOARD_SIZE - col - 1
+	selected_piece.x = BOARD_SIZE - selected_piece.x - 1
+	selected_piece.y = BOARD_SIZE - selected_piece.y - 1
+	_move(selected_piece, row, col)
 			
 	is_my_turn = !is_my_turn
 	# CHOOSE, BLUFF, MOVE, CHALLENGE, SUCCESS, FAILED
