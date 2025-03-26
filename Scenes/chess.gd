@@ -48,6 +48,7 @@ const PIECE_MOVE = preload("res://Assets/Piece_move.png")
 
 var board : Array
 var hidden_board: Array # 0: No piece, 1 = Reveal, 2 = Hidden
+var pawn_not_moved = _init_zero_array(BOARD_SIZE)
 var is_my_turn: bool
 var play_white : bool
 var state : String = "CHOOSE" # CHOOSE, BLUFF, MOVE, CHALLENGE, SUCCESS, FAILED
@@ -91,12 +92,16 @@ func _ready():
 		hidden_board = GlobalScript.hidden_board_data
 		
 	is_my_turn = play_white
-	for y in range(BOARD_SIZE):
-		for x in range(BOARD_SIZE):
-			if board[y][x] == 6:
-				white_king_pos = Vector2(y, x)
-			if board[y][x] == -6:
-				black_king_pos = Vector2(y, x)
+	for row in range(BOARD_SIZE):
+		for col in range(BOARD_SIZE):
+			if play_white && board[row][col] == 1:
+				pawn_not_moved[row][col] = 1
+			if !play_white && board[row][col] == -1:
+				pawn_not_moved[row][col] = 1
+			if board[row][col] == 6:
+				white_king_pos = Vector2(row, col)
+			if board[row][col] == -6:
+				black_king_pos = Vector2(row, col)
 	display_board()
 	
 	var white_buttons = get_tree().get_nodes_in_group("white_pieces")
@@ -187,9 +192,6 @@ func show_options():
 	
 func show_dots():
 	for i in moves:
-		#if(!play_white):
-			#i.x = BOARD_SIZE - i.x - 1
-			#i.y = BOARD_SIZE - i.y - 1
 		var holder = TEXTURE_HOLDER.instantiate()
 		dots.add_child(holder)
 		holder.texture = PIECE_MOVE		
@@ -210,6 +212,7 @@ func set_move(row, col):
 			match board[selected_piece.x][selected_piece.y]:
 				1:
 					fifty_move_rule = 0
+					pawn_not_moved[selected_piece.x][selected_piece.y] = 0
 					if i.x == 7: promote(i)
 					if i.x == 3 && selected_piece.x == 1:
 						#en_passant = i
@@ -219,6 +222,7 @@ func set_move(row, col):
 							#board[en_passant.x][en_passant.y] = 0
 				-1:
 					fifty_move_rule = 0
+					pawn_not_moved[selected_piece.x][selected_piece.y] = 0
 					if i.x == 0: promote(i)
 					if i.x == 4 && selected_piece.x == 6:
 						#en_passant = i
@@ -293,6 +297,7 @@ func _move(selected_piece, row, col):
 	hidden_board[row][col] = hidden_board[selected_piece.x][selected_piece.y]
 	board[selected_piece.x][selected_piece.y] = 0
 	hidden_board[selected_piece.x][selected_piece.y] = 0
+	pawn_not_moved[row][col] = 0
 
 @rpc("any_peer", "call_remote", "reliable")
 func handle_opponent_move(selected_piece, row, col):
@@ -470,12 +475,10 @@ func get_knight_moves(piece_position : Vector2):
 func get_pawn_moves(piece_position : Vector2):
 	var _moves = []
 	var direction
-	var is_first_move = false
+	var is_first_move = pawn_not_moved[piece_position.x][piece_position.y] == 1
 	
-	if play_white: direction = Vector2(1, 0)
-	else: direction = Vector2(-1, 0)
-	
-	if play_white && piece_position.x == 1 || !play_white && piece_position.x == 6: is_first_move = true
+	direction = Vector2(1, 0)
+
 	
 	#if en_passant != null && (play_white && piece_position.x == 4 || !play_white && piece_position.x == 3) && abs(en_passant.y - piece_position.y) == 1:
 		#var pos = en_passant + direction
@@ -496,26 +499,32 @@ func get_pawn_moves(piece_position : Vector2):
 		board[piece_position.x][piece_position.y] = 1 if play_white else -1
 	
 	pos = piece_position + Vector2(direction.x, 1)
-	if is_valid_position(pos):
-		if is_enemy(pos):
-			var t = board[pos.x][pos.y]
-			board[pos.x][pos.y] = 1 if play_white else -1
-			board[piece_position.x][piece_position.y] = 0
-			if play_white && !is_in_check(white_king_pos) || !play_white && !is_in_check(black_king_pos): _moves.append(pos)
-			board[pos.x][pos.y] = t
-			board[piece_position.x][piece_position.y] = 1 if play_white else -1
+	if is_valid_position(pos) && is_enemy(pos):
+		var t = board[pos.x][pos.y]
+		board[pos.x][pos.y] = 1 if play_white else -1
+		board[piece_position.x][piece_position.y] = 0
+		if play_white && !is_in_check(white_king_pos) || !play_white && !is_in_check(black_king_pos): _moves.append(pos)
+		board[pos.x][pos.y] = t
+		board[piece_position.x][piece_position.y] = 1 if play_white else -1
 	pos = piece_position + Vector2(direction.x, -1)
-	if is_valid_position(pos):
-		if is_enemy(pos):
-			var t = board[pos.x][pos.y]
-			board[pos.x][pos.y] = 1 if play_white else -1
-			board[piece_position.x][piece_position.y] = 0
-			if play_white && !is_in_check(white_king_pos) || !play_white && !is_in_check(black_king_pos): _moves.append(pos)
-			board[pos.x][pos.y] = t
-			board[piece_position.x][piece_position.y] = 1 if play_white else -1
+	if is_valid_position(pos) && is_enemy(pos):
+		var t = board[pos.x][pos.y]
+		board[pos.x][pos.y] = 1 if play_white else -1
+		board[piece_position.x][piece_position.y] = 0
+		if play_white && !is_in_check(white_king_pos) || !play_white && !is_in_check(black_king_pos): _moves.append(pos)
+		board[pos.x][pos.y] = t
+		board[piece_position.x][piece_position.y] = 1 if play_white else -1
 		
 	pos = piece_position + direction * 2
 	if is_first_move && is_empty(pos) && is_empty(piece_position + direction):
+		board[pos.x][pos.y] = 1 if play_white else -1
+		board[piece_position.x][piece_position.y] = 0
+		if play_white && !is_in_check(white_king_pos) || !play_white && !is_in_check(black_king_pos): _moves.append(pos)
+		board[pos.x][pos.y] = 0
+		board[piece_position.x][piece_position.y] = 1 if play_white else -1
+		
+	pos = piece_position + direction * 3
+	if is_first_move && is_empty(pos) && is_empty(piece_position + direction) && (piece_position.x == 0):
 		board[pos.x][pos.y] = 1 if play_white else -1
 		board[piece_position.x][piece_position.y] = 0
 		if play_white && !is_in_check(white_king_pos) || !play_white && !is_in_check(black_king_pos): _moves.append(pos)
@@ -649,13 +658,12 @@ func get_next_state(state):
 		"SUCCESS": next_state = "CHOOSE"
 		"FAILED": next_state = "CHOOSE"
 	return next_state
-			
-
-#[4, 2, 3, 6, 5, 3, 2, 4], 
-#[1, 1, 1, 1, 1, 1, 1, 0], 
-#[0, 0, 0, 0, 0, 0, 0, 0], 
-#[0, 0, 0, 0, 0, 0, 0, 1], 
-#[0, 0, 0, 0, 0, 0, 0, 0], 
-#[0, 0, 0, 0, 0, 0, 0, 0], 
-#[-4, -2, -3, -6, -5, -3, -2, -4], 
-#[-1, -1, -1, -1, -1, -1, -1, -1]]
+	
+func _init_zero_array(BOARD_SIZE):
+	var empty_array = []
+	for i in range(BOARD_SIZE):
+		var tmp_array = []
+		for j in range(BOARD_SIZE):
+			tmp_array.append(0)
+		empty_array.append(tmp_array)
+	return empty_array
