@@ -153,15 +153,15 @@ func display_board():
 	for child in pieces.get_children():
 		child.queue_free()
 	
-	for i in BOARD_SIZE:
-		for j in BOARD_SIZE:
+	for row in BOARD_SIZE:
+		for col in BOARD_SIZE:
 			var holder = TEXTURE_HOLDER.instantiate()
 			pieces.add_child(holder)
-			holder.global_position = Vector2(j * CELL_WIDTH + (CELL_WIDTH / 2), -i * CELL_WIDTH - (CELL_WIDTH / 2))
+			holder.global_position = Vector2(col * CELL_WIDTH + (CELL_WIDTH / 2), -row * CELL_WIDTH - (CELL_WIDTH / 2))
 			
-			if(board[i][j] > 0):
-				if(hidden_board[i][j] == 1):
-					match board[i][j]:
+			if(board[row][col] > 0):
+				if(hidden_board[row][col] == 1):
+					match board[row][col]:
 						6: holder.texture = WHITE_KING
 						5: holder.texture = WHITE_QUEEN
 						4: holder.texture = WHITE_ROOK
@@ -170,7 +170,7 @@ func display_board():
 						1: holder.texture = WHITE_PAWN
 				else:
 					if(play_white):
-						match board[i][j]:
+						match board[row][col]:
 							6: holder.texture = WHITE_HIDDEN_KING
 							5: holder.texture = WHITE_HIDDEN_QUEEN
 							4: holder.texture = WHITE_HIDDEN_ROOK
@@ -179,9 +179,9 @@ func display_board():
 							1: holder.texture = WHITE_HIDDEN_PAWN
 					else:
 						holder.texture = WHITE_HIDDEN
-			elif(board[i][j] < 0):
-				if(hidden_board[i][j] == 1):
-					match board[i][j]:
+			elif(board[row][col] < 0):
+				if(hidden_board[row][col] == 1):
+					match board[row][col]:
 						-6: holder.texture = BLACK_KING
 						-5: holder.texture = BLACK_QUEEN
 						-4: holder.texture = BLACK_ROOK
@@ -190,7 +190,7 @@ func display_board():
 						-1: holder.texture = BLACK_PAWN
 				else:
 					if(!play_white):
-						match board[i][j]:
+						match board[row][col]:
 							-6: holder.texture = BLACK_HIDDEN_KING
 							-5: holder.texture = BLACK_HIDDEN_QUEEN
 							-4: holder.texture = BLACK_HIDDEN_ROOK
