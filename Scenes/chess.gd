@@ -11,6 +11,12 @@ const BLACK_KNIGHT = preload("res://Assets/Piece/black_knight.png")
 const BLACK_PAWN = preload("res://Assets/Piece/black_pawn.png")
 const BLACK_QUEEN = preload("res://Assets/Piece/black_queen.png")
 const BLACK_ROOK = preload("res://Assets/Piece/black_rook.png")
+const BLACK_HIDDEN_BISHOP = preload("res://Assets/Piece/black_hidden_bishop.png")
+const BLACK_HIDDEN_KING = preload("res://Assets/Piece/black_hidden_king.png")
+const BLACK_HIDDEN_KNIGHT = preload("res://Assets/Piece/black_hidden_knight.png")
+const BLACK_HIDDEN_PAWN = preload("res://Assets/Piece/black_hidden_pawn.png")
+const BLACK_HIDDEN_QUEEN = preload("res://Assets/Piece/black_hidden_queen.png")
+const BLACK_HIDDEN_ROOK = preload("res://Assets/Piece/black_hidden_rook.png")
 const BLACK_HIDDEN = preload("res://Assets/Piece/black_hidden.png")
 const WHITE_BISHOP = preload("res://Assets/Piece/white_bishop.png")
 const WHITE_KING = preload("res://Assets/Piece/white_king.png")
@@ -18,6 +24,12 @@ const WHITE_KNIGHT = preload("res://Assets/Piece/white_knight.png")
 const WHITE_PAWN = preload("res://Assets/Piece/white_pawn.png")
 const WHITE_QUEEN = preload("res://Assets/Piece/white_queen.png")
 const WHITE_ROOK = preload("res://Assets/Piece/white_rook.png")
+const WHITE_HIDDEN_BISHOP = preload("res://Assets/Piece/white_hidden_bishop.png")
+const WHITE_HIDDEN_KING = preload("res://Assets/Piece/white_hidden_king.png")
+const WHITE_HIDDEN_KNIGHT = preload("res://Assets/Piece/white_hidden_knight.png")
+const WHITE_HIDDEN_PAWN = preload("res://Assets/Piece/white_hidden_pawn.png")
+const WHITE_HIDDEN_QUEEN = preload("res://Assets/Piece/white_hidden_queen.png")
+const WHITE_HIDDEN_ROOK = preload("res://Assets/Piece/white_hidden_rook.png")
 const WHITE_HIDDEN = preload("res://Assets/Piece/white_hidden.png")
 
 const TURN_WHITE = preload("res://Assets/turn-white.png")
@@ -146,40 +158,53 @@ func display_board():
 			var holder = TEXTURE_HOLDER.instantiate()
 			pieces.add_child(holder)
 			holder.global_position = Vector2(j * CELL_WIDTH + (CELL_WIDTH / 2), -i * CELL_WIDTH - (CELL_WIDTH / 2))
-			var texture_container = Node2D.new()
-			holder.add_child(texture_container)
 			
-			if(hidden_board[i][j] == 2):
-				var hidden_sprite = Sprite2D.new()
-				hidden_sprite.texture = WHITE_HIDDEN if board[i][j] > 0 else BLACK_HIDDEN
-				hidden_sprite.scale = Vector2(16.0 / hidden_sprite.texture.get_width(), 16.0 / hidden_sprite.texture.get_height())
-				texture_container.add_child(hidden_sprite)
-				
-			if(board[i][j] > 0 && play_white):
-				var white_piece_sprite = Sprite2D.new()
-				match board[i][j]:
-					6: white_piece_sprite.texture = WHITE_KING
-					5: white_piece_sprite.texture = WHITE_QUEEN
-					4: white_piece_sprite.texture = WHITE_ROOK
-					3: white_piece_sprite.texture = WHITE_BISHOP
-					2: white_piece_sprite.texture = WHITE_KNIGHT
-					1: white_piece_sprite.texture = WHITE_PAWN
-				white_piece_sprite.scale = Vector2(12.0 / white_piece_sprite.texture.get_width(), 12.0 / white_piece_sprite.texture.get_height())
-				texture_container.add_child(white_piece_sprite)
-			elif(board[i][j] < 0 && !play_white):
-				var black_piece_sprite = Sprite2D.new()
-				match board[i][j]:
-					-6: black_piece_sprite.texture = BLACK_KING
-					-5: black_piece_sprite.texture = BLACK_QUEEN
-					-4: black_piece_sprite.texture = BLACK_ROOK
-					-3: black_piece_sprite.texture = BLACK_BISHOP
-					-2: black_piece_sprite.texture = BLACK_KNIGHT
-					-1: black_piece_sprite.texture = BLACK_PAWN
-				black_piece_sprite.scale = Vector2(12.0 / black_piece_sprite.texture.get_width(), 12.0 / black_piece_sprite.texture.get_height())
-				texture_container.add_child(black_piece_sprite)
+			if(board[i][j] > 0):
+				if(hidden_board[i][j] == 1):
+					match board[i][j]:
+						6: holder.texture = WHITE_KING
+						5: holder.texture = WHITE_QUEEN
+						4: holder.texture = WHITE_ROOK
+						3: holder.texture = WHITE_BISHOP
+						2: holder.texture = WHITE_KNIGHT
+						1: holder.texture = WHITE_PAWN
+				else:
+					if(play_white):
+						match board[i][j]:
+							6: holder.texture = WHITE_HIDDEN_KING
+							5: holder.texture = WHITE_HIDDEN_QUEEN
+							4: holder.texture = WHITE_HIDDEN_ROOK
+							3: holder.texture = WHITE_HIDDEN_BISHOP
+							2: holder.texture = WHITE_HIDDEN_KNIGHT
+							1: holder.texture = WHITE_HIDDEN_PAWN
+					else:
+						holder.texture = WHITE_HIDDEN
+			elif(board[i][j] < 0):
+				if(hidden_board[i][j] == 1):
+					match board[i][j]:
+						-6: holder.texture = BLACK_KING
+						-5: holder.texture = BLACK_QUEEN
+						-4: holder.texture = BLACK_ROOK
+						-3: holder.texture = BLACK_BISHOP
+						-2: holder.texture = BLACK_KNIGHT
+						-1: holder.texture = BLACK_PAWN
+				else:
+					if(!play_white):
+						match board[i][j]:
+							-6: holder.texture = BLACK_HIDDEN_KING
+							-5: holder.texture = BLACK_HIDDEN_QUEEN
+							-4: holder.texture = BLACK_HIDDEN_ROOK
+							-3: holder.texture = BLACK_HIDDEN_BISHOP
+							-2: holder.texture = BLACK_HIDDEN_KNIGHT
+							-1: holder.texture = BLACK_HIDDEN_PAWN
+					else:
+						holder.texture = BLACK_HIDDEN
 			else:
 				holder.texture = null
-				
+			
+			if holder.texture != null:
+				holder.scale = Vector2(13.5 / holder.texture.get_width(), 13.5 / holder.texture.get_height())
+			
 	if play_white: turn.texture = TURN_WHITE
 	else: turn.texture = TURN_BLACK
 

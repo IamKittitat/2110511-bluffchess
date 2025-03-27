@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://blxyhmwuvy3tm"
-path="res://.godot/imported/black_king.png-74c77524f7b1b27bb808a14f5afa0b4c.ctex"
+uid="uid://0urfd2axd0im"
+path="res://.godot/imported/black_hidden_bishop.png-7b838f95a6f0641ed081c9951b00f7b9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Piece/black_king.png"
-dest_files=["res://.godot/imported/black_king.png-74c77524f7b1b27bb808a14f5afa0b4c.ctex"]
+source_file="res://Assets/Piece/black_hidden_bishop.png"
+dest_files=["res://.godot/imported/black_hidden_bishop.png-7b838f95a6f0641ed081c9951b00f7b9.ctex"]
 
 [params]
 
