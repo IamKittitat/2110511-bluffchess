@@ -20,7 +20,7 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_31104")
 position = Vector2(352, 320)
 scale = Vector2(0.652057, 0.651615)
 
-[node name="Button" type="Button" parent="."]
+[node name="BackButton" type="Button" parent="."]
 anchors_preset = -1
 anchor_left = 0.0729167
 anchor_top = 0.0802469
@@ -36,7 +36,7 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_t5b6i")
 text = "< Back"
 metadata/_edit_use_anchors_ = true
 
-[node name="Button2" type="Button" parent="."]
+[node name="ReadyButton" type="Button" parent="."]
 offset_left = 817.0
 offset_top = 536.0
 offset_right = 991.0
@@ -45,5 +45,5 @@ theme_override_fonts/font = ExtResource("2_21yao")
 theme_override_font_sizes/font_size = 36
 text = "Ready"
 
-[connection signal="pressed" from="Button" to="board" method="_on_button_pressed"]
-[connection signal="pressed" from="Button2" to="board" method="_on_button_2_pressed"]
+[connection signal="pressed" from="BackButton" to="board" method="_on_button_pressed"]
+[connection signal="pressed" from="ReadyButton" to="board" method="_on_button_2_pressed"]
