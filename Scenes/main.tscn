@@ -1,7 +1,8 @@
-[gd_scene load_steps=36 format=3 uid="uid://wumwx2sgq27v"]
+[gd_scene load_steps=42 format=3 uid="uid://wumwx2sgq27v"]
 
 [ext_resource type="Texture2D" uid="uid://cvw0ygykf1vmn" path="res://Assets/Piece/white_knight.png" id="1_3khqn"]
 [ext_resource type="PackedScene" uid="uid://c5xblqofcwad0" path="res://Scenes/board.tscn" id="1_63gbl"]
+[ext_resource type="Texture2D" uid="uid://bmqgehrxdaios" path="res://Assets/background.png" id="1_hptm8"]
 [ext_resource type="Texture2D" uid="uid://dwmiexdwgwfcb" path="res://Assets/Piece/white_bishop.png" id="2_75nc3"]
 [ext_resource type="Texture2D" uid="uid://dai5bl1nrxt2x" path="res://Assets/Piece/white_rook.png" id="3_a7xec"]
 [ext_resource type="Texture2D" uid="uid://bm2lbbuk06i0x" path="res://Assets/Piece/white_queen.png" id="4_2yafp"]
@@ -9,6 +10,12 @@
 [ext_resource type="Texture2D" uid="uid://bmmt31nb526bf" path="res://Assets/Piece/black_bishop.png" id="6_cavfs"]
 [ext_resource type="Texture2D" uid="uid://bsnh6ds4vjnpb" path="res://Assets/Piece/black_rook.png" id="7_wianj"]
 [ext_resource type="Texture2D" uid="uid://dssefsv85bilp" path="res://Assets/Piece/black_queen.png" id="8_df1ci"]
+[ext_resource type="FontFile" uid="uid://bg4h3sxtvyspq" path="res://Assets/Besley-VariableFont_wght.ttf" id="11_d1ilt"]
+[ext_resource type="Texture2D" uid="uid://bm6auq5cl5moy" path="res://Assets/Piece/white_pawn.png" id="11_fdnlq"]
+[ext_resource type="Texture2D" uid="uid://02ssp0n1j2k7" path="res://Assets/Piece/white_king.png" id="12_jkdf5"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_d1ilt"]
+texture = ExtResource("1_hptm8")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vp5if"]
 
@@ -86,10 +93,24 @@ texture = ExtResource("8_df1ci")
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vgg4r"]
 texture = ExtResource("8_df1ci")
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wsu2k"]
+bg_color = Color(0.6, 0.6, 0.6, 0.188235)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
 [node name="Main" type="Node2D"]
 
+[node name="Panel" type="Panel" parent="."]
+offset_left = -13.0
+offset_top = -153.0
+offset_right = 275.0
+offset_bottom = 9.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_d1ilt")
+
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(72, -72)
+position = Vector2(130, -72)
 zoom = Vector2(4, 4)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
@@ -211,3 +232,117 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_etk7k")
 theme_override_styles/normal = SubResource("StyleBoxTexture_vgg4r")
 
 [node name="Board" parent="." instance=ExtResource("1_63gbl")]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Panel" type="Panel" parent="Control"]
+layout_mode = 0
+offset_left = 150.0
+offset_top = -144.0
+offset_right = 268.0
+offset_bottom = -46.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_wsu2k")
+
+[node name="Panel2" type="Panel" parent="Control"]
+offset_left = 150.0
+offset_top = -41.0
+offset_right = 268.0
+offset_bottom = 2.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_wsu2k")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control"]
+offset_left = 151.0
+offset_top = -21.0
+offset_right = 267.0
+offset_bottom = -5.0
+
+[node name="TextureButton" type="TextureButton" parent="Control/HBoxContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+texture_normal = ExtResource("11_fdnlq")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="TextureButton2" type="TextureButton" parent="Control/HBoxContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+texture_normal = ExtResource("1_3khqn")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="TextureButton3" type="TextureButton" parent="Control/HBoxContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+texture_normal = ExtResource("2_75nc3")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="TextureButton4" type="TextureButton" parent="Control/HBoxContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+texture_normal = ExtResource("3_a7xec")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="TextureButton5" type="TextureButton" parent="Control/HBoxContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+texture_normal = ExtResource("4_2yafp")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="TextureButton6" type="TextureButton" parent="Control/HBoxContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+texture_normal = ExtResource("12_jkdf5")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Button" type="Button" parent="Control"]
+offset_left = 154.0
+offset_top = -101.0
+offset_right = 265.0
+offset_bottom = -82.0
+theme_override_fonts/font = ExtResource("11_d1ilt")
+theme_override_font_sizes/font_size = 6
+text = "Challenge"
+
+[node name="Label" type="Label" parent="Control"]
+layout_mode = 0
+offset_left = 156.0
+offset_top = -136.0
+offset_right = 200.0
+offset_bottom = -128.0
+theme_override_fonts/font = ExtResource("11_d1ilt")
+theme_override_font_sizes/font_size = 4
+text = "My Opponent's Name"
+
+[node name="Label2" type="Label" parent="Control"]
+offset_left = 155.0
+offset_top = -77.0
+offset_right = 199.0
+offset_bottom = -69.0
+theme_override_fonts/font = ExtResource("11_d1ilt")
+theme_override_font_sizes/font_size = 4
+text = "My Name"
+
+[node name="Label3" type="Label" parent="Control"]
+offset_left = 155.0
+offset_top = -36.0
+offset_right = 204.0
+offset_bottom = -28.0
+theme_override_fonts/font = ExtResource("11_d1ilt")
+theme_override_font_sizes/font_size = 4
+text = "Selected Piece, I play as:"
+
+[connection signal="pressed" from="Control/HBoxContainer/TextureButton" to="Board" method="_on_pawn_selected_pressed"]
+[connection signal="pressed" from="Control/HBoxContainer/TextureButton2" to="Board" method="_on_knight_selected_pressed"]
+[connection signal="pressed" from="Control/HBoxContainer/TextureButton3" to="Board" method="_on_bishop_selected_pressed"]
+[connection signal="pressed" from="Control/HBoxContainer/TextureButton4" to="Board" method="_on_rook_selected_pressed"]
+[connection signal="pressed" from="Control/HBoxContainer/TextureButton5" to="Board" method="_on_queen_selected_pressed"]
+[connection signal="pressed" from="Control/HBoxContainer/TextureButton6" to="Board" method="_on_king_selected_pressed"]
+[connection signal="pressed" from="Control/Button" to="Board" method="_on_challenge_pressed"]

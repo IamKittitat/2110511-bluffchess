@@ -657,3 +657,25 @@ func _init_zero_array(BOARD_SIZE):
 			tmp_array.append(0)
 		empty_array.append(tmp_array)
 	return empty_array
+
+
+func _on_challenge_pressed() -> void:
+	print("Challenge")
+
+func _on_pawn_selected_pressed() -> void:
+	print("Pawn")
+
+func _on_knight_selected_pressed() -> void:
+	print("Knight")
+
+func _on_bishop_selected_pressed() -> void:
+	print("Bishop")
+
+func _on_rook_selected_pressed() -> void:
+	print("Rook")
+
+func _on_queen_selected_pressed() -> void:
+	print("Queen")
+
+func _on_king_selected_pressed() -> void:
+	print("King")
