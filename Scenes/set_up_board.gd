@@ -21,16 +21,18 @@ const WHITE_HIDDEN_ROOK = preload("res://Assets/Piece/white_hidden_rook.png")
 const WHITE_HIDDEN = preload("res://Assets/Piece/white_hidden.png")
 
 @onready var pieces: Node2D = $Pieces
-@onready var dots: Node2D = $Dots
 
 var board : Array = []
 var hidden_board: Array = []
+var another_board: Array = []
 var is_my_turn: bool
 var play_white : bool
 var state : String = "CHOOSE" # CHOOSE, PLACE 
 var selected_piece: int
 
 var piece_left = [0, 8, 2, 2, 2, 1, 1]
+var another_ready = false
+var iam_ready = false
 
 func _ready():
 	play_white = GlobalScript.play_as == "white"
@@ -95,13 +97,16 @@ func _input(event):
 			var col = snapped(get_global_mouse_position().x - 112, 0) / CELL_WIDTH
 			var row = abs(snapped(get_global_mouse_position().y - 560.6, 0)) / CELL_WIDTH
 			
+			if(row < 0 || row > 7 || col < 0 || col > 7): return
 			if(row <= 1):
-				if(board[row][col] != 0):
-					piece_left[board[row][col]] += 1
+				# No more piece left to place
+				if(piece_left[abs(selected_piece)] == 0): return
+				
+				if(board[row][col] != 0): piece_left[abs(board[row][col])] += 1
 					
 				board[row][col] = selected_piece
-				piece_left[selected_piece] -= 1
-				selected_piece = 0
+				piece_left[abs(selected_piece)] -= 1
+				if(piece_left[abs(selected_piece)] == 0): selected_piece = 0
 				display_board()
 			
 func is_mouse_out():
@@ -112,8 +117,42 @@ func _on_button_pressed() -> void:
 	get_tree().change_scene_to_file("res://Scenes/main_menu.tscn")
 
 func _on_button_2_pressed() -> void:
+	print(piece_left)
+	for x in piece_left:
+		if x > 0: return
+		
+	var peer_id = multiplayer.get_remote_sender_id()
 	GlobalScript.chess_board_data = board
 	GlobalScript.hidden_board_data = hidden_board
+	iam_ready = true
+	print("CHECK")
+	trigger_ready.rpc_id(peer_id, board)
+	
+
+@rpc("any_peer", "call_remote", "reliable")
+func trigger_ready(board):
+	print("GOT TRIGGERED")
+	another_ready = true
+	another_board = board
+	if(iam_ready):
+		combined_board.rpc()
+		
+
+@rpc("any_peer", "call_local", "reliable")	
+func combined_board():
+	var new_board = []
+	for row in BOARD_SIZE:
+		var col_board = GlobalScript.chess_board_data[row]
+		if (row <= 1 && !play_white) || (row >= 6 && play_white):
+			col_board.reverse()
+		if row >= 6:
+			col_board = another_board[BOARD_SIZE - row - 1]
+		new_board.append(col_board)
+	
+	if(!play_white):
+		new_board.reverse() # Reverse black board from black to white perspective
+	GlobalScript.chess_board_data = new_board	
+	print(new_board)
 	get_tree().change_scene_to_file("res://Scenes/main.tscn")
 
 func _on_king_button_pressed() -> void:
