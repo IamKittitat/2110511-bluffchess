@@ -304,6 +304,10 @@ func set_move(row, col):
 	delete_dots()
 	state = reset_state()
 	
+	if(!opponent_king_exist()):
+		self_handle_game_win()
+		opponent_handle_game_lose.rpc_id(peer_id)
+		
 	# Can instantly switch to move another piece
 	#if (selected_piece.x != var2 || selected_piece.y != var1) && (play_white && board[var2][var1] > 0 || !play_white && board[var2][var1] < 0):
 		#selected_piece = Vector2(var2, var1)
@@ -324,6 +328,9 @@ func _move(selected_piece, row, col):
 	hidden_board[selected_piece.x][selected_piece.y] = 0
 	pawn_not_moved[row][col] = 0
 
+func self_handle_game_win():
+	print("YOU WIN")
+	
 @rpc("any_peer", "call_remote", "reliable")
 func handle_opponent_move(selected_piece, row, col):
 	row = BOARD_SIZE - row - 1
@@ -335,6 +342,10 @@ func handle_opponent_move(selected_piece, row, col):
 	is_my_turn = !is_my_turn
 	# CHOOSE, BLUFF, MOVE, CHALLENGE, SUCCESS, FAILED
 	display_board()
+	
+@rpc("any_peer", "call_remote", "reliable")
+func opponent_handle_game_lose():
+	print("YOU LOSE!")
 	
 func get_moves(selected : Vector2):
 	print("GET MOVES FOR ", selected)
@@ -549,48 +560,49 @@ func _on_button_pressed(button):
 	display_board()
 
 func is_in_check(king_pos: Vector2):
-	var directions = [Vector2(0, 1), Vector2(0, -1), Vector2(1, 0), Vector2(-1, 0),
-	Vector2(1, 1), Vector2(1, -1), Vector2(-1, 1), Vector2(-1, -1)]
-	
-	var pawn_direction = 1 if play_white else -1
-	var pawn_attacks = [
-		king_pos + Vector2(pawn_direction, 1),
-		king_pos + Vector2(pawn_direction, -1)
-	]
-	
-	for i in pawn_attacks:
-		if is_valid_position(i):
-			if play_white && board[i.x][i.y] == -1 || !play_white && board[i.x][i.y] == 1: return true
-	
-	for i in directions:
-		var pos = king_pos + i
-		if is_valid_position(pos):
-			if play_white && board[pos.x][pos.y] == -6 || !play_white && board[pos.x][pos.y] == 6: return true
-	
-	# Bishop, Queen, Rook
-	for i in directions:
-		var pos = king_pos + i
-		while is_valid_position(pos):
-			if !is_empty(pos):
-				var piece = board[pos.x][pos.y]
-				# Rook, Queen
-				if (i.x == 0 || i.y == 0) && (play_white && piece in [-4, -5] || !play_white && piece in [4, 5]):
-					return true
-				# Bishop, Queen
-				elif (i.x != 0 && i.y != 0) && (play_white && piece in [-3, -5] || !play_white && piece in [3, 5]):
-					return true
-				break
-			pos += i
-	var knight_directions = [Vector2(2, 1), Vector2(2, -1), Vector2(1, 2), Vector2(1, -2),
-	Vector2(-2, 1), Vector2(-2, -1), Vector2(-1, 2), Vector2(-1, -2)]
-	
-	for i in knight_directions:
-		var pos = king_pos + i
-		if is_valid_position(pos):
-			if play_white && board[pos.x][pos.y] == -2 || !play_white && board[pos.x][pos.y] == 2:
-				return true
-				
 	return false
+	#var directions = [Vector2(0, 1), Vector2(0, -1), Vector2(1, 0), Vector2(-1, 0),
+	#Vector2(1, 1), Vector2(1, -1), Vector2(-1, 1), Vector2(-1, -1)]
+	#
+	#var pawn_direction = 1 if play_white else -1
+	#var pawn_attacks = [
+		#king_pos + Vector2(pawn_direction, 1),
+		#king_pos + Vector2(pawn_direction, -1)
+	#]
+	#
+	#for i in pawn_attacks:
+		#if is_valid_position(i):
+			#if play_white && board[i.x][i.y] == -1 || !play_white && board[i.x][i.y] == 1: return true
+	#
+	#for i in directions:
+		#var pos = king_pos + i
+		#if is_valid_position(pos):
+			#if play_white && board[pos.x][pos.y] == -6 || !play_white && board[pos.x][pos.y] == 6: return true
+	#
+	## Bishop, Queen, Rook
+	#for i in directions:
+		#var pos = king_pos + i
+		#while is_valid_position(pos):
+			#if !is_empty(pos):
+				#var piece = board[pos.x][pos.y]
+				## Rook, Queen
+				#if (i.x == 0 || i.y == 0) && (play_white && piece in [-4, -5] || !play_white && piece in [4, 5]):
+					#return true
+				## Bishop, Queen
+				#elif (i.x != 0 && i.y != 0) && (play_white && piece in [-3, -5] || !play_white && piece in [3, 5]):
+					#return true
+				#break
+			#pos += i
+	#var knight_directions = [Vector2(2, 1), Vector2(2, -1), Vector2(1, 2), Vector2(1, -2),
+	#Vector2(-2, 1), Vector2(-2, -1), Vector2(-1, 2), Vector2(-1, -2)]
+	#
+	#for i in knight_directions:
+		#var pos = king_pos + i
+		#if is_valid_position(pos):
+			#if play_white && board[pos.x][pos.y] == -2 || !play_white && board[pos.x][pos.y] == 2:
+				#return true
+				#
+	#return false
 
 func is_stalemate():
 	if play_white:
@@ -658,6 +670,11 @@ func _init_zero_array(BOARD_SIZE):
 		empty_array.append(tmp_array)
 	return empty_array
 
+func opponent_king_exist():
+	for row in BOARD_SIZE:
+		for col in BOARD_SIZE:
+			if((board[row][col] == 6 && !play_white) || (board[row][col] == -6 && play_white)): return true
+	return false
 
 func _on_challenge_pressed() -> void:
 	print("Challenge")
