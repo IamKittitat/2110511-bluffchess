@@ -1,15 +1,30 @@
-[gd_scene load_steps=5 format=3 uid="uid://ckxp256nvpu8y"]
+[gd_scene load_steps=9 format=3 uid="uid://ckxp256nvpu8y"]
 
 [ext_resource type="Script" uid="uid://cyklm4cxy7468" path="res://Scenes/lobby/waiting_room.gd" id="1_7d65c"]
 [ext_resource type="Texture2D" uid="uid://bqwylot4let1p" path="res://Assets/background_2.png" id="1_bqfm2"]
 [ext_resource type="FontFile" uid="uid://dgfsgagxg2j1f" path="res://Assets/Besley-Italic-VariableFont_wght.ttf" id="2_hks8l"]
+[ext_resource type="FontFile" uid="uid://bg4h3sxtvyspq" path="res://Assets/Besley-VariableFont_wght.ttf" id="4_3hhua"]
+[ext_resource type="Script" uid="uid://mlt46sl10ngg" path="res://Scenes/lobby/room_code_display.gd" id="5_3hhua"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7d65c"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7d65c"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+
+[sub_resource type="GDScript" id="GDScript_mbcfs"]
+script/source = "extends RichTextLabel
+"
 
 [node name="WaitingRoom" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_7d65c")
+metadata/_edit_horizontal_guides_ = [328.0]
+metadata/_edit_vertical_guides_ = [576.0]
 
 [node name="Background2" type="Sprite2D" parent="."]
 position = Vector2(576, 324)
@@ -31,5 +46,50 @@ theme_override_fonts/font = ExtResource("2_hks8l")
 theme_override_font_sizes/font_size = 36
 theme_override_styles/normal = SubResource("StyleBoxEmpty_7d65c")
 text = "< Back"
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+offset_left = 261.0
+offset_top = 153.0
+offset_right = 891.0
+offset_bottom = 503.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_7d65c")
+
+[node name="Title" type="RichTextLabel" parent="Panel"]
+clip_contents = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.338
+anchor_top = 0.206
+anchor_right = 0.667
+anchor_bottom = 0.391
+offset_left = -0.940018
+offset_top = -0.100006
+offset_right = -1.21002
+offset_bottom = 0.149994
+theme_override_fonts/normal_font = ExtResource("4_3hhua")
+theme_override_font_sizes/normal_font_size = 36
+bbcode_enabled = true
+text = "[color=#383838]Room code[/color]"
+horizontal_alignment = 1
+vertical_alignment = 1
+script = SubResource("GDScript_mbcfs")
+
+[node name="Room Code" type="RichTextLabel" parent="Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.106
+anchor_top = 0.5
+anchor_right = 0.895
+anchor_bottom = 0.791
+offset_left = 0.219994
+offset_right = 0.149963
+offset_bottom = 0.149994
+theme_override_fonts/normal_font = ExtResource("4_3hhua")
+theme_override_font_sizes/normal_font_size = 48
+bbcode_enabled = true
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("5_3hhua")
 
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
