@@ -14,8 +14,10 @@ func _ready():
 		print("Running as Lobby Server")
 		add_child(lobby_server)
 		lobby_server.start_lobby_server()
+		lobby_server.name = "Lobby"
 	else:
 		add_child(lobby_client)
+		lobby_client.name = "Lobby"
 		lobby_client.connect_to_lobby_server()
 
 func _on_new_room_pressed() -> void:
