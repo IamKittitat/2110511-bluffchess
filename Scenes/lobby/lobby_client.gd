@@ -2,6 +2,10 @@ extends Node
 
 var game_join = preload("res://Scenes/game_peer/game_join.gd").new()
 
+# Scene
+var waiting_room_scene = load("res://Scenes/lobby/waiting_room.tscn")
+
+# Connection Information
 const SERVER_IP = "127.0.0.1"
 const SERVER_PORT = 9000
 const CLIENT_IP = "127.0.0.1"
@@ -9,7 +13,7 @@ const GAME_PORT = 9001
 
 ### Create central server connection
 func connect_to_lobby_server():
-	var 	peer = ENetMultiplayerPeer.new()
+	var peer = ENetMultiplayerPeer.new()
 	add_child(game_join)
 	var err = peer.create_client(SERVER_IP, SERVER_PORT)
 	if err == OK:
@@ -34,6 +38,9 @@ func handle_room_created(code: String, game_info: Dictionary):
 	print("Room created! Share this code: ", code)
 	game_join.set_initial_game_info(game_info)
 	_start_game_host_server(GAME_PORT)
+	
+	GlobalScript.room_code = code
+	get_tree().change_scene_to_packed(waiting_room_scene)
 
 @rpc("authority", "call_remote", "reliable")
 func handle_joined_room(is_success: bool, host_ip: String = "", host_port: int = 0, game_info: Dictionary = {}):
@@ -43,6 +50,10 @@ func handle_joined_room(is_success: bool, host_ip: String = "", host_port: int =
 		_connect_to_game_host(host_ip, host_port)
 	else:
 		print("Failed to join room. Invalid code or room doesn't exist.")
+
+@rpc("any_peer", "call_remote", "reliable")
+func remove_room_code(code: String):
+	pass
 
 ### Function for main scene to call
 func create_room(setting_phase: String, play_phase: String, play_as: String):
@@ -60,9 +71,17 @@ func join_room(room_code: String):
 ### Private function
 func _on_lobby_connected(peer_id):
 	print("Connected to lobby server")
+	# In case go back to main menu after create the room	
+	_clear_host_game()
+
 
 func _on_lobby_disconnected(peer_id):
 	print("Disconnected from lobby server")
+	
+func _clear_host_game():
+	if(GlobalScript.room_code != ""):
+		remove_room_code.rpc_id(1, GlobalScript.room_code)
+		GlobalScript.room_code = ""
 
 func _start_game_host_server(port: int):
 	var peer = ENetMultiplayerPeer.new()

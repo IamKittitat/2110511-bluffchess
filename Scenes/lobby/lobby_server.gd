@@ -76,17 +76,22 @@ func handle_room_created(code: String, game_info: Dictionary):
 func handle_joined_room(is_success: bool, host_ip: String = "", host_port: int = 0, game_info: Dictionary = {}):
 	pass
 	
+@rpc("any_peer", "call_remote", "reliable")
+func remove_room_code(code: String):
+	# In case of the room is destroy by go back to the main menu
+	print(code , " is removed")
+	rooms.erase(code)
+	
 ### Private function
 func _generate_room_code() -> String:
-	#const CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	#var code = ""
-	#
-	#while code == "" or rooms.has(code):
-		#for i in 10:
-			#code += CHARS[randi() % CHARS.length()]
-		#
-	#return code
-	return "abc"
+	const CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	var code = ""
+	
+	while code == "" or rooms.has(code):
+		for i in 10:
+			code += CHARS[randi() % CHARS.length()]
+		
+	return code
 
 func _get_play_as(play_as: String) -> String:
 	const colors = ["black", "white"]

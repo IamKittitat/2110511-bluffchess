@@ -1,5 +1,7 @@
 extends Node
 
+var room_code: String = ""
+
 var chess_board_data = []
 var hidden_board_data = []
 

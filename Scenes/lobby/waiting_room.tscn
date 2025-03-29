@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://ckxp256nvpu8y"]
+
+[ext_resource type="Script" uid="uid://cyklm4cxy7468" path="res://Scenes/lobby/waiting_room.gd" id="1_7d65c"]
+[ext_resource type="Texture2D" uid="uid://bqwylot4let1p" path="res://Assets/background_2.png" id="1_bqfm2"]
+[ext_resource type="FontFile" uid="uid://dgfsgagxg2j1f" path="res://Assets/Besley-Italic-VariableFont_wght.ttf" id="2_hks8l"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7d65c"]
+
+[node name="WaitingRoom" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_7d65c")
+
+[node name="Background2" type="Sprite2D" parent="."]
+position = Vector2(576, 324)
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("1_bqfm2")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.067
+anchor_top = 0.115
+anchor_right = 0.13
+anchor_bottom = 0.172
+offset_left = 84.0
+offset_top = 52.0
+offset_right = 213.0
+offset_bottom = 121.0
+theme_override_fonts/font = ExtResource("2_hks8l")
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxEmpty_7d65c")
+text = "< Back"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
