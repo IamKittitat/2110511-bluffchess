@@ -1,10 +1,10 @@
 [gd_scene load_steps=9 format=3 uid="uid://ckxp256nvpu8y"]
 
-[ext_resource type="Script" uid="uid://cyklm4cxy7468" path="res://Scenes/lobby/waiting_room.gd" id="1_7d65c"]
+[ext_resource type="Script" uid="uid://cyklm4cxy7468" path="res://Scenes/lobby/waiting_room/waiting_room.gd" id="1_7d65c"]
 [ext_resource type="Texture2D" uid="uid://bqwylot4let1p" path="res://Assets/background_2.png" id="1_bqfm2"]
 [ext_resource type="FontFile" uid="uid://dgfsgagxg2j1f" path="res://Assets/Besley-Italic-VariableFont_wght.ttf" id="2_hks8l"]
 [ext_resource type="FontFile" uid="uid://bg4h3sxtvyspq" path="res://Assets/Besley-VariableFont_wght.ttf" id="4_3hhua"]
-[ext_resource type="Script" uid="uid://mlt46sl10ngg" path="res://Scenes/lobby/room_code_display.gd" id="5_3hhua"]
+[ext_resource type="Script" uid="uid://mlt46sl10ngg" path="res://Scenes/lobby/waiting_room/room_code_display.gd" id="5_3hhua"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7d65c"]
 

@@ -3,7 +3,7 @@ extends Node
 var game_join = preload("res://Scenes/game_peer/game_join.gd").new()
 
 # Scene
-var waiting_room_scene = load("res://Scenes/lobby/waiting_room.tscn")
+var waiting_room_scene = load("res://Scenes/lobby/waiting_room/waiting_room.tscn")
 
 # Connection Information
 const SERVER_IP = "127.0.0.1"
