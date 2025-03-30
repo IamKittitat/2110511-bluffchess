@@ -1,6 +1,6 @@
 extends Node
 
-var game_join = preload("res://Scenes/game_peer/game_join.gd").new()
+var game_peer = preload("res://Scenes/game_peer/game_peer.gd").new()
 
 # Scene
 var waiting_room_scene = load("res://Scenes/lobby/waiting_room/waiting_room.tscn")
@@ -17,7 +17,7 @@ func _ready():
 ### Create central server connection
 func connect_to_lobby_server():
 	var peer = ENetMultiplayerPeer.new()
-	add_child(game_join)
+	add_child(game_peer)
 	var err = peer.create_client(SERVER_IP, SERVER_PORT)
 	if err == OK:
 		multiplayer.multiplayer_peer = peer
@@ -39,7 +39,7 @@ func request_to_join_room(code: String):
 @rpc("authority", "call_remote", "reliable")
 func handle_room_created(code: String, game_info: Dictionary):
 	print("Room created! Share this code: ", code)
-	game_join.set_initial_game_info(game_info)
+	game_peer.set_initial_game_info(game_info)
 	_start_game_host_server(GAME_PORT)
 	
 	GlobalScript.room_code = code
@@ -49,7 +49,7 @@ func handle_room_created(code: String, game_info: Dictionary):
 func handle_joined_room(is_success: bool, host_ip: String = "", host_port: int = 0, game_info: Dictionary = {}):
 	if(is_success):
 		print("Joining game at ", host_ip, ":", host_port)
-		game_join.set_initial_game_info(game_info)
+		game_peer.set_initial_game_info(game_info)
 		_connect_to_game_host(host_ip, host_port)
 	else:
 		print("Failed to join room. Invalid code or room doesn't exist.")
@@ -102,7 +102,7 @@ func _connect_to_game_host(ip: String, port: int):
 		multiplayer.multiplayer_peer = peer
 		# wait for connection before calling rpc
 		await get_tree().create_timer(1).timeout
-		game_join.on_game_peer_ready.rpc()
+		game_peer.on_game_peer_ready.rpc()
 		print("Connected to game host!")
 	else:
 		print("Failed to connect to game host.")
