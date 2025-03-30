@@ -11,6 +11,9 @@ const SERVER_PORT = 9000
 const CLIENT_IP = "127.0.0.1"
 const GAME_PORT = 9001
 
+func _ready():
+	connect_to_lobby_server()
+
 ### Create central server connection
 func connect_to_lobby_server():
 	var peer = ENetMultiplayerPeer.new()

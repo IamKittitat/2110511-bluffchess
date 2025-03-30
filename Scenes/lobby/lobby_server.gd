@@ -16,6 +16,9 @@ var rooms = {}
 
 const SERVER_PORT = 9000
 
+func _ready():
+	start_lobby_server()
+
 ### Create Central Server connection
 func start_lobby_server():
 	var peer = ENetMultiplayerPeer.new()
