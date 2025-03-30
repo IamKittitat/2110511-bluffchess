@@ -1,0 +1,133 @@
+[gd_scene load_steps=10 format=3 uid="uid://820ogghnuv72"]
+
+[ext_resource type="Texture2D" uid="uid://bqwylot4let1p" path="res://Assets/background_2.png" id="1_a3d72"]
+[ext_resource type="Script" uid="uid://o1eph44e3upj" path="res://Scenes/lobby/join_room/join_room.gd" id="1_ddbu3"]
+[ext_resource type="FontFile" uid="uid://dgfsgagxg2j1f" path="res://Assets/Besley-Italic-VariableFont_wght.ttf" id="2_ddbu3"]
+[ext_resource type="FontFile" uid="uid://bg4h3sxtvyspq" path="res://Assets/Besley-VariableFont_wght.ttf" id="3_cwj5u"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_q1bym"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x5o0u"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a3d72"]
+bg_color = Color(0.843137, 0.843137, 0.843137, 0.501961)
+border_width_bottom = 4
+border_color = Color(0.219608, 0.219608, 0.219608, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_famw8"]
+bg_color = Color(1, 1, 1, 0)
+border_width_bottom = 4
+border_color = Color(0.219608, 0.219608, 0.219608, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ddbu3"]
+bg_color = Color(0.552941, 0.545098, 0.545098, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[node name="JoinRoom" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_ddbu3")
+metadata/_edit_vertical_guides_ = [576.0]
+metadata/_edit_horizontal_guides_ = [328.0]
+
+[node name="Background2" type="Sprite2D" parent="."]
+position = Vector2(576, 324)
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("1_a3d72")
+
+[node name="Background3" type="Sprite2D" parent="."]
+position = Vector2(576, 324)
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("1_a3d72")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.067
+anchor_top = 0.115
+anchor_right = 0.13
+anchor_bottom = 0.172
+offset_left = 84.0
+offset_top = 52.0
+offset_right = 213.0
+offset_bottom = 121.0
+theme_override_fonts/font = ExtResource("2_ddbu3")
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxEmpty_q1bym")
+text = "< Back"
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 261.0
+offset_top = 153.0
+offset_right = 891.0
+offset_bottom = 503.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_x5o0u")
+
+[node name="Title" type="RichTextLabel" parent="Panel"]
+clip_contents = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.254
+anchor_top = 0.206
+anchor_right = 0.746
+anchor_bottom = 0.391
+offset_left = -0.0200043
+offset_top = -0.0999985
+offset_right = 0.0199585
+offset_bottom = 0.149994
+theme_override_fonts/normal_font = ExtResource("3_cwj5u")
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
+text = "[color=#383838]Enter Room code: [/color]"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Room Code" type="LineEdit" parent="Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.106
+anchor_top = 0.5
+anchor_right = 0.895
+anchor_bottom = 0.689
+offset_left = 0.219994
+offset_right = 0.149963
+offset_bottom = -0.150009
+theme_override_colors/font_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_fonts/font = ExtResource("3_cwj5u")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/focus = SubResource("StyleBoxFlat_a3d72")
+theme_override_styles/normal = SubResource("StyleBoxFlat_famw8")
+alignment = 1
+max_length = 10
+
+[node name="Button" type="Button" parent="Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.357
+anchor_top = 1.103
+anchor_right = 0.646
+anchor_bottom = 1.263
+offset_left = 0.0899811
+offset_top = -0.0500183
+offset_right = 0.019989
+offset_bottom = -0.0500183
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_ddbu3")
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxFlat_ddbu3")
+text = "Join"
+
+[connection signal="pressed" from="Button" to="." method="_on_back_button_pressed"]
+[connection signal="text_changed" from="Panel/Room Code" to="." method="_on_room_code_text_changed"]
+[connection signal="pressed" from="Panel/Button" to="." method="_on_join_button_pressed"]
