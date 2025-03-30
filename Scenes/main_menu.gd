@@ -20,7 +20,7 @@ func _ready():
 		get_tree().root.add_child.call_deferred(lobby_client)
 
 func _on_new_room_pressed() -> void:
-	lobby_client.create_room("1 min", "10 min", "random")
+	get_tree().root.get_node('/root/Lobby').create_room("1 min", "10 min", "random")
 
 func _on_join_room_button_pressed() -> void:
 	get_tree().change_scene_to_packed(join_room_scene)
