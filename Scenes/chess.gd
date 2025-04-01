@@ -298,7 +298,7 @@ func set_move(row, col):
 			is_my_turn = !is_my_turn 
 			threefold_position(board)
 			display_board()
-			handle_opponent_move.rpc_id(peer_id, selected_piece, row, col, disguise_code)
+			handle_opponent_move.rpc_id(peer_id, board, hidden_board, row, col, disguise_code)
 			break
 	delete_dots()
 	state = reset_state()
@@ -331,18 +331,14 @@ func self_handle_game_win():
 	print("YOU WIN")
 	
 @rpc("any_peer", "call_remote", "reliable")
-func handle_opponent_move(selected_piece, dest_row, dest_col, disguise_code):
+func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_col, disguise_code):
 	#state = "CHALLENGE"
 	opponent_disguise_code = disguise_code
 	opponent_dest_pos = Vector2(dest_row, dest_col)
-	
+	board = _flip_board(opponent_board)
+	hidden_board = _flip_board(opponent_hidden_board)
+	print("HERE")
 	# IF NOT PRESS CHALLENGE IN 5 SEC -> SKIPP 
-	
-	dest_row = BOARD_SIZE - dest_row - 1
-	dest_col = BOARD_SIZE - dest_col - 1
-	selected_piece.x = BOARD_SIZE - selected_piece.x - 1
-	selected_piece.y = BOARD_SIZE - selected_piece.y - 1
-	_move(selected_piece, dest_row, dest_col)
 			
 	is_my_turn = !is_my_turn
 	# CHOOSE, BLUFF, MOVE, CHALLENGE, SUCCESS, FAILED
