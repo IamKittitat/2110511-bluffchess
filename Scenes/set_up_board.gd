@@ -37,14 +37,31 @@ var iam_ready = false
 func _ready():
 	play_white = GlobalScript.play_as == "white"
 	
+	#board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	#board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	#board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	#board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	#board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	#board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	#board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	#board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	
+	######################### MOCK ZONE	#########################
+	if(play_white):
+		board.append([2, 2, 3, 3, 4, 4, 5, 6])
+		board.append([1, 1, 1, 1, 1, 1, 1, 1])
+	else:
+		board.append([-2, -2, -3, -3, -4, -4, -5, -6])
+		board.append([-1, -1, -1, -1, -1, -1, -1, -1])
 	board.append([0, 0, 0, 0, 0, 0, 0, 0])
 	board.append([0, 0, 0, 0, 0, 0, 0, 0])
 	board.append([0, 0, 0, 0, 0, 0, 0, 0])
 	board.append([0, 0, 0, 0, 0, 0, 0, 0])
-	board.append([0, 0, 0, 0, 0, 0, 0, 0])
-	board.append([0, 0, 0, 0, 0, 0, 0, 0])
-	board.append([0, 0, 0, 0, 0, 0, 0, 0])
-	board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	board.append([-1, -1, -1, -1, -1, -1, -1, -1])
+	board.append([-2, -2, -3, -3, -4, -4, -5, -6])
+	piece_left = [0,0,0,0,0,0,0]
+	##############################################################
+	
 	hidden_board.append([2, 2, 2, 2, 2, 2, 2, 2])
 	hidden_board.append([2, 2, 2, 2, 2, 2, 2, 2])
 	hidden_board.append([0, 0, 0, 0, 0, 0, 0, 0])
@@ -125,13 +142,11 @@ func _on_button_2_pressed() -> void:
 	GlobalScript.chess_board_data = board
 	GlobalScript.hidden_board_data = hidden_board
 	iam_ready = true
-	print("CHECK")
 	trigger_ready.rpc_id(peer_id, board)
 	
 
 @rpc("any_peer", "call_remote", "reliable")
 func trigger_ready(board):
-	print("GOT TRIGGERED")
 	another_ready = true
 	another_board = board
 	if(iam_ready):
@@ -143,16 +158,12 @@ func combined_board():
 	var new_board = []
 	for row in BOARD_SIZE:
 		var col_board = GlobalScript.chess_board_data[row]
-		if (row <= 1 && !play_white) || (row >= 6 && play_white):
-			col_board.reverse()
 		if row >= 6:
 			col_board = another_board[BOARD_SIZE - row - 1]
+			col_board.reverse()
 		new_board.append(col_board)
 	
-	if(!play_white):
-		new_board.reverse() # Reverse black board from black to white perspective
 	GlobalScript.chess_board_data = new_board	
-	print(new_board)
 	get_tree().change_scene_to_file("res://Scenes/main.tscn")
 
 func _on_king_button_pressed() -> void:
