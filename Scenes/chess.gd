@@ -93,19 +93,11 @@ var amount_of_same : Array = []
 func _ready():
 	play_white = GlobalScript.play_as == "white"
 	
-	if(!play_white):
-		for i in range(BOARD_SIZE - 1,-1, -1):
-			var tmp_row = GlobalScript.chess_board_data[i]
-			tmp_row.reverse()
-			board.append(tmp_row)
-			
-			tmp_row = GlobalScript.hidden_board_data[i]
-			tmp_row.reverse()
-			hidden_board.append(tmp_row)
-	else:
-		board = GlobalScript.chess_board_data
-		hidden_board = GlobalScript.hidden_board_data
-		
+
+	board = GlobalScript.chess_board_data
+	hidden_board = GlobalScript.hidden_board_data
+	
+	print(board)
 	is_my_turn = play_white
 	for row in range(BOARD_SIZE):
 		for col in range(BOARD_SIZE):
@@ -128,6 +120,7 @@ func _ready():
 		button.pressed.connect(self._on_button_pressed.bind(button))
 	
 func _input(event):
+	var peer_id = multiplayer.get_remote_sender_id()
 	if event is InputEventMouseButton && event.pressed && promotion_square == null:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if is_mouse_out(): return
@@ -138,7 +131,11 @@ func _input(event):
 			# Select pieces to move
 			if state == "CHOOSE" && (play_white && board[row][col] > 0 || !play_white && board[row][col] < 0):
 				selected_piece = Vector2(row, col)
-				state = get_next_state(state)
+				if(hidden_board[row][col] == 2):
+					state = get_next_state(state)
+				else:
+					show_options(selected_piece, abs(board[row][col]))
+					state = "MOVE"
 			# Select pieces to disguise.
 			elif state == "BLUFF":
 				pass # This stage is handled by the piece disguise button
@@ -146,6 +143,21 @@ func _input(event):
 				set_move(row, col)
 				disguise_code = 0
 				state = reset_state()
+			elif state == "SUCCESS":
+				if((play_white && board[row][col] < 0) || (!play_white && board[row][col] > 0)):
+					if(hidden_board[row][col] == 2):
+						hidden_board[row][col] = 1
+						state = get_next_state(state)
+						display_board()
+						force_rerender.rpc_id(peer_id, board, hidden_board)
+			elif state == "FAILED":
+				if((play_white && board[row][col] > 0) || (!play_white && board[row][col] < 0)):
+					board[row][col] = 0
+					pawn_not_moved[row][col] = 0
+					state = get_next_state(state)
+					display_board()
+					force_rerender.rpc_id(peer_id, board, hidden_board)
+	
 				
 func is_mouse_out():
 	if get_rect().has_point(to_local(get_global_mouse_position())): return false
@@ -332,16 +344,28 @@ func self_handle_game_win():
 	
 @rpc("any_peer", "call_remote", "reliable")
 func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_col, disguise_code):
-	#state = "CHALLENGE"
 	opponent_disguise_code = disguise_code
+	dest_row = BOARD_SIZE - dest_row - 1
+	dest_col = BOARD_SIZE - dest_col - 1
 	opponent_dest_pos = Vector2(dest_row, dest_col)
 	board = _flip_board(opponent_board)
 	hidden_board = _flip_board(opponent_hidden_board)
-	print("HERE")
+	
+	if(hidden_board[dest_row][dest_col] == 2):
+		state = "CHALLENGE"
+	else:
+		state = "MOVE"
 	# IF NOT PRESS CHALLENGE IN 5 SEC -> SKIPP 
 			
 	is_my_turn = !is_my_turn
 	# CHOOSE, BLUFF, MOVE, CHALLENGE, SUCCESS, FAILED
+	display_board()
+
+@rpc("any_peer", "call_remote", "reliable")	
+func force_rerender(opponent_board, opponent_hidden_board):
+	print("FORCE")
+	board = _flip_board(opponent_board)
+	hidden_board = _flip_board(opponent_hidden_board)
 	display_board()
 	
 @rpc("any_peer", "call_remote", "reliable")
@@ -655,9 +679,9 @@ func get_next_state(state):
 		"CHOOSE": next_state = "BLUFF"
 		"BLUFF": next_state = "MOVE"
 		"MOVE": next_state = reset_state()
-		"CHALLENGE": next_state = "CHOOSE"
-		"SUCCESS": next_state = "CHOOSE"
-		"FAILED": next_state = "CHOOSE"
+		"CHALLENGE": next_state = reset_state()
+		"SUCCESS": next_state = reset_state()
+		"FAILED": next_state = reset_state()
 	print("FROM ",state," TO ",next_state)
 	return next_state
 	
@@ -678,23 +702,18 @@ func opponent_king_exist():
 
 func _on_challenge_pressed() -> void:
 	if(state != "CHALLENGE"): return
-	print("CHALLENGE!")
-	board
-	if(opponent_disguise_code != board[opponent_dest_pos.x][opponent_dest_pos.y]):
-		pass
+	var peer_id = multiplayer.get_remote_sender_id()
+	print("CHALLENGE! ", opponent_disguise_code, " " ,board[opponent_dest_pos.x][opponent_dest_pos.y])
+	hidden_board[opponent_dest_pos.x][opponent_dest_pos.y] = 1
+	if(abs(opponent_disguise_code) != abs(board[opponent_dest_pos.x][opponent_dest_pos.y])):
+		print("CHALLENGE SUCCESS, PLEASE SELECT OPPONENT PIECE TO REVEAL")
+		board[opponent_dest_pos.x][opponent_dest_pos.y] = 0
+		state = "SUCCESS"
 	else:
-		pass
-	# MOVED PIECE HIDDEN to 1
-	# IF CHALLENGE SUCCESS (DISGUISE_CODE != REAL CODE)
-		# REMOVE THIS PIECE IT OUT
-		# STATE = SUCCESS
-		# CLICK ON ANOTHER PIECE -> change hidden to 1
-	# ELSE
-		# STATE = FAILED
-		# CLICK ON OUR PIECE -> board to 0
-		# PAWN NOT MOVE TO 0
-	# STATE RESET
-	
+		print("CHALLENGE FAILED, PLEASE REMOVE ONE OF YOUR PIECE")
+		state = "FAILED"
+	display_board()
+	force_rerender.rpc_id(peer_id, board, hidden_board)
 
 func _on_pawn_selected_pressed() -> void:
 	if(state != "BLUFF"): return 
