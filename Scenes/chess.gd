@@ -393,11 +393,9 @@ func get_rook_moves(piece_position : Vector2):
 		destination_pos += i
 		while is_valid_position(destination_pos):
 			if is_empty(destination_pos):
-				if _get_is_can_move(piece_position, destination_pos):
-					_moves.append(destination_pos)
+				_moves.append(destination_pos)
 			elif is_enemy(destination_pos):
-				if _get_is_can_move(piece_position, destination_pos):
-					_moves.append(destination_pos)
+				_moves.append(destination_pos)
 				break
 			else:
 				break
@@ -414,11 +412,9 @@ func get_bishop_moves(piece_position : Vector2):
 		destination_pos += i
 		while is_valid_position(destination_pos):
 			if is_empty(destination_pos):
-				if _get_is_can_move(piece_position, destination_pos):
-					_moves.append(destination_pos)
+				_moves.append(destination_pos)
 			elif is_enemy(destination_pos):
-				if _get_is_can_move(piece_position, destination_pos):
-					_moves.append(destination_pos)
+				_moves.append(destination_pos)
 				break
 			else:
 				break
@@ -437,11 +433,9 @@ func get_queen_moves(piece_position : Vector2):
 		destination_pos += i
 		while is_valid_position(destination_pos):
 			if is_empty(destination_pos):
-				if _get_is_can_move(piece_position, destination_pos):
-					_moves.append(destination_pos)
+				_moves.append(destination_pos)
 			elif is_enemy(destination_pos):
-				if _get_is_can_move(piece_position, destination_pos):
-					_moves.append(destination_pos)
+				_moves.append(destination_pos)
 				break
 			else:
 				break
@@ -494,8 +488,7 @@ func get_knight_moves(piece_position : Vector2):
 	for i in directions:
 		var destination_pos = piece_position + i
 		if is_valid_position(destination_pos):
-			if is_empty(destination_pos) || is_enemy(destination_pos) && _get_is_can_move(piece_position, destination_pos):
-				_moves.append(destination_pos)
+			_moves.append(destination_pos)
 	
 	return _moves
 
@@ -516,48 +509,28 @@ func get_pawn_moves(piece_position : Vector2):
 		#board[en_passant.x][en_passant.y] = -1 if play_white else 1
 	
 	var destination_pos = piece_position + direction
-	if is_empty(destination_pos) && _get_is_can_move(piece_position, destination_pos):
-		_moves.append(destination_pos)
+	_moves.append(destination_pos)
 	
 	destination_pos = piece_position + Vector2(direction.x, 1)
-	if is_valid_position(destination_pos) && is_enemy(destination_pos) && _get_is_can_move(piece_position, destination_pos):
+	if is_valid_position(destination_pos) && is_enemy(destination_pos):
 		_moves.append(destination_pos)
 
 	destination_pos = piece_position + Vector2(direction.x, -1)
-	if is_valid_position(destination_pos) && is_enemy(destination_pos) && _get_is_can_move(piece_position, destination_pos):
+	if is_valid_position(destination_pos) && is_enemy(destination_pos):
 		_moves.append(destination_pos)
 
 	var front_pos_1 = piece_position + direction
 	var front_pos_2 = piece_position + direction * 2
 	destination_pos = piece_position + direction * 2
 	
-	if is_first_move && is_empty(destination_pos) && is_empty(front_pos_1) && _get_is_can_move(piece_position, destination_pos):
+	if is_first_move && is_empty(destination_pos) && is_empty(front_pos_1):
 		_moves.append(destination_pos)
 
 	destination_pos = piece_position + direction * 3
-	if is_first_move && is_empty(destination_pos) && is_empty(front_pos_1) && is_empty(front_pos_2) && (piece_position.x == 0) && _get_is_can_move(piece_position, destination_pos):
+	if is_first_move && is_empty(destination_pos) && is_empty(front_pos_1) && is_empty(front_pos_2) && (piece_position.x == 0):
 		_moves.append(destination_pos)
 	
 	return _moves
-
-func _get_is_can_move(piece_position, next_position) -> bool:
-	var is_can_move = false
-	var t = board[next_position.x][next_position.y]
-	var real_piece_code = board[piece_position.x][piece_position.y]
-	
-	# Try to move
-	board[next_position.x][next_position.y] = real_piece_code
-	board[piece_position.x][piece_position.y] = 0
-	
-	# Check if we can move
-	if play_white && !is_in_check(white_king_pos) || !play_white && !is_in_check(black_king_pos):
-		is_can_move = true
-		
-	# Move back
-	board[next_position.x][next_position.y] = t
-	board[piece_position.x][piece_position.y] = real_piece_code
-	
-	return is_can_move
 
 func is_valid_position(pos : Vector2):
 	if pos.x >= 0 && pos.x < BOARD_SIZE && pos.y >= 0 && pos.y < BOARD_SIZE: return true
