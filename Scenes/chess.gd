@@ -527,12 +527,15 @@ func get_pawn_moves(piece_position : Vector2):
 	if is_valid_position(destination_pos) && is_enemy(destination_pos) && _get_is_can_move(piece_position, destination_pos):
 		_moves.append(destination_pos)
 
+	var front_pos_1 = piece_position + direction
+	var front_pos_2 = piece_position + direction * 2
 	destination_pos = piece_position + direction * 2
-	if is_first_move && is_empty(destination_pos) && !is_enemy(destination_pos) && _get_is_can_move(piece_position, destination_pos):
+	
+	if is_first_move && is_empty(destination_pos) && is_empty(front_pos_1) && _get_is_can_move(piece_position, destination_pos):
 		_moves.append(destination_pos)
 
 	destination_pos = piece_position + direction * 3
-	if is_first_move && is_empty(destination_pos) && !is_enemy(destination_pos) && (piece_position.x == 0) && _get_is_can_move(piece_position, destination_pos):
+	if is_first_move && is_empty(destination_pos) && is_empty(front_pos_1) && is_empty(front_pos_2) && (piece_position.x == 0) && _get_is_can_move(piece_position, destination_pos):
 		_moves.append(destination_pos)
 	
 	return _moves
