@@ -37,29 +37,29 @@ var iam_ready = false
 func _ready():
 	play_white = GlobalScript.play_as == "white"
 	
-	#board.append([0, 0, 0, 0, 0, 0, 0, 0])
-	#board.append([0, 0, 0, 0, 0, 0, 0, 0])
-	#board.append([0, 0, 0, 0, 0, 0, 0, 0])
-	#board.append([0, 0, 0, 0, 0, 0, 0, 0])
-	#board.append([0, 0, 0, 0, 0, 0, 0, 0])
-	#board.append([0, 0, 0, 0, 0, 0, 0, 0])
-	#board.append([0, 0, 0, 0, 0, 0, 0, 0])
-	#board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	board.append([0, 0, 0, 0, 0, 0, 0, 0])
 	
 	######################### MOCK ZONE	#########################
-	if(play_white):
-		board.append([2, 2, 3, 3, 4, 4, 5, 6])
-		board.append([1, 1, 1, 1, 1, 1, 1, 1])
-	else:
-		board.append([-2, -2, -3, -3, -4, -4, -5, -6])
-		board.append([-1, -1, -1, -1, -1, -1, -1, -1])
-	board.append([0, 0, 0, 0, 0, 0, 0, 0])
-	board.append([0, 0, 0, 0, 0, 0, 0, 0])
-	board.append([0, 0, 0, 0, 0, 0, 0, 0])
-	board.append([0, 0, 0, 0, 0, 0, 0, 0])
-	board.append([-1, -1, -1, -1, -1, -1, -1, -1])
-	board.append([-2, -2, -3, -3, -4, -4, -5, -6])
-	piece_left = [0,0,0,0,0,0,0]
+	#if(play_white):
+		#board.append([2, 2, 3, 3, 4, 4, 5, 6])
+		#board.append([1, 1, 1, 1, 1, 1, 1, 1])
+	#else:
+		#board.append([-2, -2, -3, -3, -4, -4, -5, -6])
+		#board.append([-1, -1, -1, -1, -1, -1, -1, -1])
+	#board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	#board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	#board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	#board.append([0, 0, 0, 0, 0, 0, 0, 0])
+	#board.append([-1, -1, -1, -1, -1, -1, -1, -1])
+	#board.append([-2, -2, -3, -3, -4, -4, -5, -6])
+	#piece_left = [0,0,0,0,0,0,0]
 	##############################################################
 	
 	hidden_board.append([2, 2, 2, 2, 2, 2, 2, 2])

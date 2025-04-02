@@ -87,6 +87,7 @@ func remove_room_code(code: String):
 	
 ### Private function
 func _generate_room_code() -> String:
+	#return "a"
 	const CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	var code = ""
 	
