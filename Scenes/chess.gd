@@ -173,7 +173,15 @@ func display_board():
 			holder.global_position = Vector2(col * CELL_WIDTH + (CELL_WIDTH / 2), -row * CELL_WIDTH - (CELL_WIDTH / 2))
 			
 			if(board[row][col] > 0):
-				if(hidden_board[row][col] == 1):
+				if(opponent_disguise_code != 0 && row == opponent_dest_pos.x && col == opponent_dest_pos.y):
+					match abs(opponent_disguise_code):
+						6: holder.texture = WHITE_HIDDEN_KING
+						5: holder.texture = WHITE_HIDDEN_QUEEN
+						4: holder.texture = WHITE_HIDDEN_ROOK
+						3: holder.texture = WHITE_HIDDEN_BISHOP
+						2: holder.texture = WHITE_HIDDEN_KNIGHT
+						1: holder.texture = WHITE_HIDDEN_PAWN
+				elif(hidden_board[row][col] == 1):
 					match board[row][col]:
 						6: holder.texture = WHITE_KING
 						5: holder.texture = WHITE_QUEEN
@@ -193,7 +201,15 @@ func display_board():
 					else:
 						holder.texture = WHITE_HIDDEN
 			elif(board[row][col] < 0):
-				if(hidden_board[row][col] == 1):
+				if(opponent_disguise_code != 0 && row == opponent_dest_pos.x && col == opponent_dest_pos.y):
+					match abs(opponent_disguise_code):
+						6: holder.texture = BLACK_HIDDEN_KING
+						5: holder.texture = BLACK_HIDDEN_QUEEN
+						4: holder.texture = BLACK_HIDDEN_ROOK
+						3: holder.texture = BLACK_HIDDEN_BISHOP
+						2: holder.texture = BLACK_HIDDEN_KNIGHT
+						1: holder.texture = BLACK_HIDDEN_PAWN
+				elif(hidden_board[row][col] == 1):
 					match board[row][col]:
 						-6: holder.texture = BLACK_KING
 						-5: holder.texture = BLACK_QUEEN
@@ -354,6 +370,7 @@ func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_
 		state = "CHALLENGE"
 	else:
 		state = "CHOOSE"
+		opponent_disguise_code = 0
 	
 	is_my_turn = !is_my_turn
 	display_board()
@@ -362,6 +379,8 @@ func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_
 	if(state == "CHALLENGE"):
 		print("5 sec timer out")
 		state = "CHOOSE"
+		opponent_disguise_code = 0
+		display_board()
 	
 @rpc("any_peer", "call_remote", "reliable")	
 func force_rerender(opponent_board, opponent_hidden_board):
@@ -449,18 +468,16 @@ func get_king_moves(piece_position : Vector2):
 	Vector2(1, 1), Vector2(1, -1), Vector2(-1, 1), Vector2(-1, -1)]
 	
 	# Remove old position
-	if play_white:
-		board[white_king_pos.x][white_king_pos.y] = 0
-	else:
-		board[black_king_pos.x][black_king_pos.y] = 0
+	#if play_white:
+		#board[white_king_pos.x][white_king_pos.y] = 0
+	#else:
+		#board[black_king_pos.x][black_king_pos.y] = 0
 	
 	for i in directions:
 		var destination_pos = piece_position + i
 		if is_valid_position(destination_pos):
-			if !is_in_check(destination_pos):
-				if is_empty(destination_pos): _moves.append(destination_pos)
-				elif is_enemy(destination_pos):
-					_moves.append(destination_pos)
+			if is_empty(destination_pos) || is_enemy(destination_pos):
+				_moves.append(destination_pos)
 				
 	#if play_white && !white_king:
 		#if !white_rook_left && is_empty(Vector2(0, 1)) && is_empty(Vector2(0, 2)) && !is_in_check(Vector2(0, 2)) && is_empty(Vector2(0, 3)) && !is_in_check(Vector2(0, 3)) && !is_in_check(Vector2(0, 4)):
@@ -488,7 +505,8 @@ func get_knight_moves(piece_position : Vector2):
 	for i in directions:
 		var destination_pos = piece_position + i
 		if is_valid_position(destination_pos):
-			_moves.append(destination_pos)
+			if is_empty(destination_pos) || is_enemy(destination_pos):
+				_moves.append(destination_pos)
 	
 	return _moves
 
@@ -509,7 +527,8 @@ func get_pawn_moves(piece_position : Vector2):
 		#board[en_passant.x][en_passant.y] = -1 if play_white else 1
 	
 	var destination_pos = piece_position + direction
-	_moves.append(destination_pos)
+	if is_empty(destination_pos):
+		_moves.append(destination_pos)
 	
 	destination_pos = piece_position + Vector2(direction.x, 1)
 	if is_valid_position(destination_pos) && is_enemy(destination_pos):
@@ -688,6 +707,7 @@ func _on_challenge_pressed() -> void:
 	else:
 		print("CHALLENGE FAILED, PLEASE REMOVE ONE OF YOUR PIECE")
 		state = "FAILED"
+	opponent_disguise_code = 0
 	display_board()
 	force_rerender.rpc_id(peer_id, board, hidden_board)
 
@@ -728,14 +748,7 @@ func _flip_board(board):
 		new_board.append(tmp_row)
 	return new_board
 	
-# 0 = empty
-# 6 = white king
-# 5 = white queen
-# 4 = white rook
-# 3 = white bishop
-# 2 = white knight
-# 1 = white pawn
-
-
 func _on_skip_pressed() -> void:
 	state = "CHOOSE"
+	opponent_disguise_code = 0
+	display_board()
