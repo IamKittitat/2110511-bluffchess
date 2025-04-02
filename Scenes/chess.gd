@@ -353,13 +353,16 @@ func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_
 	if(hidden_board[dest_row][dest_col] == 2):
 		state = "CHALLENGE"
 	else:
-		state = "MOVE"
-	# IF NOT PRESS CHALLENGE IN 5 SEC -> SKIPP 
-			
+		state = "CHOOSE"
+	
 	is_my_turn = !is_my_turn
-	# CHOOSE, BLUFF, MOVE, CHALLENGE, SUCCESS, FAILED
 	display_board()
-
+	
+	await get_tree().create_timer(5.0).timeout
+	if(state == "CHALLENGE"):
+		print("5 sec timer out")
+		state = "CHOOSE"
+	
 @rpc("any_peer", "call_remote", "reliable")	
 func force_rerender(opponent_board, opponent_hidden_board):
 	board = _flip_board(opponent_board)
