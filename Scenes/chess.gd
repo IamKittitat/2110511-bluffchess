@@ -97,7 +97,6 @@ func _ready():
 	board = GlobalScript.chess_board_data
 	hidden_board = GlobalScript.hidden_board_data
 	
-	print(board)
 	is_my_turn = play_white
 	for row in range(BOARD_SIZE):
 		for col in range(BOARD_SIZE):
@@ -363,7 +362,6 @@ func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_
 
 @rpc("any_peer", "call_remote", "reliable")	
 func force_rerender(opponent_board, opponent_hidden_board):
-	print("FORCE")
 	board = _flip_board(opponent_board)
 	hidden_board = _flip_board(opponent_hidden_board)
 	display_board()
@@ -703,7 +701,6 @@ func opponent_king_exist():
 func _on_challenge_pressed() -> void:
 	if(state != "CHALLENGE"): return
 	var peer_id = multiplayer.get_remote_sender_id()
-	print("CHALLENGE! ", opponent_disguise_code, " " ,board[opponent_dest_pos.x][opponent_dest_pos.y])
 	hidden_board[opponent_dest_pos.x][opponent_dest_pos.y] = 1
 	if(abs(opponent_disguise_code) != abs(board[opponent_dest_pos.x][opponent_dest_pos.y])):
 		print("CHALLENGE SUCCESS, PLEASE SELECT OPPONENT PIECE TO REVEAL")
@@ -762,4 +759,4 @@ func _flip_board(board):
 
 
 func _on_skip_pressed() -> void:
-	print("FUCK ME PLEASE")
+	state = "CHOOSE"
