@@ -759,3 +759,7 @@ func _flip_board(board):
 # 3 = white bishop
 # 2 = white knight
 # 1 = white pawn
+
+
+func _on_skip_pressed() -> void:
+	print("FUCK ME PLEASE")
