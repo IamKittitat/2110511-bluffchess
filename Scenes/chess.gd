@@ -359,6 +359,9 @@ func _move(selected_piece, row, col):
 
 func self_handle_game_loss():
 	print("YOU LOSS")
+
+func self_handle_game_win():
+	print("YOU WIN")
 	
 @rpc("any_peer", "call_remote", "reliable")
 func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_col, disguise_code, eaten_piece, eaten_hidden_code):
@@ -403,7 +406,11 @@ func force_rerender(opponent_board, opponent_hidden_board):
 @rpc("any_peer", "call_remote", "reliable")
 func opponent_handle_game_win():
 	print("YOU WIN!")
-	
+
+@rpc("any_peer", "call_remote", "reliable")
+func opponent_handle_game_loss():
+	print("YOU LOSS!")
+		
 func get_moves(selected, real_piece_code, disguise_piece_code):
 	var _moves = []
 	match abs(disguise_piece_code):
@@ -708,6 +715,12 @@ func our_king_exist():
 			if((board[row][col] == 6 && play_white) || (board[row][col] == -6 && !play_white)): return true
 	return false
 
+func opponent_king_exist():
+	for row in BOARD_SIZE:
+		for col in BOARD_SIZE:
+			if((board[row][col] == 6 && !play_white) || (board[row][col] == -6 && play_white)): return true
+	return false
+	
 func _on_challenge_pressed() -> void:
 	if(state != "CHALLENGE"): return
 	var peer_id = multiplayer.get_remote_sender_id()
@@ -718,6 +731,7 @@ func _on_challenge_pressed() -> void:
 		hidden_board[opponent_dest_pos.x][opponent_dest_pos.y] = our_eaten_hidden_code
 		pawn_not_moved[opponent_dest_pos.x][opponent_dest_pos.y] = our_eaten_pawn_not_move
 		state = "SUCCESS"
+		_check_win() # incase of opponent use king to bluff and got challenged --> King will be removed from the game
 	else:
 		print("CHALLENGE FAILED, PLEASE REMOVE ONE OF YOUR PIECE")
 		state = "FAILED"
@@ -768,7 +782,15 @@ func _check_loss():
 		self_handle_game_loss()
 		opponent_handle_game_win.rpc_id(peer_id)
 		
-
+func _check_win():
+	print(board)
+	print("CHECK ", opponent_king_exist())
+	var peer_id = multiplayer.get_remote_sender_id()
+	if(!opponent_king_exist()):
+		print("OH")
+		self_handle_game_win()
+		opponent_handle_game_loss.rpc_id(peer_id)
+	
 func _on_skip_pressed() -> void:
 	state = "CHOOSE"
 	_check_loss()
