@@ -333,10 +333,6 @@ func set_move(row, col):
 			break
 	delete_dots()
 	state = reset_state()
-	
-	if(!opponent_king_exist()):
-		self_handle_game_win()
-		opponent_handle_game_lose.rpc_id(peer_id)
 		
 	# Can instantly switch to move another piece
 	#if (selected_piece.x != var2 || selected_piece.y != var1) && (play_white && board[var2][var1] > 0 || !play_white && board[var2][var1] < 0):
@@ -361,11 +357,12 @@ func _move(selected_piece, row, col):
 	pawn_not_moved[row][col] = 0
 	return [eaten_piece, eaten_hidden_code]
 
-func self_handle_game_win():
-	print("YOU WIN")
+func self_handle_game_loss():
+	print("YOU LOSS")
 	
 @rpc("any_peer", "call_remote", "reliable")
 func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_col, disguise_code, eaten_piece, eaten_hidden_code):
+	var peer_id = multiplayer.get_remote_sender_id()
 	opponent_disguise_code = disguise_code
 	dest_row = BOARD_SIZE - dest_row - 1
 	dest_col = BOARD_SIZE - dest_col - 1
@@ -383,6 +380,8 @@ func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_
 	else:
 		state = "CHOOSE"
 		opponent_disguise_code = 0
+		
+		_check_loss()
 	
 	is_my_turn = !is_my_turn
 	display_board()
@@ -390,6 +389,7 @@ func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_
 	await get_tree().create_timer(5.0).timeout
 	if(state == "CHALLENGE"):
 		print("5 sec timer out")
+		_check_loss()
 		state = "CHOOSE"
 		opponent_disguise_code = 0
 		display_board()
@@ -401,8 +401,8 @@ func force_rerender(opponent_board, opponent_hidden_board):
 	display_board()
 	
 @rpc("any_peer", "call_remote", "reliable")
-func opponent_handle_game_lose():
-	print("YOU LOSE!")
+func opponent_handle_game_win():
+	print("YOU WIN!")
 	
 func get_moves(selected, real_piece_code, disguise_piece_code):
 	var _moves = []
@@ -702,10 +702,10 @@ func _init_zero_array(BOARD_SIZE):
 		empty_array.append(tmp_array)
 	return empty_array
 
-func opponent_king_exist():
+func our_king_exist():
 	for row in BOARD_SIZE:
 		for col in BOARD_SIZE:
-			if((board[row][col] == 6 && !play_white) || (board[row][col] == -6 && play_white)): return true
+			if((board[row][col] == 6 && play_white) || (board[row][col] == -6 && !play_white)): return true
 	return false
 
 func _on_challenge_pressed() -> void:
@@ -762,7 +762,15 @@ func _flip_board(board):
 		new_board.append(tmp_row)
 	return new_board
 	
+func _check_loss():
+	var peer_id = multiplayer.get_remote_sender_id()
+	if(!our_king_exist()):
+		self_handle_game_loss()
+		opponent_handle_game_win.rpc_id(peer_id)
+		
+
 func _on_skip_pressed() -> void:
 	state = "CHOOSE"
+	_check_loss()
 	opponent_disguise_code = 0
 	display_board()
