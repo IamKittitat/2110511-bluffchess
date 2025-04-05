@@ -69,6 +69,9 @@ var selected_piece : Vector2 # x = row, y = col
 var disguise_code = 0
 var opponent_disguise_code = 0
 var opponent_dest_pos: Vector2
+var our_eaten_piece: int
+var our_eaten_hidden_code: int
+var our_eaten_pawn_not_move: int
 
 var promotion_square = null
 
@@ -266,7 +269,7 @@ func set_move(row, col):
 			match board[selected_piece.x][selected_piece.y]:
 				1:
 					fifty_move_rule = 0
-					if i.x == 7: promote(i)
+					#if i.x == 7: promote(i)
 					if i.x == 3 && selected_piece.x == 1:
 						#en_passant = i
 						just_now = true
@@ -275,7 +278,7 @@ func set_move(row, col):
 							#board[en_passant.x][en_passant.y] = 0
 				-1:
 					fifty_move_rule = 0
-					if i.x == 0: promote(i)
+					#if i.x == 0: promote(i)
 					if i.x == 4 && selected_piece.x == 6:
 						#en_passant = i
 						just_now = true
@@ -321,11 +324,12 @@ func set_move(row, col):
 					black_king_pos = i
 			#if !just_now: en_passant = null
 			
-			_move(selected_piece, row, col)			
+			var eaten_piece
+			eaten_piece = _move(selected_piece, row, col)			
 			is_my_turn = !is_my_turn 
 			threefold_position(board)
 			display_board()
-			handle_opponent_move.rpc_id(peer_id, board, hidden_board, row, col, disguise_code)
+			handle_opponent_move.rpc_id(peer_id, board, hidden_board, row, col, disguise_code, eaten_piece[0], eaten_piece[1])
 			break
 	delete_dots()
 	state = reset_state()
@@ -348,23 +352,31 @@ func set_move(row, col):
 	#elif insuficient_material(): print("DRAW")
 
 func _move(selected_piece, row, col):
+	var eaten_piece = board[row][col]
+	var eaten_hidden_code = hidden_board[row][col]
 	board[row][col] = board[selected_piece.x][selected_piece.y]
 	hidden_board[row][col] = hidden_board[selected_piece.x][selected_piece.y]
 	board[selected_piece.x][selected_piece.y] = 0
 	hidden_board[selected_piece.x][selected_piece.y] = 0
 	pawn_not_moved[row][col] = 0
+	return [eaten_piece, eaten_hidden_code]
 
 func self_handle_game_win():
 	print("YOU WIN")
 	
 @rpc("any_peer", "call_remote", "reliable")
-func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_col, disguise_code):
+func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_col, disguise_code, eaten_piece, eaten_hidden_code):
 	opponent_disguise_code = disguise_code
 	dest_row = BOARD_SIZE - dest_row - 1
 	dest_col = BOARD_SIZE - dest_col - 1
+	
+	our_eaten_piece = eaten_piece
+	our_eaten_hidden_code = eaten_hidden_code
+	our_eaten_pawn_not_move = pawn_not_moved[dest_row][dest_col]
 	opponent_dest_pos = Vector2(dest_row, dest_col)
 	board = _flip_board(opponent_board)
 	hidden_board = _flip_board(opponent_hidden_board)
+	pawn_not_moved[dest_row][dest_col] = 0
 	
 	if(hidden_board[dest_row][dest_col] == 2):
 		state = "CHALLENGE"
@@ -702,7 +714,9 @@ func _on_challenge_pressed() -> void:
 	hidden_board[opponent_dest_pos.x][opponent_dest_pos.y] = 1
 	if(abs(opponent_disguise_code) != abs(board[opponent_dest_pos.x][opponent_dest_pos.y])):
 		print("CHALLENGE SUCCESS, PLEASE SELECT OPPONENT PIECE TO REVEAL")
-		board[opponent_dest_pos.x][opponent_dest_pos.y] = 0
+		board[opponent_dest_pos.x][opponent_dest_pos.y] = our_eaten_piece
+		hidden_board[opponent_dest_pos.x][opponent_dest_pos.y] = our_eaten_hidden_code
+		pawn_not_moved[opponent_dest_pos.x][opponent_dest_pos.y] = our_eaten_pawn_not_move
 		state = "SUCCESS"
 	else:
 		print("CHALLENGE FAILED, PLEASE REMOVE ONE OF YOUR PIECE")
