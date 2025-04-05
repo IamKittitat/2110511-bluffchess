@@ -1,8 +1,9 @@
-[gd_scene load_steps=42 format=3 uid="uid://wumwx2sgq27v"]
+[gd_scene load_steps=59 format=3 uid="uid://wumwx2sgq27v"]
 
 [ext_resource type="Texture2D" uid="uid://cvw0ygykf1vmn" path="res://Assets/Piece/white_knight.png" id="1_3khqn"]
 [ext_resource type="PackedScene" uid="uid://c5xblqofcwad0" path="res://Scenes/board.tscn" id="1_63gbl"]
 [ext_resource type="Texture2D" uid="uid://bmqgehrxdaios" path="res://Assets/background.png" id="1_hptm8"]
+[ext_resource type="Texture2D" uid="uid://digysnpmes0o5" path="res://Assets/Challeng_Success_out.png" id="1_jkdf5"]
 [ext_resource type="Texture2D" uid="uid://dwmiexdwgwfcb" path="res://Assets/Piece/white_bishop.png" id="2_75nc3"]
 [ext_resource type="Texture2D" uid="uid://dai5bl1nrxt2x" path="res://Assets/Piece/white_rook.png" id="3_a7xec"]
 [ext_resource type="Texture2D" uid="uid://bm2lbbuk06i0x" path="res://Assets/Piece/white_queen.png" id="4_2yafp"]
@@ -13,9 +14,15 @@
 [ext_resource type="FontFile" uid="uid://bg4h3sxtvyspq" path="res://Assets/Besley-VariableFont_wght.ttf" id="11_d1ilt"]
 [ext_resource type="Texture2D" uid="uid://bm6auq5cl5moy" path="res://Assets/Piece/white_pawn.png" id="11_fdnlq"]
 [ext_resource type="Texture2D" uid="uid://02ssp0n1j2k7" path="res://Assets/Piece/white_king.png" id="12_jkdf5"]
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_d1ilt"]
-texture = ExtResource("1_hptm8")
+[ext_resource type="Script" uid="uid://bngjrkwrv0le0" path="res://Scenes/banner.gd" id="14_wsu2k"]
+[ext_resource type="Texture2D" uid="uid://h6kh8u5h7avl" path="res://Assets/Challenge_Failed_out.png" id="16_fevyy"]
+[ext_resource type="Texture2D" uid="uid://cyjsummbvdmhx" path="res://Assets/Challenge.png" id="17_hibaj"]
+[ext_resource type="Texture2D" uid="uid://c2fwilhavexx7" path="res://Assets/challeng_failed_with_icon.png" id="18_pdsj5"]
+[ext_resource type="Texture2D" uid="uid://blfikdcg54wmj" path="res://Assets/Piece/white_hidden_bishop.png" id="19_ee4r6"]
+[ext_resource type="Texture2D" uid="uid://eypualtowdnt" path="res://Assets/challeng_success_with_icon.png" id="20_pdsj5"]
+[ext_resource type="Texture2D" uid="uid://0urfd2axd0im" path="res://Assets/Piece/black_hidden_bishop.png" id="21_ee4r6"]
+[ext_resource type="FontFile" uid="uid://dgfsgagxg2j1f" path="res://Assets/Besley-Italic-VariableFont_wght.ttf" id="22_ee4r6"]
+[ext_resource type="Script" uid="uid://cggw5ylnubf7d" path="res://Scenes/sub_banner.gd" id="22_gt3je"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vp5if"]
 
@@ -93,6 +100,9 @@ texture = ExtResource("8_df1ci")
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vgg4r"]
 texture = ExtResource("8_df1ci")
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_d1ilt"]
+texture = ExtResource("1_hptm8")
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wsu2k"]
 bg_color = Color(0.6, 0.6, 0.6, 0.188235)
 corner_radius_top_left = 10
@@ -100,14 +110,28 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[node name="Main" type="Node2D"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wsu2k"]
+texture = ExtResource("1_jkdf5")
 
-[node name="Panel" type="Panel" parent="."]
-offset_left = -13.0
-offset_top = -153.0
-offset_right = 275.0
-offset_bottom = 9.0
-theme_override_styles/panel = SubResource("StyleBoxTexture_d1ilt")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gt3je"]
+texture = ExtResource("16_fevyy")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3pmx8"]
+texture = ExtResource("17_hibaj")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_u50mg"]
+texture = ExtResource("18_pdsj5")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cbgmd"]
+texture = ExtResource("20_pdsj5")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gt3je"]
+bg_color = Color(0.941176, 1, 0.909804, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3pmx8"]
+bg_color = Color(1, 0.584314, 0.584314, 1)
+
+[node name="Main" type="Node2D"]
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(130, -72)
@@ -230,6 +254,13 @@ theme_override_styles/disabled = SubResource("StyleBoxEmpty_s8r64")
 theme_override_styles/hover = SubResource("StyleBoxTexture_uj42o")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_etk7k")
 theme_override_styles/normal = SubResource("StyleBoxTexture_vgg4r")
+
+[node name="Panel" type="Panel" parent="."]
+offset_left = -14.0
+offset_top = -153.0
+offset_right = 274.0
+offset_bottom = 9.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_d1ilt")
 
 [node name="Board" parent="." instance=ExtResource("1_63gbl")]
 
@@ -359,6 +390,177 @@ size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("11_d1ilt")
 theme_override_font_sizes/font_size = 6
 text = "Skip"
+
+[node name="banner" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_left = -14.0
+offset_top = -154.0
+offset_right = 274.0
+offset_bottom = 10.0
+script = ExtResource("14_wsu2k")
+
+[node name="challenge_success_out" type="Panel" parent="banner"]
+visible = false
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -29.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_wsu2k")
+
+[node name="challenge_failed_out" type="Panel" parent="banner"]
+visible = false
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -29.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_gt3je")
+
+[node name="challenge" type="Panel" parent="banner"]
+visible = false
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -29.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_3pmx8")
+
+[node name="challenge_failed_with_icon" type="Panel" parent="banner"]
+visible = false
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -29.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_u50mg")
+
+[node name="Left_Icon" type="TextureRect" parent="banner/challenge_failed_with_icon"]
+layout_mode = 0
+offset_left = 139.0
+offset_top = 11.0
+offset_right = 166.0
+offset_bottom = 38.0
+texture = ExtResource("19_ee4r6")
+expand_mode = 1
+
+[node name="Right_Icon" type="TextureRect" parent="banner/challenge_failed_with_icon"]
+layout_mode = 0
+offset_left = 223.0
+offset_top = 11.0
+offset_right = 250.0
+offset_bottom = 38.0
+texture = ExtResource("1_3khqn")
+expand_mode = 1
+
+[node name="challenge_success_with_icon" type="Panel" parent="banner"]
+visible = false
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -29.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_cbgmd")
+
+[node name="Left_success_Icon" type="TextureRect" parent="banner/challenge_success_with_icon"]
+layout_mode = 0
+offset_left = 139.0
+offset_top = 11.0
+offset_right = 166.0
+offset_bottom = 38.0
+texture = ExtResource("21_ee4r6")
+expand_mode = 1
+
+[node name="Right_success_Icon" type="TextureRect" parent="banner/challenge_success_with_icon"]
+layout_mode = 0
+offset_left = 223.0
+offset_top = 11.0
+offset_right = 250.0
+offset_bottom = 38.0
+texture = ExtResource("5_cqk1v")
+expand_mode = 1
+
+[node name="sub_banner" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_left = -14.0
+offset_top = -153.0
+offset_right = 275.0
+offset_bottom = 9.0
+script = ExtResource("22_gt3je")
+
+[node name="success_panel" type="Control" parent="sub_banner"]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="success_panel" type="Panel" parent="sub_banner/success_panel"]
+layout_mode = 0
+offset_left = 164.0
+offset_top = 112.0
+offset_right = 282.0
+offset_bottom = 155.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_gt3je")
+
+[node name="label_panel" type="Label" parent="sub_banner/success_panel"]
+layout_mode = 0
+offset_left = 180.0
+offset_top = 128.0
+offset_right = 267.0
+offset_bottom = 142.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("22_ee4r6")
+theme_override_font_sizes/font_size = 7
+text = "Select one piece to reveal!"
+
+[node name="failed_panel" type="Control" parent="sub_banner"]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Panel" type="Panel" parent="sub_banner/failed_panel"]
+layout_mode = 0
+offset_left = 164.0
+offset_top = 112.0
+offset_right = 282.0
+offset_bottom = 155.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_3pmx8")
+
+[node name="label_panel2" type="Label" parent="sub_banner/failed_panel"]
+layout_mode = 0
+offset_left = 167.0
+offset_top = 128.0
+offset_right = 280.0
+offset_bottom = 142.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("22_ee4r6")
+theme_override_font_sizes/font_size = 7
+text = "Select one piece out of the board!"
 
 [connection signal="pressed" from="Control/HBoxContainer/TextureButton" to="Board" method="_on_pawn_selected_pressed"]
 [connection signal="pressed" from="Control/HBoxContainer/TextureButton2" to="Board" method="_on_knight_selected_pressed"]

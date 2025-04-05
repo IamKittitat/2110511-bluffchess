@@ -43,6 +43,21 @@ const PIECE_MOVE = preload("res://Assets/Piece_move.png")
 @onready var white_pieces = $"../CanvasLayer/white_pieces"
 @onready var black_pieces = $"../CanvasLayer/black_pieces"
 
+@onready var banner: Control = $"../banner"
+@onready var challenge: Panel = $"../banner/challenge"
+@onready var challenge_success_out: Panel = $"../banner/challenge_success_out"
+@onready var challenge_success_with_icon: Panel = $"../banner/challenge_success_with_icon"
+@onready var left_success_icon: TextureRect = $"../banner/challenge_success_with_icon/Left_success_Icon"
+@onready var right_success_icon: TextureRect = $"../banner/challenge_success_with_icon/Right_success_Icon"
+@onready var challenge_failed_out: Panel = $"../banner/challenge_failed_out"
+@onready var challenge_failed_with_icon: Panel = $"../banner/challenge_failed_with_icon"
+@onready var left_failed_icon: TextureRect = $"../banner/challenge_failed_with_icon/Left_Icon"
+@onready var right_failed_icon: TextureRect = $"../banner/challenge_failed_with_icon/Right_Icon"
+
+@onready var success_panel: Control = $"../sub_banner/success_panel"
+@onready var failed_panel: Control = $"../sub_banner/failed_panel"
+@onready var sub_banner: Control = $"../sub_banner"
+
 #Variables
 # -6 = black king
 # -5 = black queen
@@ -123,6 +138,8 @@ func _ready():
 	
 func _input(event):
 	var peer_id = multiplayer.get_remote_sender_id()
+	#if event is InputEventMouseButton and event.pressed and banner.visible:
+		#close_banner()
 	if event is InputEventMouseButton && event.pressed && promotion_square == null:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if is_mouse_out(): return
@@ -150,6 +167,7 @@ func _input(event):
 					if(hidden_board[row][col] == 2):
 						hidden_board[row][col] = 1
 						state = get_next_state(state)
+						close_banner.rpc()
 						display_board()
 						force_rerender.rpc_id(peer_id, board, hidden_board)
 			elif state == "FAILED":
@@ -157,6 +175,7 @@ func _input(event):
 					board[row][col] = 0
 					pawn_not_moved[row][col] = 0
 					state = get_next_state(state)
+					close_banner.rpc()
 					display_board()
 					force_rerender.rpc_id(peer_id, board, hidden_board)
 	
@@ -725,8 +744,16 @@ func _on_challenge_pressed() -> void:
 	if(state != "CHALLENGE"): return
 	var peer_id = multiplayer.get_remote_sender_id()
 	hidden_board[opponent_dest_pos.x][opponent_dest_pos.y] = 1
+	show_challenge_banner.rpc()
+	await get_tree().create_timer(2.0).timeout
 	if(abs(opponent_disguise_code) != abs(board[opponent_dest_pos.x][opponent_dest_pos.y])):
 		print("CHALLENGE SUCCESS, PLEASE SELECT OPPONENT PIECE TO REVEAL")
+		close_banner.rpc()
+		show_challenge_success_banner.rpc(opponent_disguise_code,board[opponent_dest_pos.x][opponent_dest_pos.y])
+		await get_tree().create_timer(2.0).timeout
+		close_banner.rpc()
+		show_challenge_success_out_banner.rpc_id(peer_id)
+		show_success_sub_banner()
 		board[opponent_dest_pos.x][opponent_dest_pos.y] = our_eaten_piece
 		hidden_board[opponent_dest_pos.x][opponent_dest_pos.y] = our_eaten_hidden_code
 		pawn_not_moved[opponent_dest_pos.x][opponent_dest_pos.y] = our_eaten_pawn_not_move
@@ -734,6 +761,12 @@ func _on_challenge_pressed() -> void:
 		_check_win() # incase of opponent use king to bluff and got challenged --> King will be removed from the game
 	else:
 		print("CHALLENGE FAILED, PLEASE REMOVE ONE OF YOUR PIECE")
+		close_banner.rpc()
+		show_challenge_failed_banner.rpc(opponent_disguise_code,board[opponent_dest_pos.x][opponent_dest_pos.y])
+		await get_tree().create_timer(2.0).timeout
+		close_banner.rpc()
+		show_challenge_failed_out_banner.rpc_id(peer_id)
+		show_failed_sub_banner()
 		state = "FAILED"
 	opponent_disguise_code = 0
 	display_board()
@@ -796,3 +829,82 @@ func _on_skip_pressed() -> void:
 	_check_loss()
 	opponent_disguise_code = 0
 	display_board()
+	
+#close banner
+@rpc("any_peer", "call_local", "reliable")	
+func close_banner():	
+	banner.visible = false
+	challenge.visible = false
+	challenge_success_out.visible = false
+	challenge_success_with_icon.visible = false
+	challenge_failed_out.visible = false
+	challenge_failed_with_icon.visible = false
+	sub_banner.visible = false
+	success_panel.visible = false
+	failed_panel.visible = false
+	
+	
+#show banner
+@rpc("any_peer", "call_local", "reliable")	
+func show_challenge_banner():
+	banner.visible = true
+	challenge.visible = true
+	
+@rpc("any_peer", "call_local", "reliable")	
+func show_challenge_success_banner(disguise,real):
+	print(disguise,real)
+	match abs(disguise):
+		6: left_success_icon.texture = WHITE_HIDDEN_KING
+		5: left_success_icon.texture = WHITE_HIDDEN_QUEEN
+		4: left_success_icon.texture = WHITE_HIDDEN_ROOK
+		3: left_success_icon.texture = WHITE_HIDDEN_BISHOP
+		2: left_success_icon.texture = WHITE_HIDDEN_KNIGHT
+		1: left_success_icon.texture = WHITE_HIDDEN_PAWN
+	match abs(real):
+		6: right_success_icon.texture = WHITE_KING
+		5: right_success_icon.texture = WHITE_QUEEN
+		4: right_success_icon.texture = WHITE_ROOK
+		3: right_success_icon.texture = WHITE_BISHOP
+		2: right_success_icon.texture = WHITE_KNIGHT
+		1: right_success_icon.texture = WHITE_PAWN
+	banner.visible = true
+	challenge_success_with_icon.visible = true
+	
+@rpc("any_peer", "call_local", "reliable")	
+func show_challenge_failed_banner(disguise,real):
+	print(disguise,real)
+	match abs(disguise):
+		6: left_failed_icon.texture = WHITE_HIDDEN_KING
+		5: left_failed_icon.texture = WHITE_HIDDEN_QUEEN
+		4: left_failed_icon.texture = WHITE_HIDDEN_ROOK
+		3: left_failed_icon.texture = WHITE_HIDDEN_BISHOP
+		2: left_failed_icon.texture = WHITE_HIDDEN_KNIGHT
+		1: left_failed_icon.texture = WHITE_HIDDEN_PAWN
+	match abs(real):
+		6: right_failed_icon.texture = WHITE_KING
+		5: right_failed_icon.texture = WHITE_QUEEN
+		4: right_failed_icon.texture = WHITE_ROOK
+		3: right_failed_icon.texture = WHITE_BISHOP
+		2: right_failed_icon.texture = WHITE_KNIGHT
+		1: right_failed_icon.texture = WHITE_PAWN
+	banner.visible = true
+	challenge_failed_with_icon.visible = true
+	
+@rpc("any_peer","call_remote","reliable")
+func show_challenge_success_out_banner():
+	banner.visible = true
+	challenge_success_out.visible = true
+	
+@rpc("any_peer","call_remote","reliable")
+func show_challenge_failed_out_banner():
+	banner.visible = true
+	challenge_failed_out.visible = true
+	
+func show_success_sub_banner():
+	sub_banner.visible = true
+	success_panel.visible = true
+	
+func show_failed_sub_banner():
+	sub_banner.visible = true
+	failed_panel.visible = true
+	
