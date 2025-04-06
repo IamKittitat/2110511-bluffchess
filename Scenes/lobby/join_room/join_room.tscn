@@ -45,11 +45,6 @@ position = Vector2(576, 324)
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("1_a3d72")
 
-[node name="Background3" type="Sprite2D" parent="."]
-position = Vector2(576, 324)
-scale = Vector2(0.6, 0.6)
-texture = ExtResource("1_a3d72")
-
 [node name="Button" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = -1

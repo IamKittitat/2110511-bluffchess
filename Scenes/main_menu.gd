@@ -5,6 +5,7 @@ var lobby_server = preload("res://Scenes/lobby/lobby_server.gd").new()
 var lobby_client = preload("res://Scenes/lobby/lobby_client.gd").new()
 
 # SCENE
+var create_room_scene = load("res://Scenes/lobby/create_room/create_room.tscn")
 var join_room_scene = load("res://Scenes/lobby/join_room/join_room.tscn")
 var credit_scene = load("res://Scenes/credit.tscn")
 var main = load("res://Scenes/main.tscn")
@@ -20,7 +21,7 @@ func _ready():
 		get_tree().root.add_child.call_deferred(lobby_client)
 
 func _on_new_room_pressed() -> void:
-	get_tree().root.get_node('/root/Lobby').create_room("1 min", "10 min", "random")
+	get_tree().change_scene_to_packed(create_room_scene)
 
 func _on_join_room_button_pressed() -> void:
 	get_tree().change_scene_to_packed(join_room_scene)

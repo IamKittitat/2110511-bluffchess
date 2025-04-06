@@ -1,0 +1,394 @@
+[gd_scene load_steps=14 format=3 uid="uid://dgbb81sp8slua"]
+
+[ext_resource type="Texture2D" uid="uid://bqwylot4let1p" path="res://Assets/background_2.png" id="1_2lrp6"]
+[ext_resource type="Script" uid="uid://bggh5bsp2hs2g" path="res://Scenes/lobby/create_room/create_room.gd" id="1_w1mdv"]
+[ext_resource type="FontFile" uid="uid://dgfsgagxg2j1f" path="res://Assets/Besley-Italic-VariableFont_wght.ttf" id="2_j2mnq"]
+[ext_resource type="FontFile" uid="uid://bg4h3sxtvyspq" path="res://Assets/Besley-VariableFont_wght.ttf" id="3_2lrp6"]
+[ext_resource type="Texture2D" uid="uid://dcsjj85kt28s3" path="res://Assets/icon/clock-icon.png" id="4_0p3xd"]
+[ext_resource type="StyleBox" uid="uid://q2f0ylplmyq1" path="res://Assets/common_node_style/outlined_button_style_box_pressed.tres" id="4_o1ao0"]
+[ext_resource type="StyleBox" uid="uid://oas6wf6dtjkn" path="res://Assets/common_node_style/outlined_button_style_box.tres" id="5_4cjv4"]
+[ext_resource type="Texture2D" uid="uid://braj7ftv8rccm" path="res://Assets/icon/king-icon.png" id="7_7pqvl"]
+[ext_resource type="StyleBox" uid="uid://b3xjm2evvjoad" path="res://Assets/common_node_style/outlined_button_style_box_disabled.tres" id="8_7pqvl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4cjv4"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_w1mdv"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_ha8nd"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_ohya3"]
+
+[node name="CreateRoom" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_w1mdv")
+metadata/_edit_vertical_guides_ = [576.0]
+metadata/_edit_horizontal_guides_ = [324.0]
+
+[node name="Background2" type="Sprite2D" parent="."]
+position = Vector2(576, 324)
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("1_2lrp6")
+
+[node name="BackButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.067
+anchor_top = 0.115
+anchor_right = 0.13
+anchor_bottom = 0.172
+offset_left = 84.0
+offset_top = 52.0
+offset_right = 213.0
+offset_bottom = 121.0
+theme_override_fonts/font = ExtResource("2_j2mnq")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxEmpty_4cjv4")
+text = "< Back"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 0
+offset_left = 462.0
+offset_top = 90.0
+offset_right = 691.0
+offset_bottom = 162.0
+theme_override_fonts/bold_font = ExtResource("3_2lrp6")
+theme_override_font_sizes/bold_font_size = 40
+bbcode_enabled = true
+text = "[b]New room[/b]"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VSplitContainer" type="VSplitContainer" parent="."]
+light_mask = 0
+layout_mode = 0
+offset_left = 312.0
+offset_top = 184.0
+offset_right = 880.0
+offset_bottom = 465.0
+theme_override_constants/separation = 60
+theme_override_constants/minimum_grab_thickness = 30
+dragger_visibility = 1
+
+[node name="ContainerTimeControl" type="HSplitContainer" parent="VSplitContainer"]
+layout_mode = 2
+dragger_visibility = 1
+
+[node name="TitleTimeControl" type="HSplitContainer" parent="VSplitContainer/ContainerTimeControl"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_constants/separation = 8
+dragger_visibility = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="VSplitContainer/ContainerTimeControl/TitleTimeControl"]
+layout_mode = 2
+theme_override_constants/margin_top = 8
+
+[node name="Clock-icon" type="TextureRect" parent="VSplitContainer/ContainerTimeControl/TitleTimeControl/MarginContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = ExtResource("4_0p3xd")
+expand_mode = 1
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VSplitContainer/ContainerTimeControl/TitleTimeControl"]
+layout_mode = 2
+theme_override_fonts/bold_font = ExtResource("3_2lrp6")
+theme_override_font_sizes/bold_font_size = 24
+bbcode_enabled = true
+text = "[b]Time control[/b]"
+fit_content = true
+autowrap_mode = 0
+
+[node name="SubTitleContainer" type="VSplitContainer" parent="VSplitContainer/ContainerTimeControl"]
+layout_mode = 2
+theme_override_constants/separation = 32
+dragger_visibility = 1
+drag_area_offset = 16
+
+[node name="SettingPhaseContainer" type="VSplitContainer" parent="VSplitContainer/ContainerTimeControl/SubTitleContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+dragger_visibility = 1
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VSplitContainer/ContainerTimeControl/SubTitleContainer/SettingPhaseContainer"]
+layout_mode = 2
+theme_override_fonts/bold_font = ExtResource("3_2lrp6")
+theme_override_font_sizes/bold_font_size = 18
+bbcode_enabled = true
+text = "[b]> Setting Phase: [/b]"
+fit_content = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VSplitContainer/ContainerTimeControl/SubTitleContainer/SettingPhaseContainer"]
+layout_mode = 2
+theme_override_constants/separation = 32
+
+[node name="Button" type="Button" parent="VSplitContainer/ContainerTimeControl/SubTitleContainer/SettingPhaseContainer/HBoxContainer"]
+custom_minimum_size = Vector2(112, 0)
+layout_mode = 2
+size_flags_stretch_ratio = 0.0
+theme_override_colors/font_hover_pressed_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.831373, 0.831373, 0.831373, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_colors/font_pressed_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_fonts/font = ExtResource("3_2lrp6")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/focus = ExtResource("4_o1ao0")
+theme_override_styles/hover_pressed = ExtResource("4_o1ao0")
+theme_override_styles/hover = ExtResource("5_4cjv4")
+theme_override_styles/pressed = ExtResource("4_o1ao0")
+theme_override_styles/normal = ExtResource("5_4cjv4")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_w1mdv")
+text = "1 min"
+
+[node name="Button2" type="Button" parent="VSplitContainer/ContainerTimeControl/SubTitleContainer/SettingPhaseContainer/HBoxContainer"]
+custom_minimum_size = Vector2(112, 0)
+layout_mode = 2
+size_flags_stretch_ratio = 0.0
+theme_override_colors/font_hover_pressed_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.831373, 0.831373, 0.831373, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_colors/font_pressed_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_fonts/font = ExtResource("3_2lrp6")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/focus = ExtResource("4_o1ao0")
+theme_override_styles/hover_pressed = ExtResource("4_o1ao0")
+theme_override_styles/hover = ExtResource("5_4cjv4")
+theme_override_styles/pressed = ExtResource("4_o1ao0")
+theme_override_styles/normal = ExtResource("5_4cjv4")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_w1mdv")
+text = "3 min"
+
+[node name="Button3" type="Button" parent="VSplitContainer/ContainerTimeControl/SubTitleContainer/SettingPhaseContainer/HBoxContainer"]
+custom_minimum_size = Vector2(112, 0)
+layout_mode = 2
+size_flags_stretch_ratio = 0.0
+theme_override_colors/font_hover_pressed_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.831373, 0.831373, 0.831373, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_colors/font_pressed_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_fonts/font = ExtResource("3_2lrp6")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/focus = ExtResource("4_o1ao0")
+theme_override_styles/hover_pressed = ExtResource("4_o1ao0")
+theme_override_styles/hover = ExtResource("5_4cjv4")
+theme_override_styles/pressed = ExtResource("4_o1ao0")
+theme_override_styles/normal = ExtResource("5_4cjv4")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_w1mdv")
+text = "5 min"
+
+[node name="PlayPhaseContainer" type="VSplitContainer" parent="VSplitContainer/ContainerTimeControl/SubTitleContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+dragger_visibility = 1
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VSplitContainer/ContainerTimeControl/SubTitleContainer/PlayPhaseContainer"]
+layout_mode = 2
+theme_override_fonts/bold_font = ExtResource("3_2lrp6")
+theme_override_font_sizes/bold_font_size = 18
+bbcode_enabled = true
+text = "[b]> Play Phase: [/b]"
+fit_content = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VSplitContainer/ContainerTimeControl/SubTitleContainer/PlayPhaseContainer"]
+layout_mode = 2
+theme_override_constants/separation = 32
+
+[node name="Button" type="Button" parent="VSplitContainer/ContainerTimeControl/SubTitleContainer/PlayPhaseContainer/HBoxContainer"]
+custom_minimum_size = Vector2(112, 0)
+layout_mode = 2
+size_flags_stretch_ratio = 0.0
+theme_override_colors/font_hover_pressed_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.831373, 0.831373, 0.831373, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_colors/font_pressed_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_fonts/font = ExtResource("3_2lrp6")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/focus = ExtResource("4_o1ao0")
+theme_override_styles/hover_pressed = ExtResource("4_o1ao0")
+theme_override_styles/hover = ExtResource("5_4cjv4")
+theme_override_styles/pressed = ExtResource("4_o1ao0")
+theme_override_styles/normal = ExtResource("5_4cjv4")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ha8nd")
+text = "10 min"
+
+[node name="Button2" type="Button" parent="VSplitContainer/ContainerTimeControl/SubTitleContainer/PlayPhaseContainer/HBoxContainer"]
+custom_minimum_size = Vector2(112, 0)
+layout_mode = 2
+size_flags_stretch_ratio = 0.0
+theme_override_colors/font_hover_pressed_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.831373, 0.831373, 0.831373, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_colors/font_pressed_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_fonts/font = ExtResource("3_2lrp6")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/focus = ExtResource("4_o1ao0")
+theme_override_styles/hover_pressed = ExtResource("4_o1ao0")
+theme_override_styles/hover = ExtResource("5_4cjv4")
+theme_override_styles/pressed = ExtResource("4_o1ao0")
+theme_override_styles/normal = ExtResource("5_4cjv4")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ha8nd")
+text = "15 | 10"
+
+[node name="Button3" type="Button" parent="VSplitContainer/ContainerTimeControl/SubTitleContainer/PlayPhaseContainer/HBoxContainer"]
+custom_minimum_size = Vector2(112, 0)
+layout_mode = 2
+size_flags_stretch_ratio = 0.0
+theme_override_colors/font_hover_pressed_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0.831373, 0.831373, 0.831373, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_colors/font_pressed_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_fonts/font = ExtResource("3_2lrp6")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/focus = ExtResource("4_o1ao0")
+theme_override_styles/hover_pressed = ExtResource("4_o1ao0")
+theme_override_styles/hover = ExtResource("5_4cjv4")
+theme_override_styles/pressed = ExtResource("4_o1ao0")
+theme_override_styles/normal = ExtResource("5_4cjv4")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ha8nd")
+text = "30 min"
+
+[node name="ContainerPlayAs" type="HSplitContainer" parent="VSplitContainer"]
+layout_mode = 2
+
+[node name="TitlePlayAs" type="HSplitContainer" parent="VSplitContainer/ContainerPlayAs"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="MarginContainer" type="MarginContainer" parent="VSplitContainer/ContainerPlayAs/TitlePlayAs"]
+layout_mode = 2
+theme_override_constants/margin_top = 8
+
+[node name="King-icon" type="TextureRect" parent="VSplitContainer/ContainerPlayAs/TitlePlayAs/MarginContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = ExtResource("7_7pqvl")
+expand_mode = 1
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VSplitContainer/ContainerPlayAs/TitlePlayAs"]
+layout_mode = 2
+theme_override_fonts/bold_font = ExtResource("3_2lrp6")
+theme_override_font_sizes/bold_font_size = 24
+bbcode_enabled = true
+text = "[b]I play as[/b]"
+fit_content = true
+autowrap_mode = 0
+
+[node name="OptionContainer" type="HBoxContainer" parent="VSplitContainer/ContainerPlayAs"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 32
+
+[node name="Button" type="Button" parent="VSplitContainer/ContainerPlayAs/OptionContainer"]
+custom_minimum_size = Vector2(112, 0)
+layout_mode = 2
+theme_override_colors/font_hover_pressed_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_colors/font_hover_color = Color(0.831373, 0.831373, 0.831373, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_colors/font_pressed_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_fonts/font = ExtResource("3_2lrp6")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/focus = ExtResource("4_o1ao0")
+theme_override_styles/hover_pressed = ExtResource("4_o1ao0")
+theme_override_styles/hover = ExtResource("5_4cjv4")
+theme_override_styles/pressed = ExtResource("4_o1ao0")
+theme_override_styles/normal = ExtResource("5_4cjv4")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ohya3")
+text = "White"
+
+[node name="Button2" type="Button" parent="VSplitContainer/ContainerPlayAs/OptionContainer"]
+custom_minimum_size = Vector2(112, 0)
+layout_mode = 2
+theme_override_colors/font_hover_pressed_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_colors/font_hover_color = Color(0.831373, 0.831373, 0.831373, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_colors/font_pressed_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_fonts/font = ExtResource("3_2lrp6")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/focus = ExtResource("4_o1ao0")
+theme_override_styles/hover_pressed = ExtResource("4_o1ao0")
+theme_override_styles/hover = ExtResource("5_4cjv4")
+theme_override_styles/pressed = ExtResource("4_o1ao0")
+theme_override_styles/normal = ExtResource("5_4cjv4")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ohya3")
+text = "?"
+
+[node name="Button3" type="Button" parent="VSplitContainer/ContainerPlayAs/OptionContainer"]
+custom_minimum_size = Vector2(112, 0)
+layout_mode = 2
+theme_override_colors/font_hover_pressed_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_colors/font_hover_color = Color(0.831373, 0.831373, 0.831373, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_colors/font_pressed_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_fonts/font = ExtResource("3_2lrp6")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/focus = ExtResource("4_o1ao0")
+theme_override_styles/hover_pressed = ExtResource("4_o1ao0")
+theme_override_styles/hover = ExtResource("5_4cjv4")
+theme_override_styles/pressed = ExtResource("4_o1ao0")
+theme_override_styles/normal = ExtResource("5_4cjv4")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ohya3")
+text = "Black"
+
+[node name="CreateButton" type="Button" parent="."]
+offset_left = 513.0
+offset_top = 521.0
+offset_right = 640.0
+offset_bottom = 570.0
+theme_override_colors/font_disabled_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_colors/font_focus_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_colors/font_pressed_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_fonts/font = ExtResource("3_2lrp6")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/disabled = ExtResource("8_7pqvl")
+theme_override_styles/hover = ExtResource("4_o1ao0")
+theme_override_styles/pressed = ExtResource("4_o1ao0")
+theme_override_styles/normal = ExtResource("4_o1ao0")
+disabled = true
+text = "Create"
+
+[connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="VSplitContainer/ContainerTimeControl/SubTitleContainer/SettingPhaseContainer/HBoxContainer/Button" to="." method="_on_setting_phase_selected" binds= [0]]
+[connection signal="pressed" from="VSplitContainer/ContainerTimeControl/SubTitleContainer/SettingPhaseContainer/HBoxContainer/Button2" to="." method="_on_setting_phase_selected" binds= [1]]
+[connection signal="pressed" from="VSplitContainer/ContainerTimeControl/SubTitleContainer/SettingPhaseContainer/HBoxContainer/Button3" to="." method="_on_setting_phase_selected" binds= [2]]
+[connection signal="pressed" from="VSplitContainer/ContainerTimeControl/SubTitleContainer/PlayPhaseContainer/HBoxContainer/Button" to="." method="_on_play_phase_selected" binds= [0]]
+[connection signal="pressed" from="VSplitContainer/ContainerTimeControl/SubTitleContainer/PlayPhaseContainer/HBoxContainer/Button2" to="." method="_on_play_phase_selected" binds= [1]]
+[connection signal="pressed" from="VSplitContainer/ContainerTimeControl/SubTitleContainer/PlayPhaseContainer/HBoxContainer/Button3" to="." method="_on_play_phase_selected" binds= [2]]
+[connection signal="pressed" from="VSplitContainer/ContainerPlayAs/OptionContainer/Button" to="." method="_on_play_as_selected" binds= [0]]
+[connection signal="pressed" from="VSplitContainer/ContainerPlayAs/OptionContainer/Button2" to="." method="_on_play_as_selected" binds= [1]]
+[connection signal="pressed" from="VSplitContainer/ContainerPlayAs/OptionContainer/Button3" to="." method="_on_play_as_selected" binds= [2]]
+[connection signal="pressed" from="CreateButton" to="." method="_on_create_button_pressed"]
