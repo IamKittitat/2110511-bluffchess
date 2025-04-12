@@ -8,6 +8,8 @@ position = Vector2(72, -72)
 texture = ExtResource("1_ukvpm")
 script = ExtResource("2_3ilqf")
 
+[node name="highlight" type="Node2D" parent="."]
+
 [node name="Pieces" type="Node2D" parent="."]
 
 [node name="Dots" type="Node2D" parent="."]

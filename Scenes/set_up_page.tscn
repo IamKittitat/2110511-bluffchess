@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://b4nopi5svnbjs"]
+[gd_scene load_steps=15 format=3 uid="uid://b4nopi5svnbjs"]
 
 [ext_resource type="PackedScene" uid="uid://bacq6ewojhxhd" path="res://Scenes/set_up_board.tscn" id="1_1msvh"]
 [ext_resource type="Texture2D" uid="uid://bmqgehrxdaios" path="res://Assets/background.png" id="1_t5b6i"]
@@ -9,11 +9,26 @@
 [ext_resource type="Texture2D" uid="uid://blfikdcg54wmj" path="res://Assets/Piece/white_hidden_bishop.png" id="7_cnuni"]
 [ext_resource type="Texture2D" uid="uid://bx4yiuwa3q10f" path="res://Assets/Piece/white_hidden_rook.png" id="8_cnuni"]
 [ext_resource type="Texture2D" uid="uid://cqcljtrhsk3j0" path="res://Assets/Piece/white_hidden_pawn.png" id="9_pxt3o"]
+[ext_resource type="FontFile" uid="uid://bg4h3sxtvyspq" path="res://Assets/Besley-VariableFont_wght.ttf" id="10_4bg8m"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_31104"]
 texture = ExtResource("1_t5b6i")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_t5b6i"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ksymf"]
+bg_color = Color(0.6, 0.6, 0.6, 0.215686)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_23f6j"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [node name="set_up_page" type="Node2D"]
 scale = Vector2(1.00138, 1)
@@ -46,68 +61,229 @@ text = "< Back"
 metadata/_edit_use_anchors_ = true
 
 [node name="ReadyButton" type="Button" parent="."]
-offset_left = 776.0
-offset_top = 534.0
-offset_right = 950.0
-offset_bottom = 603.0
+offset_left = 766.942
+offset_top = 557.0
+offset_right = 940.942
+offset_bottom = 626.0
 scale = Vector2(0.997622, 1)
 theme_override_fonts/font = ExtResource("2_21yao")
 theme_override_font_sizes/font_size = 36
 text = "Ready"
 
-[node name="KingButton" type="TextureButton" parent="."]
-offset_left = 700.0
-offset_top = 80.0
-offset_right = 999.0
-offset_bottom = 380.0
-scale = Vector2(0.241462, 0.241462)
-texture_normal = ExtResource("4_31104")
+[node name="Select" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 633.126
+offset_top = 33.0
+offset_right = 1058.13
+offset_bottom = 532.0
 
-[node name="QueenButton" type="TextureButton" parent="."]
-offset_left = 700.0
-offset_top = 160.0
-offset_right = 1000.0
-offset_bottom = 460.0
-scale = Vector2(0.241, 0.241)
-texture_normal = ExtResource("5_lbuvt")
+[node name="Background" type="Panel" parent="Select"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ksymf")
 
-[node name="KnightButton" type="TextureButton" parent="."]
-offset_left = 700.0
-offset_top = 240.0
-offset_right = 1000.0
-offset_bottom = 540.0
-scale = Vector2(0.241, 0.241)
-texture_normal = ExtResource("6_cyvi8")
+[node name="Timeleft" type="Label" parent="Select"]
+layout_mode = 1
+offset_left = 28.9601
+offset_top = 25.0
+offset_right = 132.96
+offset_bottom = 62.125
+theme_override_fonts/font = ExtResource("10_4bg8m")
+theme_override_font_sizes/font_size = 22
+text = "Time left:"
 
-[node name="BishopButton" type="TextureButton" parent="."]
-offset_left = 700.0
-offset_top = 320.0
-offset_right = 1000.0
-offset_bottom = 620.0
-scale = Vector2(0.241, 0.241)
-texture_normal = ExtResource("7_cnuni")
+[node name="Timer" type="Label" parent="Select"]
+layout_mode = 0
+offset_left = 265.0
+offset_top = 25.0
+offset_right = 384.0
+offset_bottom = 62.125
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("10_4bg8m")
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxFlat_23f6j")
+text = "10:00"
+horizontal_alignment = 1
 
-[node name="RookButton" type="TextureButton" parent="."]
-offset_left = 700.0
-offset_top = 400.0
-offset_right = 1000.0
-offset_bottom = 700.0
-scale = Vector2(0.241, 0.241)
-texture_normal = ExtResource("8_cnuni")
+[node name="Label" type="Label" parent="Select"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -184.5
+offset_top = 77.0
+offset_right = 65.5
+offset_bottom = 104.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("10_4bg8m")
+theme_override_font_sizes/font_size = 14
+text = "Plan your chess pieces on the board"
+horizontal_alignment = 1
 
-[node name="PawnButton" type="TextureButton" parent="."]
-offset_left = 700.0
-offset_top = 480.0
-offset_right = 1000.0
-offset_bottom = 780.0
-scale = Vector2(0.241, 0.241377)
-texture_normal = ExtResource("9_pxt3o")
+[node name="VBoxContainer" type="VBoxContainer" parent="Select"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -192.5
+offset_top = -381.0
+offset_right = 193.5
+offset_bottom = -18.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 10
+
+[node name="king_select" type="Button" parent="Select/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("10_4bg8m")
+text = "1 pieces  "
+flat = true
+alignment = 2
+
+[node name="king_texture" type="TextureRect" parent="Select/VBoxContainer/king_select"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 10.0
+offset_top = -23.0
+offset_right = 309.0
+offset_bottom = 277.0
+grow_vertical = 2
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("4_31104")
+
+[node name="queen_select" type="Button" parent="Select/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("10_4bg8m")
+text = "1 pieces  "
+flat = true
+alignment = 2
+
+[node name="queen_texture" type="TextureRect" parent="Select/VBoxContainer/queen_select"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 10.0
+offset_top = -23.0
+offset_right = 310.0
+offset_bottom = 277.0
+grow_vertical = 2
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("5_lbuvt")
+
+[node name="knight_select" type="Button" parent="Select/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("10_4bg8m")
+text = "2 pieces  "
+flat = true
+alignment = 2
+
+[node name="knight_texture" type="TextureRect" parent="Select/VBoxContainer/knight_select"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 10.0
+offset_top = -23.0
+offset_right = 310.0
+offset_bottom = 277.0
+grow_vertical = 2
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("6_cyvi8")
+
+[node name="bishop_select" type="Button" parent="Select/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("10_4bg8m")
+text = "2 pieces  "
+flat = true
+alignment = 2
+
+[node name="bishop_texture" type="TextureRect" parent="Select/VBoxContainer/bishop_select"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 10.0
+offset_top = -23.0
+offset_right = 310.0
+offset_bottom = 277.0
+grow_vertical = 2
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("7_cnuni")
+
+[node name="rook_select" type="Button" parent="Select/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("10_4bg8m")
+text = "2 pieces  "
+flat = true
+alignment = 2
+
+[node name="rook_texture" type="TextureRect" parent="Select/VBoxContainer/rook_select"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 10.0
+offset_top = -23.0
+offset_right = 310.0
+offset_bottom = 277.0
+grow_vertical = 2
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("8_cnuni")
+
+[node name="pawn_select" type="Button" parent="Select/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("10_4bg8m")
+text = "8 pieces  "
+flat = true
+alignment = 2
+
+[node name="pawn_texture" type="TextureRect" parent="Select/VBoxContainer/pawn_select"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 10.0
+offset_top = -23.0
+offset_right = 310.0
+offset_bottom = 277.0
+grow_vertical = 2
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("9_pxt3o")
+
+[node name="DeleteMode" type="CheckButton" parent="Select"]
+layout_mode = 0
+offset_left = 305.578
+offset_top = 72.0
+offset_right = 404.578
+offset_bottom = 107.0
+theme_override_fonts/font = ExtResource("10_4bg8m")
+theme_override_font_sizes/font_size = 15
+text = "Delete"
+
+[node name="Timer" type="Timer" parent="."]
 
 [connection signal="pressed" from="BackButton" to="board" method="_on_button_pressed"]
 [connection signal="pressed" from="ReadyButton" to="board" method="_on_button_2_pressed"]
-[connection signal="pressed" from="KingButton" to="board" method="_on_king_button_pressed"]
-[connection signal="pressed" from="QueenButton" to="board" method="_on_queen_button_pressed"]
-[connection signal="pressed" from="KnightButton" to="board" method="_on_knight_button_pressed"]
-[connection signal="pressed" from="BishopButton" to="board" method="_on_bishop_button_pressed"]
-[connection signal="pressed" from="RookButton" to="board" method="_on_rook_button_pressed"]
-[connection signal="pressed" from="PawnButton" to="board" method="_on_pawn_button_pressed"]
+[connection signal="pressed" from="Select/VBoxContainer/king_select" to="board" method="_on_king_button_pressed"]
+[connection signal="pressed" from="Select/VBoxContainer/queen_select" to="board" method="_on_queen_button_pressed"]
+[connection signal="pressed" from="Select/VBoxContainer/knight_select" to="board" method="_on_knight_button_pressed"]
+[connection signal="pressed" from="Select/VBoxContainer/bishop_select" to="board" method="_on_bishop_button_pressed"]
+[connection signal="pressed" from="Select/VBoxContainer/rook_select" to="board" method="_on_rook_button_pressed"]
+[connection signal="pressed" from="Select/VBoxContainer/pawn_select" to="board" method="_on_pawn_button_pressed"]
+[connection signal="toggled" from="Select/DeleteMode" to="board" method="_on_delete_mode_toggled"]

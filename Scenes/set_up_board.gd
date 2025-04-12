@@ -22,6 +22,25 @@ const WHITE_HIDDEN = preload("res://Assets/Piece/white_hidden.png")
 
 @onready var pieces: Node2D = $Pieces
 
+@onready var timer: Timer = $"../Timer"
+@onready var timer_label: Label = $"../Select/Timer"
+
+@onready var king_texture: TextureRect = $"../Select/VBoxContainer/king_select/king_texture"
+@onready var queen_texture: TextureRect = $"../Select/VBoxContainer/queen_select/queen_texture"
+@onready var knight_texture: TextureRect = $"../Select/VBoxContainer/knight_select/knight_texture"
+@onready var bishop_texture: TextureRect = $"../Select/VBoxContainer/bishop_select/bishop_texture"
+@onready var rook_texture: TextureRect = $"../Select/VBoxContainer/rook_select/rook_texture"
+@onready var pawn_texture: TextureRect = $"../Select/VBoxContainer/pawn_select/pawn_texture"
+
+@onready var king_select: Button = $"../Select/VBoxContainer/king_select"
+@onready var queen_select: Button = $"../Select/VBoxContainer/queen_select"
+@onready var knight_select: Button = $"../Select/VBoxContainer/knight_select"
+@onready var bishop_select: Button = $"../Select/VBoxContainer/bishop_select"
+@onready var rook_select: Button = $"../Select/VBoxContainer/rook_select"
+@onready var pawn_select: Button = $"../Select/VBoxContainer/pawn_select"
+
+@onready var delete_mode: CheckButton = $"../Select/DeleteMode"
+
 var board : Array = []
 var hidden_board: Array = []
 var another_board: Array = []
@@ -33,9 +52,13 @@ var selected_piece: int
 var piece_left = [0, 8, 2, 2, 2, 1, 1]
 var another_ready = false
 var iam_ready = false
+var is_delete = false
 
 func _ready():
 	play_white = GlobalScript.play_as == "white"
+	delete_mode.button_pressed = false
+	timer.wait_time = 600
+	timer.start()
 	
 	board.append([0, 0, 0, 0, 0, 0, 0, 0])
 	board.append([0, 0, 0, 0, 0, 0, 0, 0])
@@ -70,6 +93,14 @@ func _ready():
 	hidden_board.append([0, 0, 0, 0, 0, 0, 0, 0])
 	hidden_board.append([2, 2, 2, 2, 2, 2, 2, 2])
 	hidden_board.append([2, 2, 2, 2, 2, 2, 2, 2])
+	
+	if(!play_white):
+		king_texture.texture = BLACK_HIDDEN_KING
+		queen_texture.texture = BLACK_HIDDEN_QUEEN
+		knight_texture.texture = BLACK_HIDDEN_KNIGHT
+		bishop_texture.texture = BLACK_HIDDEN_BISHOP
+		rook_texture.texture = BLACK_HIDDEN_ROOK
+		pawn_texture.texture = BLACK_HIDDEN_PAWN
 	
 	display_board()
 	
@@ -120,9 +151,26 @@ func _input(event):
 				if(piece_left[abs(selected_piece)] == 0): return
 				
 				if(board[row][col] != 0): piece_left[abs(board[row][col])] += 1
+				
+				match abs(board[row][col]):
+					6: king_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
+					5: queen_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
+					2: knight_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
+					3: bishop_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
+					4: rook_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
+					1: pawn_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
 					
 				board[row][col] = selected_piece
 				piece_left[abs(selected_piece)] -= 1
+				
+				match abs(selected_piece):
+					6: king_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
+					5: queen_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
+					2: knight_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
+					3: bishop_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
+					4: rook_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
+					1: pawn_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
+				
 				if(piece_left[abs(selected_piece)] == 0): selected_piece = 0
 				display_board()
 			
@@ -201,3 +249,20 @@ func _on_pawn_button_pressed() -> void:
 		selected_piece = 0
 	else:
 		selected_piece = 1 if play_white else -1
+
+
+func _on_delete_mode_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		delete_mode.button_pressed = true
+	else:
+		delete_mode.button_pressed = false
+
+func time_left_to_live():
+	var total_sec = int(timer.time_left)
+	var minute = total_sec / 60
+	var second = total_sec % 60
+	return [minute, second]
+	
+func _process(delta):
+	timer_label.text = "%02d:%02d" % time_left_to_live()
+	

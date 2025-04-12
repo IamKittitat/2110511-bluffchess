@@ -58,6 +58,19 @@ const PIECE_MOVE = preload("res://Assets/Piece_move.png")
 @onready var failed_panel: Control = $"../sub_banner/failed_panel"
 @onready var sub_banner: Control = $"../sub_banner"
 
+@onready var end_game: Control = $"../End_Game"
+@onready var status: Label = $"../End_Game/Status"
+@onready var opponent_time: Timer = $"../Control/Opponent_time"
+@onready var player_time: Timer = $"../Control/Player_time"
+@onready var opponent_timer: Label = $"../Control/Opponent_timer"
+@onready var player_timer: Label = $"../Control/Player_timer"
+
+@onready var opponent_eaten: HBoxContainer = $"../Control/Opponent_eaten"
+@onready var player_eaten: HBoxContainer = $"../Control/Player_eaten"
+
+@onready var highlight: Node2D = $highlight
+const HIGHLIGHT = preload("res://Assets/highlight.png")
+
 #Variables
 # -6 = black king
 # -5 = black queen
@@ -110,12 +123,19 @@ var amount_of_same : Array = []
 
 func _ready():
 	play_white = GlobalScript.play_as == "white"
+	opponent_time.wait_time = 600
+	player_time.wait_time = 600
+	opponent_eaten.add_theme_constant_override("seperation",0)
+	player_eaten.add_theme_constant_override("seperation",0)
 	
-
 	board = GlobalScript.chess_board_data
 	hidden_board = GlobalScript.hidden_board_data
 	
 	is_my_turn = play_white
+	player_time.start()
+	opponent_time.start()
+	player_time.set_paused(not is_my_turn)
+	opponent_time.set_paused(is_my_turn)
 	for row in range(BOARD_SIZE):
 		for col in range(BOARD_SIZE):
 			if row <= 1:
@@ -150,6 +170,8 @@ func _input(event):
 			# Select pieces to move
 			if state == "CHOOSE" && (play_white && board[row][col] > 0 || !play_white && board[row][col] < 0):
 				selected_piece = Vector2(row, col)
+				delete_highlight()
+				show_highlight(row,col)
 				if(hidden_board[row][col] == 2):
 					state = get_next_state(state)
 				else:
@@ -255,7 +277,102 @@ func display_board():
 			
 			if holder.texture != null:
 				holder.scale = Vector2(13.5 / holder.texture.get_width(), 13.5 / holder.texture.get_height())
-			
+	#eaten zone
+	var starting_white = [1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,2, 2, 3, 3, 4, 4, 5, 6]
+	var starting_black = [-1 ,-1 ,-1 ,-1 ,-1 ,-1 ,-1 ,-1 ,-2, -2, -3, -3, -4, -4, -5, -6]
+	for row in BOARD_SIZE:
+		for col in BOARD_SIZE:
+			if(board[row][col] > 0):
+				starting_white.erase(board[row][col])
+			elif(board[row][col] < 0):
+				starting_black.erase(board[row][col])
+	for child in opponent_eaten.get_children():
+		child.queue_free()
+	for child in player_eaten.get_children():
+		child.queue_free()
+	if play_white:
+		for i in range(starting_white.size()):
+			var margin = MarginContainer.new()
+			if i > 0:
+				if starting_white[i] != starting_white[i-1]:
+					margin.add_theme_constant_override("margin_left", -6)
+				else:
+					margin.add_theme_constant_override("margin_left", -12)
+			var tex_rect = TextureRect.new()
+			match starting_white[i]:
+				6: tex_rect.texture = WHITE_PAWN
+				5: tex_rect.texture = WHITE_QUEEN
+				4: tex_rect.texture = WHITE_ROOK
+				3: tex_rect.texture = WHITE_BISHOP
+				2: tex_rect.texture = WHITE_KNIGHT
+				1: tex_rect.texture = WHITE_PAWN
+			tex_rect.custom_minimum_size = Vector2(12, 12) 
+			tex_rect.expand = true
+			tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			margin.add_child(tex_rect)
+			player_eaten.add_child(margin)
+		for i in range(starting_black.size()):
+			var margin = MarginContainer.new()
+			if i > 0:
+				if starting_black[i] != starting_black[i-1]:
+					margin.add_theme_constant_override("margin_left", -6)
+				else:
+					margin.add_theme_constant_override("margin_left", -12)
+			var tex_rect = TextureRect.new()
+			match starting_black[i]:
+				-6: tex_rect.texture = BLACK_PAWN
+				-5: tex_rect.texture = BLACK_QUEEN
+				-4: tex_rect.texture = BLACK_ROOK
+				-3: tex_rect.texture = BLACK_BISHOP
+				-2: tex_rect.texture = BLACK_KNIGHT
+				-1: tex_rect.texture = BLACK_PAWN
+			tex_rect.custom_minimum_size = Vector2(12, 12) 
+			tex_rect.expand = true
+			tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			margin.add_child(tex_rect)
+			opponent_eaten.add_child(margin)
+	else:
+		for i in range(starting_white.size()):
+			var margin = MarginContainer.new()
+			if i > 0:
+				if starting_white[i] != starting_white[i-1]:
+					margin.add_theme_constant_override("margin_left", -6)
+				else:
+					margin.add_theme_constant_override("margin_left", -12)
+			var tex_rect = TextureRect.new()
+			match starting_white[i]:
+				6: tex_rect.texture = WHITE_PAWN
+				5: tex_rect.texture = WHITE_QUEEN
+				4: tex_rect.texture = WHITE_ROOK
+				3: tex_rect.texture = WHITE_BISHOP
+				2: tex_rect.texture = WHITE_KNIGHT
+				1: tex_rect.texture = WHITE_PAWN
+			tex_rect.custom_minimum_size = Vector2(12, 12) 
+			tex_rect.expand = true
+			tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			margin.add_child(tex_rect)
+			opponent_eaten.add_child(margin)
+		for i in range(starting_black.size()):
+			var margin = MarginContainer.new()
+			if i > 0:
+				if starting_black[i] != starting_black[i-1]:
+					margin.add_theme_constant_override("margin_left", -6)
+				else:
+					margin.add_theme_constant_override("margin_left", -12)
+			var tex_rect = TextureRect.new()
+			match starting_black[i]:
+				-6: tex_rect.texture = BLACK_PAWN
+				-5: tex_rect.texture = BLACK_QUEEN
+				-4: tex_rect.texture = BLACK_ROOK
+				-3: tex_rect.texture = BLACK_BISHOP
+				-2: tex_rect.texture = BLACK_KNIGHT
+				-1: tex_rect.texture = BLACK_PAWN
+			tex_rect.custom_minimum_size = Vector2(12, 12) 
+			tex_rect.expand = true
+			tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			margin.add_child(tex_rect)
+			player_eaten.add_child(margin)
+	
 	if play_white: turn.texture = TURN_WHITE
 	else: turn.texture = TURN_BLACK
 
@@ -345,12 +462,15 @@ func set_move(row, col):
 			
 			var eaten_piece
 			eaten_piece = _move(selected_piece, row, col)			
-			is_my_turn = !is_my_turn 
+			is_my_turn = !is_my_turn
+			player_time.set_paused(not is_my_turn)
+			opponent_time.set_paused(is_my_turn)
 			threefold_position(board)
 			display_board()
 			handle_opponent_move.rpc_id(peer_id, board, hidden_board, row, col, disguise_code, eaten_piece[0], eaten_piece[1])
 			break
 	delete_dots()
+	delete_highlight()
 	state = reset_state()
 		
 	# Can instantly switch to move another piece
@@ -377,9 +497,13 @@ func _move(selected_piece, row, col):
 	return [eaten_piece, eaten_hidden_code]
 
 func self_handle_game_loss():
+	status.text = "You Lose!"
+	end_game.visible = true
 	print("YOU LOSS")
 
 func self_handle_game_win():
+	status.text = "You Win!"
+	end_game.visible = true
 	print("YOU WIN")
 	
 @rpc("any_peer", "call_remote", "reliable")
@@ -406,6 +530,8 @@ func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_
 		_check_loss()
 	
 	is_my_turn = !is_my_turn
+	player_time.set_paused(not is_my_turn)
+	opponent_time.set_paused(is_my_turn)
 	display_board()
 	
 	await get_tree().create_timer(5.0).timeout
@@ -424,10 +550,14 @@ func force_rerender(opponent_board, opponent_hidden_board):
 	
 @rpc("any_peer", "call_remote", "reliable")
 func opponent_handle_game_win():
+	status.text = "You Win!"
+	end_game.visible = true
 	print("YOU WIN!")
 
 @rpc("any_peer", "call_remote", "reliable")
 func opponent_handle_game_loss():
+	status.text = "You Lose!"
+	end_game.visible = true
 	print("YOU LOSS!")
 		
 func get_moves(selected, real_piece_code, disguise_piece_code):
@@ -768,9 +898,10 @@ func _on_challenge_pressed() -> void:
 		show_challenge_failed_out_banner.rpc_id(peer_id)
 		show_failed_sub_banner()
 		state = "FAILED"
-	opponent_disguise_code = 0
 	display_board()
 	force_rerender.rpc_id(peer_id, board, hidden_board)
+	await get_tree().create_timer(0.1).timeout
+	opponent_disguise_code = 0
 
 func _on_pawn_selected_pressed() -> void:
 	if(state != "BLUFF"): return 
@@ -853,40 +984,68 @@ func show_challenge_banner():
 @rpc("any_peer", "call_local", "reliable")	
 func show_challenge_success_banner(disguise,real):
 	print(disguise,real)
-	match abs(disguise):
+	if(real < 0):
+		disguise = -disguise
+	match disguise:
 		6: left_success_icon.texture = WHITE_HIDDEN_KING
 		5: left_success_icon.texture = WHITE_HIDDEN_QUEEN
 		4: left_success_icon.texture = WHITE_HIDDEN_ROOK
 		3: left_success_icon.texture = WHITE_HIDDEN_BISHOP
 		2: left_success_icon.texture = WHITE_HIDDEN_KNIGHT
 		1: left_success_icon.texture = WHITE_HIDDEN_PAWN
-	match abs(real):
+		-6: left_success_icon.texture = BLACK_HIDDEN_KING
+		-5: left_success_icon.texture = BLACK_HIDDEN_QUEEN
+		-4: left_success_icon.texture = BLACK_HIDDEN_ROOK
+		-3: left_success_icon.texture = BLACK_HIDDEN_BISHOP
+		-2: left_success_icon.texture = BLACK_HIDDEN_KNIGHT
+		-1: left_success_icon.texture = BLACK_HIDDEN_PAWN
+	match real:
 		6: right_success_icon.texture = WHITE_KING
 		5: right_success_icon.texture = WHITE_QUEEN
 		4: right_success_icon.texture = WHITE_ROOK
 		3: right_success_icon.texture = WHITE_BISHOP
 		2: right_success_icon.texture = WHITE_KNIGHT
 		1: right_success_icon.texture = WHITE_PAWN
+		-6: right_success_icon.texture = BLACK_KING
+		-5: right_success_icon.texture = BLACK_QUEEN
+		-4: right_success_icon.texture = BLACK_ROOK
+		-3: right_success_icon.texture = BLACK_BISHOP
+		-2: right_success_icon.texture = BLACK_KNIGHT
+		-1: right_success_icon.texture = BLACK_PAWN
 	banner.visible = true
 	challenge_success_with_icon.visible = true
 	
 @rpc("any_peer", "call_local", "reliable")	
 func show_challenge_failed_banner(disguise,real):
 	print(disguise,real)
-	match abs(disguise):
+	if(real < 0):
+		disguise = -disguise
+	match disguise:
 		6: left_failed_icon.texture = WHITE_HIDDEN_KING
 		5: left_failed_icon.texture = WHITE_HIDDEN_QUEEN
 		4: left_failed_icon.texture = WHITE_HIDDEN_ROOK
 		3: left_failed_icon.texture = WHITE_HIDDEN_BISHOP
 		2: left_failed_icon.texture = WHITE_HIDDEN_KNIGHT
 		1: left_failed_icon.texture = WHITE_HIDDEN_PAWN
-	match abs(real):
+		-6: left_failed_icon.texture = BLACK_HIDDEN_KING
+		-5: left_failed_icon.texture = BLACK_HIDDEN_QUEEN
+		-4: left_failed_icon.texture = BLACK_HIDDEN_ROOK
+		-3: left_failed_icon.texture = BLACK_HIDDEN_BISHOP
+		-2: left_failed_icon.texture = BLACK_HIDDEN_KNIGHT
+		-1: left_failed_icon.texture = BLACK_HIDDEN_PAWN
+	match real:
 		6: right_failed_icon.texture = WHITE_KING
 		5: right_failed_icon.texture = WHITE_QUEEN
 		4: right_failed_icon.texture = WHITE_ROOK
 		3: right_failed_icon.texture = WHITE_BISHOP
 		2: right_failed_icon.texture = WHITE_KNIGHT
 		1: right_failed_icon.texture = WHITE_PAWN
+		-6: right_failed_icon.texture = BLACK_KING
+		-5: right_failed_icon.texture = BLACK_QUEEN
+		-4: right_failed_icon.texture = BLACK_ROOK
+		-3: right_failed_icon.texture = BLACK_BISHOP
+		-2: right_failed_icon.texture = BLACK_KNIGHT
+		-1: right_failed_icon.texture = BLACK_PAWN
 	banner.visible = true
 	challenge_failed_with_icon.visible = true
 	
@@ -908,3 +1067,30 @@ func show_failed_sub_banner():
 	sub_banner.visible = true
 	failed_panel.visible = true
 	
+func _on_back_to_menu_pressed():
+	end_game.visible = false
+	get_tree().change_scene_to_file("res://Scenes/main_menu.tscn")
+	
+func time_left_to_live():
+	var total_player_sec = int(player_time.time_left)
+	var player_minute = total_player_sec / 60
+	var player_second = total_player_sec % 60
+	var total_opponent_sec = int(opponent_time.time_left)
+	var opponent_minute = total_opponent_sec / 60
+	var opponent_second = total_opponent_sec % 60
+	return [player_minute, player_second, opponent_minute, opponent_second]
+	
+func _process(delta):
+	opponent_timer.text = "%02d:%02d" % [time_left_to_live()[2],time_left_to_live()[3]]
+	player_timer.text = "%02d:%02d" % [time_left_to_live()[0],time_left_to_live()[1]]
+	
+func show_highlight(x,y):
+	var holder = TEXTURE_HOLDER.instantiate()
+	holder.texture = HIGHLIGHT		
+	holder.scale = Vector2(18.0 / holder.texture.get_width(), 18.0 / holder.texture.get_height())
+	holder.global_position = Vector2(y * CELL_WIDTH + (CELL_WIDTH / 2) - 72, - x * CELL_WIDTH - (CELL_WIDTH / 2) + 72)
+	highlight.add_child(holder)
+
+func delete_highlight():
+	for child in highlight.get_children():
+		child.queue_free()

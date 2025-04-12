@@ -1,11 +1,11 @@
 [gd_scene load_steps=7 format=3 uid="uid://bx2kcu7xx1205"]
 
-[ext_resource type="Texture2D" uid="uid://diac60rggirfg" path="res://Assets/Home page.png" id="1_28flt"]
 [ext_resource type="Script" uid="uid://dfg76ja6nb0cw" path="res://Scenes/main_menu.gd" id="1_48xlc"]
+[ext_resource type="Texture2D" uid="uid://cacqa44tbesau" path="res://Assets/Home page_2.png" id="2_1ehe0"]
 [ext_resource type="FontFile" uid="uid://dgfsgagxg2j1f" path="res://Assets/Besley-Italic-VariableFont_wght.ttf" id="3_1ehe0"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ce3w2"]
-texture = ExtResource("1_28flt")
+texture = ExtResource("2_1ehe0")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n45e2"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
