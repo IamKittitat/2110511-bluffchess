@@ -91,7 +91,7 @@ var hidden_board: Array # 0: No piece, 1 = Reveal, 2 = Hidden
 var pawn_not_moved = _init_zero_array(BOARD_SIZE)
 var is_my_turn: bool
 var play_white : bool
-var state : String = "CHOOSE" # CHOOSE, BLUFF, MOVE, CHALLENGE, SUCCESS, FAILED
+var state : String
 var moves = []
 var selected_piece : Vector2 # x = row, y = col
 var disguise_code = 0
@@ -130,7 +130,7 @@ func _ready():
 	
 	board = GlobalScript.chess_board_data
 	hidden_board = GlobalScript.hidden_board_data
-	
+	state = "CHOOSE"
 	is_my_turn = play_white
 	player_time.start()
 	opponent_time.start()

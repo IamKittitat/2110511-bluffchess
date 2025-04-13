@@ -41,24 +41,19 @@ const WHITE_HIDDEN = preload("res://Assets/Piece/white_hidden.png")
 
 @onready var delete_mode: CheckButton = $"../Select/DeleteMode"
 
-var board : Array = []
-var hidden_board: Array = []
-var another_board: Array = []
-var is_my_turn: bool
-var play_white : bool
-var state : String = "CHOOSE" # CHOOSE, PLACE 
-var selected_piece: int
-
-var piece_left = [0, 8, 2, 2, 2, 1, 1]
-var another_ready = false
-var iam_ready = false
-var is_delete = false
-
+var board
+var hidden_board
+var another_board
+var is_my_turn
+var play_white
+var selected_piece
+var piece_left
+var another_ready
+var iam_ready
+var is_delete
+	
 func _ready():
-	play_white = GlobalScript.play_as == "white"
-	delete_mode.button_pressed = false
-	timer.wait_time = 600
-	timer.start()
+	_init_parameter()
 	
 	board.append([0, 0, 0, 0, 0, 0, 0, 0])
 	board.append([0, 0, 0, 0, 0, 0, 0, 0])
@@ -283,3 +278,16 @@ func time_left_to_live():
 func _process(delta):
 	timer_label.text = "%02d:%02d" % time_left_to_live()
 	
+
+func _init_parameter():
+	play_white = GlobalScript.play_as == "white"
+	delete_mode.button_pressed = false
+	timer.wait_time = 600
+	timer.start()
+	board = []
+	hidden_board = []
+	another_board = []
+	piece_left = [0, 8, 2, 2, 2, 1, 1]
+	another_ready = false
+	iam_ready = false
+	is_delete = false
