@@ -103,8 +103,8 @@ var our_eaten_pawn_not_move: int
 
 func _ready():
 	play_white = GlobalScript.play_as == "white"
-	opponent_time.wait_time = 600
-	player_time.wait_time = 600
+	opponent_time.wait_time = get_play_phase_int(GlobalScript.play_phase)
+	player_time.wait_time = get_play_phase_int(GlobalScript.play_phase)
 	opponent_eaten.add_theme_constant_override("seperation",0)
 	player_eaten.add_theme_constant_override("seperation",0)
 	
@@ -114,8 +114,7 @@ func _ready():
 	is_my_turn = play_white
 	player_time.start()
 	opponent_time.start()
-	player_time.set_paused(not is_my_turn)
-	opponent_time.set_paused(is_my_turn)
+	_swap_timer()
 	for row in range(BOARD_SIZE):
 		for col in range(BOARD_SIZE):
 			if row <= 1:
@@ -384,8 +383,7 @@ func set_move(row, col):
 			var eaten_piece
 			eaten_piece = _move(selected_piece, row, col)			
 			is_my_turn = !is_my_turn
-			player_time.set_paused(not is_my_turn)
-			opponent_time.set_paused(is_my_turn)
+			_swap_timer()
 			display_board()
 			handle_opponent_move.rpc_id(peer_id, board, hidden_board, row, col, disguise_code, eaten_piece[0], eaten_piece[1])
 			break
@@ -393,6 +391,14 @@ func set_move(row, col):
 	delete_dots()
 	delete_highlight()
 	state = reset_state()
+	if(GlobalScript.play_phase == "15|10"):
+		var time_left = player_time.time_left
+		player_time.start(time_left + 10)
+		plus_10_timer.rpc_id(peer_id, time_left)
+
+@rpc("any_peer", "call_remote", "reliable")	
+func plus_10_timer(time_left):
+	opponent_time.start(time_left + 10)
 		
 func _move(selected_piece, row, col):
 	var eaten_piece = board[row][col]
@@ -434,8 +440,7 @@ func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_
 		_check_loss()
 	
 	is_my_turn = !is_my_turn
-	player_time.set_paused(not is_my_turn)
-	opponent_time.set_paused(is_my_turn)
+	_swap_timer()
 	display_board()
 	
 	await get_tree().create_timer(5.0).timeout
@@ -842,10 +847,20 @@ func time_left_to_live():
 	var opponent_minute = total_opponent_sec / 60
 	var opponent_second = total_opponent_sec % 60
 	return [player_minute, player_second, opponent_minute, opponent_second]
+
+func _swap_timer():
+	player_time.set_paused(not is_my_turn)
+	opponent_time.set_paused(is_my_turn)
 	
 func _process(delta):
+	var peer_id = multiplayer.get_remote_sender_id()
 	opponent_timer.text = "%02d:%02d" % [time_left_to_live()[2],time_left_to_live()[3]]
 	player_timer.text = "%02d:%02d" % [time_left_to_live()[0],time_left_to_live()[1]]
+	
+	if(int(player_time.time_left) == 0):
+		print("OHHHHH")
+		self_handle_game_loss()
+		opponent_handle_game_win.rpc_id(peer_id)
 	
 func show_highlight(x,y):
 	var holder = TEXTURE_HOLDER.instantiate()
@@ -864,3 +879,11 @@ func _is_opponent_hidden_exist():
 			if((play_white && board[row][col] < 0 && hidden_board[row][col] == 2) || (!play_white && board[row][col] > 0 && hidden_board[row][col] == 2)):
 				return true
 	return false
+
+func get_play_phase_int(play_phase):
+	if(play_phase == "10 min"):
+		return 600
+	elif(play_phase == "15|10"):
+		return 900
+	elif(play_phase == "30 min"):
+		return 1800
