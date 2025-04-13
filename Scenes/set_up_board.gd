@@ -105,6 +105,9 @@ func _ready():
 	display_board()
 	
 func display_board():
+	for child in pieces.get_children():
+		child.queue_free()
+		
 	for row in BOARD_SIZE:
 		for col in BOARD_SIZE:
 			var holder = TEXTURE_HOLDER_SETUP.instantiate()
@@ -147,31 +150,43 @@ func _input(event):
 			
 			if(row < 0 || row > 7 || col < 0 || col > 7): return
 			if(row <= 1):
-				# No more piece left to place
-				if(piece_left[abs(selected_piece)] == 0): return
-				
-				if(board[row][col] != 0): piece_left[abs(board[row][col])] += 1
-				
-				match abs(board[row][col]):
-					6: king_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
-					5: queen_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
-					2: knight_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
-					3: bishop_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
-					4: rook_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
-					1: pawn_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
+				if(is_delete):
+					if(board[row][col] != 0): piece_left[abs(board[row][col])] += 1
+					match abs(board[row][col]):
+						6: king_select.text = "%d pieces  " % piece_left[abs(board[row][col])]
+						5: queen_select.text = "%d pieces  " % piece_left[abs(board[row][col])]
+						2: knight_select.text = "%d pieces  " % piece_left[abs(board[row][col])]
+						3: bishop_select.text = "%d pieces  " % piece_left[abs(board[row][col])]
+						4: rook_select.text = "%d pieces  " % piece_left[abs(board[row][col])]
+						1: pawn_select.text = "%d pieces  " % piece_left[abs(board[row][col])]
+					board[row][col] = 0
+				else:
+					# No more piece left to place
+					if(piece_left[abs(selected_piece)] == 0): return
 					
-				board[row][col] = selected_piece
-				piece_left[abs(selected_piece)] -= 1
-				
-				match abs(selected_piece):
-					6: king_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
-					5: queen_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
-					2: knight_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
-					3: bishop_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
-					4: rook_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
-					1: pawn_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
-				
-				if(piece_left[abs(selected_piece)] == 0): selected_piece = 0
+					# Paste the piece over another placed piece
+					if(board[row][col] != 0): piece_left[abs(board[row][col])] += 1
+					
+					match abs(board[row][col]):
+						6: king_select.text = "%d pieces  " % piece_left[abs(board[row][col])]
+						5: queen_select.text = "%d pieces  " % piece_left[abs(board[row][col])]
+						2: knight_select.text = "%d pieces  " % piece_left[abs(board[row][col])]
+						3: bishop_select.text = "%d pieces  " % piece_left[abs(board[row][col])]
+						4: rook_select.text = "%d pieces  " % piece_left[abs(board[row][col])]
+						1: pawn_select.text = "%d pieces  " % piece_left[abs(board[row][col])]
+						
+					board[row][col] = selected_piece
+					piece_left[abs(selected_piece)] -= 1
+					
+					match abs(selected_piece):
+						6: king_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
+						5: queen_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
+						2: knight_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
+						3: bishop_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
+						4: rook_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
+						1: pawn_select.text = "%d pieces  " % piece_left[abs(selected_piece)]
+					
+					if(piece_left[abs(selected_piece)] == 0): selected_piece = 0
 				display_board()
 			
 func is_mouse_out():
@@ -254,8 +269,10 @@ func _on_pawn_button_pressed() -> void:
 func _on_delete_mode_toggled(toggled_on: bool) -> void:
 	if toggled_on:
 		delete_mode.button_pressed = true
+		is_delete = true
 	else:
 		delete_mode.button_pressed = false
+		is_delete = false
 
 func time_left_to_live():
 	var total_sec = int(timer.time_left)
