@@ -101,26 +101,6 @@ var our_eaten_piece: int
 var our_eaten_hidden_code: int
 var our_eaten_pawn_not_move: int
 
-var promotion_square = null
-
-# For Castling
-#var white_king = false
-#var black_king = false
-#var white_rook_left = false
-#var white_rook_right = false
-#var black_rook_left = false
-#var black_rook_right = false
-
-#var en_passant = null
-
-var white_king_pos
-var black_king_pos
-
-var fifty_move_rule = 0
-
-var unique_board_moves : Array = []
-var amount_of_same : Array = []
-
 func _ready():
 	play_white = GlobalScript.play_as == "white"
 	opponent_time.wait_time = 600
@@ -140,10 +120,6 @@ func _ready():
 		for col in range(BOARD_SIZE):
 			if row <= 1:
 				pawn_not_moved[row][col] = 1
-			if board[row][col] == 6:
-				white_king_pos = Vector2(row, col)
-			if board[row][col] == -6:
-				black_king_pos = Vector2(row, col)
 	display_board()
 	
 	var white_buttons = get_tree().get_nodes_in_group("white_pieces")
@@ -160,7 +136,7 @@ func _input(event):
 	var peer_id = multiplayer.get_remote_sender_id()
 	#if event is InputEventMouseButton and event.pressed and banner.visible:
 		#close_banner()
-	if event is InputEventMouseButton && event.pressed && promotion_square == null:
+	if event is InputEventMouseButton && event.pressed:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if is_mouse_out(): return
 			if !is_my_turn: return
@@ -399,95 +375,21 @@ func delete_dots():
 
 func set_move(row, col):
 	var peer_id = multiplayer.get_remote_sender_id()
-	var just_now = false
 	for i in moves:
 		if i.x == row && i.y == col:
-			fifty_move_rule += 1
-			if is_enemy(Vector2(row, col)): fifty_move_rule = 0
-			match board[selected_piece.x][selected_piece.y]:
-				1:
-					fifty_move_rule = 0
-					#if i.x == 7: promote(i)
-					if i.x == 3 && selected_piece.x == 1:
-						#en_passant = i
-						just_now = true
-					#elif en_passant != null:
-						#if en_passant.y == i.y && selected_piece.y != i.y && en_passant.x == selected_piece.x:
-							#board[en_passant.x][en_passant.y] = 0
-				-1:
-					fifty_move_rule = 0
-					#if i.x == 0: promote(i)
-					if i.x == 4 && selected_piece.x == 6:
-						#en_passant = i
-						just_now = true
-					#elif en_passzant != null:
-						#if en_passant.y == i.y && selected_piece.y != i.y && en_passant.x == selected_piece.x:
-							#board[en_passant.x][en_passant.y] = 0
-				4:
-					pass
-					#if selected_piece.x == 0 && selected_piece.y == 0: white_rook_left = true
-					#elif selected_piece.x == 0 && selected_piece.y == 7: white_rook_right = true
-				-4:
-					pass
-					#if selected_piece.x == 7 && selected_piece.y == 0: black_rook_left = true
-					#elif selected_piece.x == 7 && selected_piece.y == 7: black_rook_right = true
-				6:
-					#if selected_piece.x == 0 && selected_piece.y == 4:
-						#white_king = true
-						#if i.y == 2:
-							#white_rook_left = true
-							#white_rook_right = true
-							#board[0][0] = 0
-							#board[0][3] = 4
-						#elif i.y == 6:
-							#white_rook_left = true
-							#white_rook_right = true
-							#board[0][7] = 0
-							#board[0][5] = 4
-					white_king_pos = i
-				-6:
-					pass
-					#if selected_piece.x == 7 && selected_piece.y == 4:
-						#black_king = true
-						#if i.y == 2:
-							#black_rook_left = true
-							#black_rook_right = true
-							#board[7][0] = 0
-							#board[7][3] = -4
-						#elif i.y == 6:
-							#black_rook_left = true
-							#black_rook_right = true
-							#board[7][7] = 0
-							#board[7][5] = -4
-					black_king_pos = i
-			#if !just_now: en_passant = null
-			
 			var eaten_piece
 			eaten_piece = _move(selected_piece, row, col)			
 			is_my_turn = !is_my_turn
 			player_time.set_paused(not is_my_turn)
 			opponent_time.set_paused(is_my_turn)
-			threefold_position(board)
 			display_board()
 			handle_opponent_move.rpc_id(peer_id, board, hidden_board, row, col, disguise_code, eaten_piece[0], eaten_piece[1])
 			break
+			
 	delete_dots()
 	delete_highlight()
 	state = reset_state()
 		
-	# Can instantly switch to move another piece
-	#if (selected_piece.x != var2 || selected_piece.y != var1) && (play_white && board[var2][var1] > 0 || !play_white && board[var2][var1] < 0):
-		#selected_piece = Vector2(var2, var1)
-		#print("HERE?", var2, var1)
-		#show_options()
-		#state = get_next_state(state)
-	#elif is_stalemate():
-		#if play_white && is_in_check(white_king_pos) || !play_white && is_in_check(black_king_pos): print("CHECKMATE")
-		#else: print("DRAW")
-		#
-	#if fifty_move_rule == 50: print("DRAW")
-	#elif insuficient_material(): print("DRAW")
-
 func _move(selected_piece, row, col):
 	var eaten_piece = board[row][col]
 	var eaten_hidden_code = hidden_board[row][col]
@@ -629,34 +531,12 @@ func get_king_moves(piece_position : Vector2):
 	var directions = [Vector2(0, 1), Vector2(0, -1), Vector2(1, 0), Vector2(-1, 0),
 	Vector2(1, 1), Vector2(1, -1), Vector2(-1, 1), Vector2(-1, -1)]
 	
-	# Remove old position
-	#if play_white:
-		#board[white_king_pos.x][white_king_pos.y] = 0
-	#else:
-		#board[black_king_pos.x][black_king_pos.y] = 0
-	
 	for i in directions:
 		var destination_pos = piece_position + i
 		if is_valid_position(destination_pos):
 			if is_empty(destination_pos) || is_enemy(destination_pos):
 				_moves.append(destination_pos)
 				
-	#if play_white && !white_king:
-		#if !white_rook_left && is_empty(Vector2(0, 1)) && is_empty(Vector2(0, 2)) && !is_in_check(Vector2(0, 2)) && is_empty(Vector2(0, 3)) && !is_in_check(Vector2(0, 3)) && !is_in_check(Vector2(0, 4)):
-			#_moves.append(Vector2(0, 2))
-		#if !white_rook_right && !is_in_check(Vector2(0, 4)) && is_empty(Vector2(0, 5)) && !is_in_check(Vector2(0, 5)) && is_empty(Vector2(0, 6)) && !is_in_check(Vector2(0, 6)):
-			#_moves.append(Vector2(0, 6))
-	#elif !play_white && !black_king:
-		#if !black_rook_left && is_empty(Vector2(7, 1)) && is_empty(Vector2(7, 2)) && !is_in_check(Vector2(7, 2)) && is_empty(Vector2(7, 3)) && !is_in_check(Vector2(7, 3)) && !is_in_check(Vector2(7, 4)):
-			#_moves.append(Vector2(7, 2))
-		#if !black_rook_right && !is_in_check(Vector2(7, 4)) && is_empty(Vector2(7, 5)) && !is_in_check(Vector2(7, 5)) && is_empty(Vector2(7, 6)) && !is_in_check(Vector2(7, 6)):
-			#_moves.append(Vector2(7, 6))
-			
-	if play_white:
-		board[white_king_pos.x][white_king_pos.y] = 6
-	else:
-		board[black_king_pos.x][black_king_pos.y] = -6
-	
 	return _moves
 	
 func get_knight_moves(piece_position : Vector2):
@@ -678,16 +558,6 @@ func get_pawn_moves(piece_position : Vector2):
 	var is_first_move = pawn_not_moved[piece_position.x][piece_position.y] == 1
 	direction = Vector2(1, 0)
 
-	#if en_passant != null && (play_white && piece_position.x == 4 || !play_white && piece_position.x == 3) && abs(en_passant.y - piece_position.y) == 1:
-		#var destination_pos = en_passant + direction
-		#board[pos.x][pos.y] = 1 if play_white else -1
-		#board[piece_position.x][piece_position.y] = 0
-		#board[en_passant.x][en_passant.y] = 0
-		#if play_white && !is_in_check(white_king_pos) || !play_white && !is_in_check(black_king_pos): _moves.append(pos)
-		#board[pos.x][pos.y] = 0
-		#board[piece_position.x][piece_position.y] = 1 if play_white else -1
-		#board[en_passant.x][en_passant.y] = -1 if play_white else 1
-	
 	var destination_pos = piece_position + direction
 	if is_empty(destination_pos):
 		_moves.append(destination_pos)
@@ -725,114 +595,17 @@ func is_enemy(pos : Vector2):
 	if play_white && board[pos.x][pos.y] < 0 || !play_white && board[pos.x][pos.y] > 0: return true
 	return false
 	
-func promote(_var : Vector2):
-	promotion_square = _var
-	white_pieces.visible = play_white # Promotion selecting Banner
-	black_pieces.visible = !play_white
-
 func _on_button_pressed(button):
 	var num_char = int(button.name.substr(0, 1))
-	board[promotion_square.x][promotion_square.y] = -num_char if play_white else num_char
 	white_pieces.visible = false
 	black_pieces.visible = false
-	promotion_square = null
 	display_board()
-
-func is_in_check(king_pos: Vector2):
-	return false
-	#var directions = [Vector2(0, 1), Vector2(0, -1), Vector2(1, 0), Vector2(-1, 0),
-	#Vector2(1, 1), Vector2(1, -1), Vector2(-1, 1), Vector2(-1, -1)]
-	#
-	#var pawn_direction = 1 if play_white else -1
-	#var pawn_attacks = [
-		#king_pos + Vector2(pawn_direction, 1),
-		#king_pos + Vector2(pawn_direction, -1)
-	#]
-	#
-	#for i in pawn_attacks:
-		#if is_valid_position(i):
-			#if play_white && board[i.x][i.y] == -1 || !play_white && board[i.x][i.y] == 1: return true
-	#
-	#for i in directions:
-		#var pos = king_pos + i
-		#if is_valid_position(pos):
-			#if play_white && board[pos.x][pos.y] == -6 || !play_white && board[pos.x][pos.y] == 6: return true
-	#
-	## Bishop, Queen, Rook
-	#for i in directions:
-		#var pos = king_pos + i
-		#while is_valid_position(pos):
-			#if !is_empty(pos):
-				#var piece = board[pos.x][pos.y]
-				## Rook, Queen
-				#if (i.x == 0 || i.y == 0) && (play_white && piece in [-4, -5] || !play_white && piece in [4, 5]):
-					#return true
-				## Bishop, Queen
-				#elif (i.x != 0 && i.y != 0) && (play_white && piece in [-3, -5] || !play_white && piece in [3, 5]):
-					#return true
-				#break
-			#pos += i
-	#var knight_directions = [Vector2(2, 1), Vector2(2, -1), Vector2(1, 2), Vector2(1, -2),
-	#Vector2(-2, 1), Vector2(-2, -1), Vector2(-1, 2), Vector2(-1, -2)]
-	#
-	#for i in knight_directions:
-		#var pos = king_pos + i
-		#if is_valid_position(pos):
-			#if play_white && board[pos.x][pos.y] == -2 || !play_white && board[pos.x][pos.y] == 2:
-				#return true
-				#
-	#return false
-
-func is_stalemate():
-	if play_white:
-		# There is a piece that can still move
-		for row in BOARD_SIZE:
-			for col in BOARD_SIZE:
-				var piece_code = board[row][col]
-				if board[row][col] > 0:
-					if get_moves(Vector2(row, col), piece_code, piece_code) != []: return false
-				
-	else:
-		for row in BOARD_SIZE:
-			for col in BOARD_SIZE:
-				var piece_code = board[row][col]
-				if board[row][col] < 0:
-					if get_moves(Vector2(row, col), piece_code, piece_code) != []: return false
-	return true
-
-func insuficient_material():
-	var white_piece = 0
-	var black_piece = 0
-	
-	for i in BOARD_SIZE:
-		for j in BOARD_SIZE:
-			match board[i][j]:
-				2, 3:
-					if white_piece == 0: white_piece += 1
-					else: return false
-				-2, -3:
-					if black_piece == 0: black_piece += 1
-					else: return false
-				6, -6, 0: pass
-				_: #4 -4 1 -1 -5 5
-					return false
-	return true
-
-func threefold_position(var1 : Array):
-	for i in unique_board_moves.size():
-		if var1 == unique_board_moves[i]:
-			amount_of_same[i] += 1
-			if amount_of_same[i] >= 3: print("DRAW")
-			return
-	unique_board_moves.append(var1.duplicate(true))
-	amount_of_same.append(1)
 
 func reset_state():
 	return "CHOOSE"
 	
 func get_next_state(state):
 	# CHOOSE, BLUFF, MOVE, CHALLENGE, SUCCESS, FAILED
-	# BLUFF -> CHOOSE : if click on any place in the screen
 	var next_state = ""
 	match state:
 		"CHOOSE": next_state = "BLUFF"
@@ -841,7 +614,6 @@ func get_next_state(state):
 		"CHALLENGE": next_state = reset_state()
 		"SUCCESS": next_state = reset_state()
 		"FAILED": next_state = reset_state()
-	print("FROM ",state," TO ",next_state)
 	return next_state
 	
 func _init_zero_array(BOARD_SIZE):
