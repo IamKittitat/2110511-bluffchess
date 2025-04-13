@@ -163,6 +163,9 @@ func _input(event):
 				disguise_code = 0
 				state = reset_state()
 			elif state == "SUCCESS":
+				if(!_is_opponent_hidden_exist()):
+					state = get_next_state(state)
+					close_banner.rpc()
 				if((play_white && board[row][col] < 0) || (!play_white && board[row][col] > 0)):
 					if(hidden_board[row][col] == 2):
 						hidden_board[row][col] = 1
@@ -669,33 +672,34 @@ func _on_challenge_pressed() -> void:
 	await get_tree().create_timer(0.1).timeout
 
 func _on_pawn_selected_pressed() -> void:
-	if(state != "BLUFF"): return 
-	_handle_disguise(1)
+	if(state in ["BLUFF", "MOVE"]):
+		_handle_disguise(1)
 	
 func _on_knight_selected_pressed() -> void:
-	if(state != "BLUFF"): return 
-	_handle_disguise(2)
+	if(state in ["BLUFF", "MOVE"]):
+		_handle_disguise(2)
 	
 func _on_bishop_selected_pressed() -> void:
-	if(state != "BLUFF"): return 
-	_handle_disguise(3)
+	if(state in ["BLUFF", "MOVE"]):
+		_handle_disguise(3)
 	
 func _on_rook_selected_pressed() -> void:
-	if(state != "BLUFF"): return 
-	_handle_disguise(4)
+	if(state in ["BLUFF", "MOVE"]):
+		_handle_disguise(4)
 	
 func _on_queen_selected_pressed() -> void:
-	if(state != "BLUFF"): return 
-	_handle_disguise(5)
+	if(state in ["BLUFF", "MOVE"]):
+		_handle_disguise(5)
 	
 func _on_king_selected_pressed() -> void:
-	if(state != "BLUFF"): return 
-	_handle_disguise(6)
+	if(state in ["BLUFF", "MOVE"]):
+		_handle_disguise(6)
 
 func _handle_disguise(input_code):
+	delete_dots()
 	disguise_code = input_code
 	show_options(selected_piece, disguise_code)
-	state = get_next_state(state)
+	state = "MOVE"
 	
 func _flip_board(board):
 	var new_board = []
@@ -853,3 +857,10 @@ func show_highlight(x,y):
 func delete_highlight():
 	for child in highlight.get_children():
 		child.queue_free()
+
+func _is_opponent_hidden_exist():
+	for row in BOARD_SIZE:
+		for col in BOARD_SIZE:
+			if((play_white && board[row][col] < 0 && hidden_board[row][col] == 2) || (!play_white && board[row][col] > 0 && hidden_board[row][col] == 2)):
+				return true
+	return false
