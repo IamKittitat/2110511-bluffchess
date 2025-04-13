@@ -178,6 +178,7 @@ func _input(event):
 					close_banner.rpc()
 					display_board()
 					force_rerender.rpc_id(peer_id, board, hidden_board)
+					_check_loss()
 	
 				
 func is_mouse_out():
