@@ -948,10 +948,8 @@ func _check_loss():
 		
 func _check_win():
 	print(board)
-	print("CHECK ", opponent_king_exist())
 	var peer_id = multiplayer.get_remote_sender_id()
 	if(!opponent_king_exist()):
-		print("OH")
 		self_handle_game_win()
 		opponent_handle_game_loss.rpc_id(peer_id)
 	
