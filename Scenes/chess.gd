@@ -169,6 +169,7 @@ func _input(event):
 			var row = abs(snapped(get_global_mouse_position().y, 0)) / CELL_WIDTH
 			# Select pieces to move
 			if state == "CHOOSE" && (play_white && board[row][col] > 0 || !play_white && board[row][col] < 0):
+				opponent_disguise_code = 0
 				selected_piece = Vector2(row, col)
 				delete_highlight()
 				show_highlight(row,col)
@@ -524,8 +525,6 @@ func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_
 		state = "CHALLENGE"
 	else:
 		state = "CHOOSE"
-		opponent_disguise_code = 0
-		
 		_check_loss()
 	
 	is_my_turn = !is_my_turn
@@ -537,7 +536,6 @@ func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_
 	if(state == "CHALLENGE"):
 		_check_loss()
 		state = "CHOOSE"
-		opponent_disguise_code = 0
 		display_board()
 	
 @rpc("any_peer", "call_remote", "reliable")	
@@ -896,7 +894,6 @@ func _on_challenge_pressed() -> void:
 	display_board()
 	force_rerender.rpc_id(peer_id, board, hidden_board)
 	await get_tree().create_timer(0.1).timeout
-	opponent_disguise_code = 0
 
 func _on_pawn_selected_pressed() -> void:
 	if(state != "BLUFF"): return 
@@ -950,7 +947,6 @@ func _check_win():
 func _on_skip_pressed() -> void:
 	state = "CHOOSE"
 	_check_loss()
-	opponent_disguise_code = 0
 	display_board()
 	
 #close banner
