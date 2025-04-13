@@ -179,7 +179,8 @@ func _input(event):
 					state = "MOVE"
 			# Select pieces to disguise.
 			elif state == "BLUFF":
-				pass # This stage is handled by the piece disguise button
+				state= reset_state() # If click anywhere in the board (Not click on the bluff button), reset state
+				delete_highlight()
 			elif state == "MOVE": 
 				set_move(row, col)
 				disguise_code = 0
@@ -499,12 +500,10 @@ func _move(selected_piece, row, col):
 func self_handle_game_loss():
 	status.text = "You Lose!"
 	end_game.visible = true
-	print("YOU LOSS")
 
 func self_handle_game_win():
 	status.text = "You Win!"
 	end_game.visible = true
-	print("YOU WIN")
 	
 @rpc("any_peer", "call_remote", "reliable")
 func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_col, disguise_code, eaten_piece, eaten_hidden_code):
@@ -536,7 +535,6 @@ func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_
 	
 	await get_tree().create_timer(5.0).timeout
 	if(state == "CHALLENGE"):
-		print("5 sec timer out")
 		_check_loss()
 		state = "CHOOSE"
 		opponent_disguise_code = 0
@@ -552,13 +550,11 @@ func force_rerender(opponent_board, opponent_hidden_board):
 func opponent_handle_game_win():
 	status.text = "You Win!"
 	end_game.visible = true
-	print("YOU WIN!")
 
 @rpc("any_peer", "call_remote", "reliable")
 func opponent_handle_game_loss():
 	status.text = "You Lose!"
 	end_game.visible = true
-	print("YOU LOSS!")
 		
 func get_moves(selected, real_piece_code, disguise_piece_code):
 	var _moves = []
@@ -837,7 +833,8 @@ func reset_state():
 	return "CHOOSE"
 	
 func get_next_state(state):
-	#CHOOSE, BLUFF, MOVE, CHALLENGE, SUCCESS, FAILED
+	# CHOOSE, BLUFF, MOVE, CHALLENGE, SUCCESS, FAILED
+	# BLUFF -> CHOOSE : if click on any place in the screen
 	var next_state = ""
 	match state:
 		"CHOOSE": next_state = "BLUFF"
@@ -877,7 +874,6 @@ func _on_challenge_pressed() -> void:
 	show_challenge_banner.rpc()
 	await get_tree().create_timer(2.0).timeout
 	if(abs(opponent_disguise_code) != abs(board[opponent_dest_pos.x][opponent_dest_pos.y])):
-		print("CHALLENGE SUCCESS, PLEASE SELECT OPPONENT PIECE TO REVEAL")
 		close_banner.rpc()
 		show_challenge_success_banner.rpc(opponent_disguise_code,board[opponent_dest_pos.x][opponent_dest_pos.y])
 		await get_tree().create_timer(2.0).timeout
@@ -890,7 +886,6 @@ func _on_challenge_pressed() -> void:
 		state = "SUCCESS"
 		_check_win() # incase of opponent use king to bluff and got challenged --> King will be removed from the game
 	else:
-		print("CHALLENGE FAILED, PLEASE REMOVE ONE OF YOUR PIECE")
 		close_banner.rpc()
 		show_challenge_failed_banner.rpc(opponent_disguise_code,board[opponent_dest_pos.x][opponent_dest_pos.y])
 		await get_tree().create_timer(2.0).timeout
@@ -947,7 +942,6 @@ func _check_loss():
 		opponent_handle_game_win.rpc_id(peer_id)
 		
 func _check_win():
-	print(board)
 	var peer_id = multiplayer.get_remote_sender_id()
 	if(!opponent_king_exist()):
 		self_handle_game_win()
@@ -981,7 +975,6 @@ func show_challenge_banner():
 	
 @rpc("any_peer", "call_local", "reliable")	
 func show_challenge_success_banner(disguise,real):
-	print(disguise,real)
 	if(real < 0):
 		disguise = -disguise
 	match disguise:
@@ -1015,7 +1008,6 @@ func show_challenge_success_banner(disguise,real):
 	
 @rpc("any_peer", "call_local", "reliable")	
 func show_challenge_failed_banner(disguise,real):
-	print(disguise,real)
 	if(real < 0):
 		disguise = -disguise
 	match disguise:
