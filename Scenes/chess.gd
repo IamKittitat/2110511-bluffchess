@@ -54,6 +54,9 @@ const PIECE_MOVE = preload("res://Assets/Piece_move.png")
 @onready var left_failed_icon: TextureRect = $"../banner/challenge_failed_with_icon/Left_Icon"
 @onready var right_failed_icon: TextureRect = $"../banner/challenge_failed_with_icon/Right_Icon"
 
+@onready var challenge_button: Button = $"../Control/ChallngeContainerBox/ChallengeButton"
+@onready var skip_button: Button = $"../Control/ChallngeContainerBox/SkipButton"
+
 @onready var success_panel: Control = $"../sub_banner/success_panel"
 @onready var failed_panel: Control = $"../sub_banner/failed_panel"
 @onready var sub_banner: Control = $"../sub_banner"
@@ -443,7 +446,11 @@ func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_
 	_swap_timer()
 	display_board()
 	
+	challenge_button.disabled = false
+	skip_button.disabled = false
 	await get_tree().create_timer(5.0).timeout
+	challenge_button.disabled = true
+	skip_button.disabled = true
 	if(state == "CHALLENGE"):
 		_check_loss()
 		state = "CHOOSE"

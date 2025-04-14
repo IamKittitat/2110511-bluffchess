@@ -398,7 +398,7 @@ theme_override_fonts/font = ExtResource("11_d1ilt")
 theme_override_font_sizes/font_size = 4
 text = "Selected Piece, I play as:"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="Control"]
+[node name="ChallngeContainerBox" type="HBoxContainer" parent="Control"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -410,18 +410,20 @@ offset_bottom = -122.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Button" type="Button" parent="Control/HBoxContainer2"]
+[node name="ChallengeButton" type="Button" parent="Control/ChallngeContainerBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("11_d1ilt")
 theme_override_font_sizes/font_size = 6
+disabled = true
 text = "Challenge"
 
-[node name="Button2" type="Button" parent="Control/HBoxContainer2"]
+[node name="SkipButton" type="Button" parent="Control/ChallngeContainerBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("11_d1ilt")
 theme_override_font_sizes/font_size = 6
+disabled = true
 text = "Skip"
 
 [node name="Opponent_timer" type="Label" parent="Control"]
@@ -703,6 +705,6 @@ text = "Back to main menu"
 [connection signal="pressed" from="Control/HBoxContainer/TextureButton4" to="Board" method="_on_rook_selected_pressed"]
 [connection signal="pressed" from="Control/HBoxContainer/TextureButton5" to="Board" method="_on_queen_selected_pressed"]
 [connection signal="pressed" from="Control/HBoxContainer/TextureButton6" to="Board" method="_on_king_selected_pressed"]
-[connection signal="pressed" from="Control/HBoxContainer2/Button" to="Board" method="_on_challenge_pressed"]
-[connection signal="pressed" from="Control/HBoxContainer2/Button2" to="Board" method="_on_skip_pressed"]
+[connection signal="pressed" from="Control/ChallngeContainerBox/ChallengeButton" to="Board" method="_on_challenge_pressed"]
+[connection signal="pressed" from="Control/ChallngeContainerBox/SkipButton" to="Board" method="_on_skip_pressed"]
 [connection signal="pressed" from="End_Game/Button" to="Board" method="_on_back_to_menu_pressed"]
