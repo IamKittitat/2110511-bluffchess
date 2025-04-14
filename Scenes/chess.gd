@@ -74,6 +74,8 @@ const PIECE_MOVE = preload("res://Assets/Piece_move.png")
 @onready var highlight: Node2D = $highlight
 const HIGHLIGHT = preload("res://Assets/highlight.png")
 
+@onready var sfx_player: AudioStreamPlayer2D = $"../SPXPlayer"
+
 #Variables
 # -6 = black king
 # -5 = black queen
@@ -398,6 +400,8 @@ func set_move(row, col):
 		var time_left = player_time.time_left
 		player_time.start(time_left + 10)
 		plus_10_timer.rpc_id(peer_id, time_left)
+	
+	sfx_player.play()
 
 @rpc("any_peer", "call_remote", "reliable")	
 func plus_10_timer(time_left):
@@ -435,6 +439,8 @@ func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_
 	board = _flip_board(opponent_board)
 	hidden_board = _flip_board(opponent_hidden_board)
 	pawn_not_moved[dest_row][dest_col] = 0
+	
+	sfx_player.play()
 	
 	if(hidden_board[dest_row][dest_col] == 2):
 		state = "CHALLENGE"

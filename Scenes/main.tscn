@@ -1,4 +1,4 @@
-[gd_scene load_steps=63 format=3 uid="uid://wumwx2sgq27v"]
+[gd_scene load_steps=64 format=3 uid="uid://wumwx2sgq27v"]
 
 [ext_resource type="Texture2D" uid="uid://cvw0ygykf1vmn" path="res://Assets/Piece/white_knight.png" id="1_3khqn"]
 [ext_resource type="PackedScene" uid="uid://c5xblqofcwad0" path="res://Scenes/board.tscn" id="1_63gbl"]
@@ -23,6 +23,7 @@
 [ext_resource type="Texture2D" uid="uid://0urfd2axd0im" path="res://Assets/Piece/black_hidden_bishop.png" id="21_ee4r6"]
 [ext_resource type="FontFile" uid="uid://dgfsgagxg2j1f" path="res://Assets/Besley-Italic-VariableFont_wght.ttf" id="22_ee4r6"]
 [ext_resource type="Script" uid="uid://cggw5ylnubf7d" path="res://Scenes/sub_banner.gd" id="22_gt3je"]
+[ext_resource type="AudioStream" uid="uid://dgfnmtrphlg25" path="res://Assets/sound_effect/move-self.mp3" id="24_3pmx8"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vp5if"]
 
@@ -698,6 +699,9 @@ theme_override_fonts/font = ExtResource("22_ee4r6")
 theme_override_font_sizes/font_size = 10
 theme_override_styles/normal = SubResource("StyleBoxFlat_cbgmd")
 text = "Back to main menu"
+
+[node name="SPXPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("24_3pmx8")
 
 [connection signal="pressed" from="Control/HBoxContainer/TextureButton" to="Board" method="_on_pawn_selected_pressed"]
 [connection signal="pressed" from="Control/HBoxContainer/TextureButton2" to="Board" method="_on_knight_selected_pressed"]
