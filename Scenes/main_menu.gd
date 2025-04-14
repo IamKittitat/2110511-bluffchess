@@ -17,8 +17,12 @@ func _ready():
 		lobby_server.name = "Lobby"
 		get_tree().root.add_child.call_deferred(lobby_server)
 	else:
-		lobby_client.name = "Lobby"
-		get_tree().root.add_child.call_deferred(lobby_client)
+		if not get_tree().root.has_node("/root/Lobby"):
+			lobby_client.name = "Lobby"
+			get_tree().root.add_child.call_deferred(lobby_client)
+		else:
+			lobby_client = get_tree().root.get_node('/root/Lobby')
+			lobby_client.connect_to_lobby_server()
 
 func _on_new_room_pressed() -> void:
 	get_tree().change_scene_to_packed(create_room_scene)
