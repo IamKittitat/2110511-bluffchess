@@ -12,3 +12,11 @@ func _on_join_button_pressed() -> void:
 
 func _on_room_code_text_changed(new_text: String) -> void:
 	GlobalScript.room_code = new_text
+	_update_join_room_button_state()
+
+func _update_join_room_button_state():
+	var join_room_button = $"Panel/JoinRoomButton"
+	join_room_button.disabled = not _is_input_valid()
+
+func _is_input_valid():
+	return GlobalScript.room_code.length() == 10
