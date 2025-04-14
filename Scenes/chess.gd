@@ -446,15 +446,27 @@ func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_
 	_swap_timer()
 	display_board()
 	
-	challenge_button.disabled = false
-	skip_button.disabled = false
+	_set_challenge_button_group(false)	
 	await get_tree().create_timer(5.0).timeout
-	challenge_button.disabled = true
-	skip_button.disabled = true
+	_set_challenge_button_group(true)
+	
 	if(state == "CHALLENGE"):
 		_check_loss()
 		state = "CHOOSE"
 		display_board()
+
+func _set_challenge_button_group(disabled: bool):
+	challenge_button.disabled = disabled
+	skip_button.disabled = disabled
+	if(disabled):
+		challenge_button.mouse_filter =Control.MOUSE_FILTER_IGNORE
+		skip_button.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	else:
+		challenge_button.mouse_filter =Control.MOUSE_FILTER_PASS
+		skip_button.mouse_filter = Control.MOUSE_FILTER_PASS
+		
+	challenge_button.release_focus()
+	skip_button.release_focus()
 	
 @rpc("any_peer", "call_remote", "reliable")	
 func force_rerender(opponent_board, opponent_hidden_board):
