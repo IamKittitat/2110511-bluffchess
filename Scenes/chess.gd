@@ -74,7 +74,8 @@ const PIECE_MOVE = preload("res://Assets/Piece_move.png")
 @onready var highlight: Node2D = $highlight
 const HIGHLIGHT = preload("res://Assets/highlight.png")
 
-@onready var sfx_player: AudioStreamPlayer2D = $"../SPXPlayer"
+@onready var move_sfx_player: AudioStreamPlayer2D = $"../MoveSPXPlayer"
+@onready var capture_sfx_player: AudioStreamPlayer2D = $"../CaptureSPXPlayer"
 
 #Variables
 # -6 = black king
@@ -386,10 +387,16 @@ func set_move(row, col):
 	for i in moves:
 		if i.x == row && i.y == col:
 			var eaten_piece
-			eaten_piece = _move(selected_piece, row, col)			
+			eaten_piece = _move(selected_piece, row, col)
 			is_my_turn = !is_my_turn
 			_swap_timer()
 			display_board()
+			
+			if eaten_piece[0] == 0:
+				move_sfx_player.play()
+			else:
+				capture_sfx_player.play()
+			
 			handle_opponent_move.rpc_id(peer_id, board, hidden_board, row, col, disguise_code, eaten_piece[0], eaten_piece[1])
 			break
 			
@@ -401,8 +408,6 @@ func set_move(row, col):
 		player_time.start(time_left + 10)
 		plus_10_timer.rpc_id(peer_id, time_left)
 	
-	sfx_player.play()
-
 @rpc("any_peer", "call_remote", "reliable")	
 func plus_10_timer(time_left):
 	opponent_time.start(time_left + 10)
@@ -440,7 +445,10 @@ func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_
 	hidden_board = _flip_board(opponent_hidden_board)
 	pawn_not_moved[dest_row][dest_col] = 0
 	
-	sfx_player.play()
+	if eaten_piece == 0:
+		move_sfx_player.play()
+	else:
+		capture_sfx_player.play()
 	
 	if(hidden_board[dest_row][dest_col] == 2):
 		state = "CHALLENGE"
