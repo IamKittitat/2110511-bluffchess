@@ -761,6 +761,7 @@ func _check_win():
 	
 func _on_skip_pressed() -> void:
 	state = "CHOOSE"
+	_set_challenge_button_group(true)
 	_check_loss()
 	display_board()
 	
