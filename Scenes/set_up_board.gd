@@ -318,7 +318,7 @@ func _init_parameter():
 
 func get_setting_phase_options(setting_phase):
 	if(setting_phase == "1 min"):
-		return 5
+		return 60
 	elif(setting_phase == "3 min"):
 		return 180
 	elif(setting_phase == "5 min"):
