@@ -467,15 +467,16 @@ func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_
 	_swap_timer()
 	display_board()
 	
-	_set_challenge_button_group(false)	
-	await get_tree().create_timer(5.0).timeout
-	_set_challenge_button_group(true)
-	
-	if(state == "CHALLENGE" && !is_challenge):
-		_check_loss()
-		state = "CHOOSE"
-		display_board()
-		display_eaten_piece()
+	if(hidden_board[dest_row][dest_col] == 2):
+		_set_challenge_button_group(false)	
+		await get_tree().create_timer(5.0).timeout
+		_set_challenge_button_group(true)
+		
+		if(state == "CHALLENGE" && !is_challenge):
+			_check_loss()
+			state = "CHOOSE"
+			display_board()
+			display_eaten_piece()
 
 func _set_challenge_button_group(disabled: bool):
 	challenge_button.disabled = disabled
