@@ -41,6 +41,8 @@ const WHITE_HIDDEN = preload("res://Assets/Piece/white_hidden.png")
 
 @onready var delete_mode: CheckButton = $"../Select/DeleteMode"
 
+@onready var ready_button: Button = $"../ReadyButton"
+
 var board
 var hidden_board
 var another_board
@@ -184,6 +186,7 @@ func _input(event):
 					
 					if(piece_left[abs(selected_piece)] == 0): selected_piece = 0
 				display_board()
+				_check_is_button_2_disabled()
 			
 func is_mouse_out():
 	if get_rect().has_point(to_local(get_global_mouse_position())): return false
@@ -193,15 +196,21 @@ func _on_button_pressed() -> void:
 	get_tree().change_scene_to_file("res://Scenes/main_menu.tscn")
 
 func _on_button_2_pressed() -> void:
-	for x in piece_left:
-		if x > 0: return
-		
 	var peer_id = multiplayer.get_remote_sender_id()
 	GlobalScript.chess_board_data = board
 	GlobalScript.hidden_board_data = hidden_board
 	iam_ready = true
 	trigger_ready.rpc_id(peer_id, board)
+
+func _check_is_button_2_disabled(): 
+	for x in piece_left:
+		if x > 0: 
+			ready_button.disabled = true
+			ready_button.mouse_filter =Control.MOUSE_FILTER_IGNORE
+			return 
 	
+	ready_button.disabled = false
+	ready_button.mouse_filter =Control.MOUSE_FILTER_PASS
 
 @rpc("any_peer", "call_remote", "reliable")
 func trigger_ready(board):

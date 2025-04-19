@@ -1,9 +1,11 @@
-[gd_scene load_steps=15 format=3 uid="uid://b4nopi5svnbjs"]
+[gd_scene load_steps=17 format=3 uid="uid://b4nopi5svnbjs"]
 
 [ext_resource type="PackedScene" uid="uid://bacq6ewojhxhd" path="res://Scenes/set_up_board.tscn" id="1_1msvh"]
 [ext_resource type="Texture2D" uid="uid://bmqgehrxdaios" path="res://Assets/background.png" id="1_t5b6i"]
 [ext_resource type="FontFile" uid="uid://dgfsgagxg2j1f" path="res://Assets/Besley-Italic-VariableFont_wght.ttf" id="2_21yao"]
+[ext_resource type="StyleBox" uid="uid://q2f0ylplmyq1" path="res://Assets/common_node_style/outlined_button_style_box_pressed.tres" id="4_23f6j"]
 [ext_resource type="Texture2D" uid="uid://dtbukculn5ne4" path="res://Assets/Piece/white_hidden_king.png" id="4_31104"]
+[ext_resource type="StyleBox" uid="uid://b3xjm2evvjoad" path="res://Assets/common_node_style/outlined_button_style_box_disabled.tres" id="5_krgbr"]
 [ext_resource type="Texture2D" uid="uid://mvrdjvaaqv24" path="res://Assets/Piece/white_hidden_queen.png" id="5_lbuvt"]
 [ext_resource type="Texture2D" uid="uid://ccaedkxr7lmup" path="res://Assets/Piece/white_hidden_knight.png" id="6_cyvi8"]
 [ext_resource type="Texture2D" uid="uid://blfikdcg54wmj" path="res://Assets/Piece/white_hidden_bishop.png" id="7_cnuni"]
@@ -66,8 +68,21 @@ offset_top = 557.0
 offset_right = 940.942
 offset_bottom = 626.0
 scale = Vector2(0.997622, 1)
+theme_override_colors/font_disabled_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_colors/font_focus_color = Color(0.156863, 0.156863, 0.156863, 1)
+theme_override_colors/font_pressed_color = Color(0.219608, 0.219608, 0.219608, 1)
 theme_override_fonts/font = ExtResource("2_21yao")
 theme_override_font_sizes/font_size = 36
+theme_override_styles/focus = ExtResource("4_23f6j")
+theme_override_styles/disabled = ExtResource("5_krgbr")
+theme_override_styles/hover_pressed = ExtResource("4_23f6j")
+theme_override_styles/hover = ExtResource("4_23f6j")
+theme_override_styles/pressed = ExtResource("4_23f6j")
+theme_override_styles/normal = ExtResource("4_23f6j")
+disabled = true
 text = "Ready"
 
 [node name="Select" type="Control" parent="."]
