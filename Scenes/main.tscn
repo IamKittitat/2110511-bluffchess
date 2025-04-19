@@ -14,7 +14,9 @@
 [ext_resource type="FontFile" uid="uid://bg4h3sxtvyspq" path="res://Assets/Besley-VariableFont_wght.ttf" id="11_d1ilt"]
 [ext_resource type="Texture2D" uid="uid://bm6auq5cl5moy" path="res://Assets/Piece/white_pawn.png" id="11_fdnlq"]
 [ext_resource type="Texture2D" uid="uid://02ssp0n1j2k7" path="res://Assets/Piece/white_king.png" id="12_jkdf5"]
+[ext_resource type="StyleBox" uid="uid://7fa7uhyc7xrc" path="res://Assets/common_node_style/timer_disabled_style_box.tres" id="14_cbgmd"]
 [ext_resource type="Script" uid="uid://bngjrkwrv0le0" path="res://Scenes/banner.gd" id="14_wsu2k"]
+[ext_resource type="StyleBox" uid="uid://r3fk71su0xv8" path="res://Assets/common_node_style/timer_enabled_style_box.tres" id="15_1w6v2"]
 [ext_resource type="Texture2D" uid="uid://h6kh8u5h7avl" path="res://Assets/Challenge_Failed_out.png" id="16_fevyy"]
 [ext_resource type="Texture2D" uid="uid://cyjsummbvdmhx" path="res://Assets/Challenge.png" id="17_hibaj"]
 [ext_resource type="Texture2D" uid="uid://c2fwilhavexx7" path="res://Assets/challeng_failed_with_icon.png" id="18_pdsj5"]
@@ -111,25 +113,6 @@ corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1w6v2"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ueoa1"]
-bg_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wsu2k"]
 texture = ExtResource("1_jkdf5")
@@ -436,7 +419,7 @@ offset_right = 261.0
 offset_bottom = -127.875
 theme_override_fonts/font = ExtResource("11_d1ilt")
 theme_override_font_sizes/font_size = 6
-theme_override_styles/normal = SubResource("StyleBoxFlat_1w6v2")
+theme_override_styles/normal = ExtResource("14_cbgmd")
 text = "10:00"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -447,10 +430,10 @@ offset_left = 230.0
 offset_top = -78.0
 offset_right = 261.0
 offset_bottom = -67.875
-theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0.211765, 0.211765, 0.211765, 1)
 theme_override_fonts/font = ExtResource("11_d1ilt")
 theme_override_font_sizes/font_size = 6
-theme_override_styles/normal = SubResource("StyleBoxFlat_ueoa1")
+theme_override_styles/normal = ExtResource("15_1w6v2")
 text = "10:00"
 horizontal_alignment = 1
 vertical_alignment = 1

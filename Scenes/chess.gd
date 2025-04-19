@@ -37,6 +37,9 @@ const TURN_BLACK = preload("res://Assets/turn-black.png")
 
 const PIECE_MOVE = preload("res://Assets/Piece_move.png")
 
+var ENABLED_TIMER_STYLE_BOX = load('res://Assets/common_node_style/timer_enabled_style_box.tres')
+var  DISABLED_TIMER_STYLE_BOX = load('res://Assets/common_node_style/timer_disabled_style_box.tres')
+
 @onready var pieces = $Pieces
 @onready var dots = $Dots
 @onready var turn = $Turn
@@ -886,6 +889,19 @@ func _swap_timer():
 	player_time.set_paused(not is_my_turn)
 	opponent_time.set_paused(is_my_turn)
 	
+	# Render timer
+	if is_my_turn:
+		player_timer.add_theme_stylebox_override("normal", ENABLED_TIMER_STYLE_BOX)
+		player_timer.add_theme_color_override("font_color", '#383838')
+		opponent_timer.add_theme_stylebox_override("normal", DISABLED_TIMER_STYLE_BOX)
+		opponent_timer.add_theme_color_override("font_color", '#FFFFFF')
+	else:
+		player_timer.add_theme_stylebox_override("normal", DISABLED_TIMER_STYLE_BOX)
+		player_timer.add_theme_color_override("font_color", '#FFFFFF')
+		opponent_timer.add_theme_stylebox_override("normal", ENABLED_TIMER_STYLE_BOX)
+		opponent_timer.add_theme_color_override("font_color", '#383838')
+	
+
 func _process(delta):
 	var peer_id = multiplayer.get_remote_sender_id()
 	opponent_timer.text = "%02d:%02d" % [time_left_to_live()[2],time_left_to_live()[3]]
