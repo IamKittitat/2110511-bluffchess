@@ -713,27 +713,27 @@ func _on_challenge_pressed() -> void:
 	await get_tree().create_timer(0.1).timeout
 
 func _on_pawn_selected_pressed() -> void:
-	if(state in ["BLUFF", "MOVE"]):
+	if(state in ["BLUFF", "MOVE"] && hidden_board[selected_piece.x][selected_piece.y] == 2):
 		_handle_disguise(1)
 	
 func _on_knight_selected_pressed() -> void:
-	if(state in ["BLUFF", "MOVE"]):
+	if(state in ["BLUFF", "MOVE"] && hidden_board[selected_piece.x][selected_piece.y] == 2):
 		_handle_disguise(2)
 	
 func _on_bishop_selected_pressed() -> void:
-	if(state in ["BLUFF", "MOVE"]):
+	if(state in ["BLUFF", "MOVE"] && hidden_board[selected_piece.x][selected_piece.y] == 2):
 		_handle_disguise(3)
 	
 func _on_rook_selected_pressed() -> void:
-	if(state in ["BLUFF", "MOVE"]):
+	if(state in ["BLUFF", "MOVE"] && hidden_board[selected_piece.x][selected_piece.y] == 2):
 		_handle_disguise(4)
 	
 func _on_queen_selected_pressed() -> void:
-	if(state in ["BLUFF", "MOVE"]):
+	if(state in ["BLUFF", "MOVE"] && hidden_board[selected_piece.x][selected_piece.y] == 2):
 		_handle_disguise(5)
 	
 func _on_king_selected_pressed() -> void:
-	if(state in ["BLUFF", "MOVE"]):
+	if(state in ["BLUFF", "MOVE"] && hidden_board[selected_piece.x][selected_piece.y] == 2):
 		_handle_disguise(6)
 
 func _handle_disguise(input_code):
