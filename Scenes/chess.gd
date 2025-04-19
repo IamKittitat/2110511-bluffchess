@@ -181,6 +181,7 @@ func _input(event):
 						state = get_next_state(state)
 						close_banner.rpc()
 						display_board()
+						display_eaten_piece()
 						force_rerender.rpc_id(peer_id, board, hidden_board)
 			elif state == "FAILED":
 				if((play_white && board[row][col] > 0) || (!play_white && board[row][col] < 0)):
@@ -189,6 +190,7 @@ func _input(event):
 					state = get_next_state(state)
 					close_banner.rpc()
 					display_board()
+					display_eaten_piece()
 					force_rerender.rpc_id(peer_id, board, hidden_board)
 					_check_loss()
 	
@@ -268,6 +270,10 @@ func display_board():
 			
 			if holder.texture != null:
 				holder.scale = Vector2(13.5 / holder.texture.get_width(), 13.5 / holder.texture.get_height())
+	if play_white: turn.texture = TURN_WHITE
+	else: turn.texture = TURN_BLACK
+	
+func display_eaten_piece():
 	#eaten zone
 	var starting_white = [1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,2, 2, 3, 3, 4, 4, 5, 6]
 	var starting_black = [-1 ,-1 ,-1 ,-1 ,-1 ,-1 ,-1 ,-1 ,-2, -2, -3, -3, -4, -4, -5, -6]
@@ -364,9 +370,6 @@ func display_board():
 			margin.add_child(tex_rect)
 			player_eaten.add_child(margin)
 	
-	if play_white: turn.texture = TURN_WHITE
-	else: turn.texture = TURN_BLACK
-
 func show_options(selected_piece, disguise_piece_code):
 	moves = get_moves(selected_piece, board[selected_piece.x][selected_piece.y], disguise_piece_code)
 	if moves == []:
@@ -472,6 +475,7 @@ func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_
 		_check_loss()
 		state = "CHOOSE"
 		display_board()
+		display_eaten_piece()
 
 func _set_challenge_button_group(disabled: bool):
 	challenge_button.disabled = disabled
@@ -491,6 +495,7 @@ func force_rerender(opponent_board, opponent_hidden_board):
 	board = _flip_board(opponent_board)
 	hidden_board = _flip_board(opponent_hidden_board)
 	display_board()
+	display_eaten_piece()
 	
 @rpc("any_peer", "call_remote", "reliable")
 func opponent_handle_game_win():
@@ -646,6 +651,7 @@ func _on_button_pressed(button):
 	white_pieces.visible = false
 	black_pieces.visible = false
 	display_board()
+	display_eaten_piece()
 
 func reset_state():
 	return "CHOOSE"
@@ -712,6 +718,7 @@ func _on_challenge_pressed() -> void:
 		show_failed_sub_banner()
 		state = "FAILED"
 	display_board()
+	display_eaten_piece()
 	force_rerender.rpc_id(peer_id, board, hidden_board)
 	await get_tree().create_timer(0.1).timeout
 
@@ -770,6 +777,7 @@ func _on_skip_pressed() -> void:
 	_set_challenge_button_group(true)
 	_check_loss()
 	display_board()
+	display_eaten_piece()
 	
 #close banner
 @rpc("any_peer", "call_local", "reliable")	
