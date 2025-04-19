@@ -109,6 +109,7 @@ var opponent_dest_pos: Vector2
 var our_eaten_piece: int
 var our_eaten_hidden_code: int
 var our_eaten_pawn_not_move: int
+var is_challenge  = false
 
 func _ready():
 	play_white = GlobalScript.play_as == "white"
@@ -436,10 +437,10 @@ func self_handle_game_win():
 @rpc("any_peer", "call_remote", "reliable")
 func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_col, disguise_code, eaten_piece, eaten_hidden_code):
 	var peer_id = multiplayer.get_remote_sender_id()
+	is_challenge = false
 	opponent_disguise_code = disguise_code
 	dest_row = BOARD_SIZE - dest_row - 1
 	dest_col = BOARD_SIZE - dest_col - 1
-	
 	our_eaten_piece = eaten_piece
 	our_eaten_hidden_code = eaten_hidden_code
 	our_eaten_pawn_not_move = pawn_not_moved[dest_row][dest_col]
@@ -467,7 +468,7 @@ func handle_opponent_move(opponent_board, opponent_hidden_board, dest_row, dest_
 	await get_tree().create_timer(5.0).timeout
 	_set_challenge_button_group(true)
 	
-	if(state == "CHALLENGE"):
+	if(state == "CHALLENGE" && !is_challenge):
 		_check_loss()
 		state = "CHOOSE"
 		display_board()
@@ -683,6 +684,7 @@ func opponent_king_exist():
 	return false
 	
 func _on_challenge_pressed() -> void:
+	is_challenge = true
 	if(state != "CHALLENGE"): return
 	var peer_id = multiplayer.get_remote_sender_id()
 	hidden_board[opponent_dest_pos.x][opponent_dest_pos.y] = 1
@@ -695,6 +697,7 @@ func _on_challenge_pressed() -> void:
 		close_banner.rpc()
 		show_challenge_success_out_banner.rpc_id(peer_id)
 		show_success_sub_banner()
+		opponent_disguise_code = 0
 		board[opponent_dest_pos.x][opponent_dest_pos.y] = our_eaten_piece
 		hidden_board[opponent_dest_pos.x][opponent_dest_pos.y] = our_eaten_hidden_code
 		pawn_not_moved[opponent_dest_pos.x][opponent_dest_pos.y] = our_eaten_pawn_not_move
@@ -908,7 +911,6 @@ func _process(delta):
 	player_timer.text = "%02d:%02d" % [time_left_to_live()[0],time_left_to_live()[1]]
 	
 	if(int(player_time.time_left) == 0):
-		print("OHHHHH")
 		self_handle_game_loss()
 		opponent_handle_game_win.rpc_id(peer_id)
 	
