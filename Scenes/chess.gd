@@ -146,6 +146,7 @@ func _input(event):
 	#if event is InputEventMouseButton and event.pressed and banner.visible:
 		#close_banner()
 	if event is InputEventMouseButton && event.pressed:
+		if (!our_king_exist()) or (!opponent_king_exist()): return
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if is_mouse_out(): return
 			if !is_my_turn: return
@@ -431,10 +432,15 @@ func _move(selected_piece, row, col):
 
 func self_handle_game_loss():
 	status.text = "You Lose!"
+	player_time.stop()
+	opponent_time.stop()
 	end_game.visible = true
+	
 
 func self_handle_game_win():
 	status.text = "You Win!"
+	player_time.stop()
+	opponent_time.stop()
 	end_game.visible = true
 	
 @rpc("any_peer", "call_remote", "reliable")
@@ -501,11 +507,15 @@ func force_rerender(opponent_board, opponent_hidden_board):
 @rpc("any_peer", "call_remote", "reliable")
 func opponent_handle_game_win():
 	status.text = "You Win!"
+	player_time.stop()
+	opponent_time.stop()
 	end_game.visible = true
 
 @rpc("any_peer", "call_remote", "reliable")
 func opponent_handle_game_loss():
 	status.text = "You Lose!"
+	player_time.stop()
+	opponent_time.stop()
 	end_game.visible = true
 		
 func get_moves(selected, real_piece_code, disguise_piece_code):
