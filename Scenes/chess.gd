@@ -173,7 +173,7 @@ func _input(event):
 				disguise_code = 0
 				state = reset_state()
 			elif state == "SUCCESS":
-				if(!_is_opponent_hidden_exist()):
+				if(!_is_opponent_hidden_exist()): # If no hidden piece left > cant reveal any.
 					state = get_next_state(state)
 					close_banner.rpc()
 				if((play_white && board[row][col] < 0) || (!play_white && board[row][col] > 0)):
@@ -715,9 +715,12 @@ func _on_challenge_pressed() -> void:
 		show_challenge_success_out_banner.rpc_id(peer_id)
 		show_success_sub_banner()
 		opponent_disguise_code = 0
+		
+		# Undo the move
 		board[opponent_dest_pos.x][opponent_dest_pos.y] = our_eaten_piece
 		hidden_board[opponent_dest_pos.x][opponent_dest_pos.y] = our_eaten_hidden_code
 		pawn_not_moved[opponent_dest_pos.x][opponent_dest_pos.y] = our_eaten_pawn_not_move
+		
 		state = "SUCCESS"
 		_check_win() # incase of opponent use king to bluff and got challenged --> King will be removed from the game
 	else:
@@ -727,6 +730,9 @@ func _on_challenge_pressed() -> void:
 		close_banner.rpc()
 		show_challenge_failed_out_banner.rpc_id(peer_id)
 		show_failed_sub_banner()
+		
+		opponent_disguise_code = 0
+		hidden_board[opponent_dest_pos.x][opponent_dest_pos.y] = 1
 		state = "FAILED"
 	display_board()
 	display_eaten_piece()
