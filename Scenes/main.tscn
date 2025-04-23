@@ -17,11 +17,11 @@
 [ext_resource type="StyleBox" uid="uid://7fa7uhyc7xrc" path="res://Assets/common_node_style/timer_disabled_style_box.tres" id="14_cbgmd"]
 [ext_resource type="Script" uid="uid://bngjrkwrv0le0" path="res://Scenes/banner.gd" id="14_wsu2k"]
 [ext_resource type="StyleBox" uid="uid://r3fk71su0xv8" path="res://Assets/common_node_style/timer_enabled_style_box.tres" id="15_1w6v2"]
-[ext_resource type="Texture2D" uid="uid://h6kh8u5h7avl" path="res://Assets/Challenge_Failed_out.png" id="16_fevyy"]
 [ext_resource type="Texture2D" uid="uid://cyjsummbvdmhx" path="res://Assets/Challenge.png" id="17_hibaj"]
-[ext_resource type="Texture2D" uid="uid://c2fwilhavexx7" path="res://Assets/challeng_failed_with_icon.png" id="18_pdsj5"]
+[ext_resource type="Texture2D" uid="uid://c7n88veultqdy" path="res://Assets/challeng_failed_with_icon_2.png" id="18_1w6v2"]
 [ext_resource type="Texture2D" uid="uid://blfikdcg54wmj" path="res://Assets/Piece/white_hidden_bishop.png" id="19_ee4r6"]
 [ext_resource type="Texture2D" uid="uid://eypualtowdnt" path="res://Assets/challeng_success_with_icon.png" id="20_pdsj5"]
+[ext_resource type="Texture2D" uid="uid://dncj0isbxn8c7" path="res://Assets/Challenge_Failed_out_2.png" id="20_ueoa1"]
 [ext_resource type="Texture2D" uid="uid://0urfd2axd0im" path="res://Assets/Piece/black_hidden_bishop.png" id="21_ee4r6"]
 [ext_resource type="FontFile" uid="uid://dgfsgagxg2j1f" path="res://Assets/Besley-Italic-VariableFont_wght.ttf" id="22_ee4r6"]
 [ext_resource type="Script" uid="uid://cggw5ylnubf7d" path="res://Scenes/sub_banner.gd" id="22_gt3je"]
@@ -118,13 +118,13 @@ corner_radius_bottom_left = 10
 texture = ExtResource("1_jkdf5")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gt3je"]
-texture = ExtResource("16_fevyy")
+texture = ExtResource("18_1w6v2")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3pmx8"]
 texture = ExtResource("17_hibaj")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_u50mg"]
-texture = ExtResource("18_pdsj5")
+texture = ExtResource("20_ueoa1")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cbgmd"]
 texture = ExtResource("20_pdsj5")
