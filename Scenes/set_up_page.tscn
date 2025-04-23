@@ -62,10 +62,31 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_t5b6i")
 text = "< Back"
 metadata/_edit_use_anchors_ = true
 
-[node name="ReadyButton" type="Button" parent="."]
-offset_left = 766.942
+[node name="RandomButton" type="Button" parent="."]
+offset_left = 633.126
 offset_top = 557.0
-offset_right = 940.942
+offset_right = 788.126
+offset_bottom = 626.0
+theme_override_colors/font_disabled_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_colors/font_focus_color = Color(0.156863, 0.156863, 0.156863, 1)
+theme_override_colors/font_pressed_color = Color(0.219608, 0.219608, 0.219608, 1)
+theme_override_fonts/font = ExtResource("2_21yao")
+theme_override_font_sizes/font_size = 36
+theme_override_styles/focus = ExtResource("4_23f6j")
+theme_override_styles/disabled = ExtResource("5_krgbr")
+theme_override_styles/hover_pressed = ExtResource("4_23f6j")
+theme_override_styles/hover = ExtResource("4_23f6j")
+theme_override_styles/pressed = ExtResource("4_23f6j")
+theme_override_styles/normal = ExtResource("4_23f6j")
+text = "Random"
+
+[node name="ReadyButton" type="Button" parent="."]
+offset_left = 883.781
+offset_top = 557.0
+offset_right = 1057.78
 offset_bottom = 626.0
 scale = Vector2(0.997622, 1)
 theme_override_colors/font_disabled_color = Color(1, 1, 1, 1)
@@ -294,6 +315,7 @@ text = "Delete"
 [node name="Timer" type="Timer" parent="."]
 
 [connection signal="pressed" from="BackButton" to="board" method="_on_button_pressed"]
+[connection signal="pressed" from="RandomButton" to="board" method="_on_random_button_pressed"]
 [connection signal="pressed" from="ReadyButton" to="board" method="_on_button_2_pressed"]
 [connection signal="pressed" from="Select/VBoxContainer/king_select" to="board" method="_on_king_button_pressed"]
 [connection signal="pressed" from="Select/VBoxContainer/queen_select" to="board" method="_on_queen_button_pressed"]

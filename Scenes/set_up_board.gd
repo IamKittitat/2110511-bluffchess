@@ -332,3 +332,7 @@ func get_setting_phase_options(setting_phase):
 		return 180
 	elif(setting_phase == "5 min"):
 		return 300
+
+
+func _on_random_button_pressed() -> void:
+	pass # Replace with function body.
