@@ -935,7 +935,8 @@ func _process(delta):
 	opponent_timer.text = "%02d:%02d" % [time_left_to_live()[2],time_left_to_live()[3]]
 	player_timer.text = "%02d:%02d" % [time_left_to_live()[0],time_left_to_live()[1]]
 	
-	if(int(player_time.time_left) == 0):
+	# Only check for timer 
+	if(int(player_time.time_left) == 0 && our_king_exist() && opponent_king_exist()):
 		self_handle_game_loss()
 		opponent_handle_game_win.rpc_id(peer_id)
 	
