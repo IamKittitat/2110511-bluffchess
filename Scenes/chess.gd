@@ -274,7 +274,7 @@ func display_board():
 	if play_white: turn.texture = TURN_WHITE
 	else: turn.texture = TURN_BLACK
 
-@rpc("any_peer", "call_remote", "reliable")	
+@rpc("any_peer", "call_local", "reliable")	
 func display_eaten_piece():
 	#eaten zone
 	var starting_white = [1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,2, 2, 3, 3, 4, 4, 5, 6]

@@ -21,8 +21,8 @@ GlobalScript="*res://Scenes/global_script.gd"
 
 [display]
 
+window/size/mode=3
 window/stretch/mode="viewport"
-window/stretch/aspect="expand"
 window/vsync/vsync_mode=0
 
 [dotnet]
