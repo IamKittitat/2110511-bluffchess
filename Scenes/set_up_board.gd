@@ -303,6 +303,8 @@ func random_place_piece():
 			if(row <= 1 && board[row][col] == 0):
 				board[row][col] = all_left[idx]
 				idx += 1
+	piece_left = [0,0,0,0,0,0,0]
+
 		
 func get_all_left():
 	var all_left = []
@@ -335,4 +337,12 @@ func get_setting_phase_options(setting_phase):
 
 
 func _on_random_button_pressed() -> void:
-	pass # Replace with function body.
+	random_place_piece()
+	display_board()
+	king_select.text = "0 pieces  "
+	queen_select.text = "0 pieces  "
+	knight_select.text = "0 pieces  "
+	bishop_select.text = "0 pieces  "
+	rook_select.text = "0 pieces  "
+	pawn_select.text = "0 pieces  "
+	_check_is_button_2_disabled()
